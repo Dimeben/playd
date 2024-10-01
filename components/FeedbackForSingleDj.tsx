@@ -26,7 +26,6 @@ const FeedbackForSingleDj = ({ dj }) => {
         return { ...individualFeedback.data(), id: individualFeedback.id };
       });
       setFeedbackList(filteredData);
-      console.log(filteredData);
     });
   };
 
