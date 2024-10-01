@@ -1,6 +1,8 @@
-import { Text, View } from "react-native";
+import { Link, useLocalSearchParams } from "expo-router";
+import { Button, Text, View } from "react-native";
 
 export default function Index() {
+  const { id } = useLocalSearchParams();
   return (
     <View
       style={{
@@ -10,6 +12,10 @@ export default function Index() {
       }}
     >
       <Text>Edit app/index.tsx to edit this screen.</Text>
+      <Text> </Text>
+      <Link href={`/(tabs)/djprofile`}>Go to Dj profile</Link>
+      <Text> </Text>
+      <Link href={`/(tabs)/profile`}>Go to User profile</Link>
     </View>
   );
 }
