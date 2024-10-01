@@ -1,12 +1,21 @@
+import { Stack, Tabs } from "expo-router";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { Stack } from "expo-router";
 
 export default function RootLayout() {
   return (
-    <AuthProvider>
-      <Stack>
-        <Stack.Screen name="index" />
-      </Stack>
-    </AuthProvider>
+<AuthProvider>
+    <Stack>
+      <Stack.Screen
+        name="(tabs)"
+        options={{ headerShown: false, href: null }}
+      />
+      <Stack.Screen
+        name="index"
+        options={{ title: "Dj Profile", href: null }}
+      />
+
+      <Stack.Screen name="+not-found" />
+    </Stack>
+</AuthProvider>
   );
 }

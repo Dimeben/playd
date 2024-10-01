@@ -1,16 +1,19 @@
 // Login.tsx
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
+
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
   const router = useRouter();
   const auth = getAuth();
 
+  
   const handleLogin = async () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);

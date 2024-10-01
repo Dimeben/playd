@@ -42,9 +42,9 @@ export default function RootLayout() {
         }}
       />
       <Tabs.Screen
-        name={isLoggedIn ? "profile" : "login"}
+        name={isLoggedIn ? "djprofile" : "login"}
         options={{
-          tabBarLabel: isLoggedIn ? "Profile" : "Login",
+          tabBarLabel: isLoggedIn ? "Dj Profile" : "Login",
           tabBarIcon: ({ color, size }) => (
             <Ionicons
               name={isLoggedIn ? "person-outline" : "log-in-outline"}
