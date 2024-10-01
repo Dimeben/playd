@@ -31,7 +31,7 @@ export default function Login() {
       );
       const user = userCredential.user;
 
-      router.push({ pathname: `/(tabs)/[username]` });
+      router.push("/(tabs)/profile");
     } catch (error) {
       Alert.alert("Login Error", "Invalid email or password");
     }
