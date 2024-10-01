@@ -19,7 +19,7 @@ import {
   User as FirebaseUser,
 } from "firebase/auth";
 import firebase from "firebase/compat/app";
-export {firebase}
+export { firebase };
 
 const firebaseConfig = {
   apiKey: "AIzaSyDmik3S723nZR-fFM70ilaoAObfPCBKpGc",
@@ -34,17 +34,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 const auth = getAuth(app);
+export { auth };
 
 onAuthStateChanged(auth, (user: FirebaseUser | null) => {
   if (user) {
-
-    console.log("Current logged-in user: ", user.uid);
+    // console.log("Current logged-in user: ", user.uid);
   } else {
-
-    console.log("No user is currently logged in.");
+    // console.log("No user is currently logged in.");
   }
 });
-
 
 interface User {
   username: string;
@@ -56,56 +54,73 @@ interface User {
 interface DJ extends User {
   genre: string;
   Occasions: string;
-  Price: number;  
+  Price: number;
   Description: string;
 }
 
-export function createUser(email: string, password:string , newUser: {email?: string, password?: string, city?: string, username?: string}) {
-  
+export function createUser(
+  email: string,
+  password: string,
+  newUser: {
+    email?: string;
+    password?: string;
+    city?: string;
+    username?: string;
+  }
+) {
   return createUserWithEmailAndPassword(auth, email, password)
-     .then(async (userCredential) => {
- 
-       const user = userCredential.user;
-       console.log(user.email)
-       console.log("Signed up: ", user.uid);
- 
-       const usersRef = collection(db, "users");
-       await setDoc(doc(usersRef, user.uid), newUser);
-       
-       const userDocRef = doc(usersRef, user.uid);
-       const userDocSnapshot = await getDoc(userDocRef);
-       return userDocSnapshot.data()
-     })
-     .catch((error) => {
-       const errorCode = error.code;
-       const errorMessage = error.message;
-       console.error("Error: ", errorCode, errorMessage);
-     });
- }
- 
+    .then(async (userCredential) => {
+      const user = userCredential.user;
+      //  console.log(user.email)
+      //  console.log("Signed up: ", user.uid);
 
-export function createDJ(email: string, password:string , newDJ: {email?: string, password?: string, city?: string, username?: string, genre?: string, occasions?: string, price?: number, description?: string}) {
-  
+      const usersRef = collection(db, "users");
+      await setDoc(doc(usersRef, user.uid), newUser);
+
+      const userDocRef = doc(usersRef, user.uid);
+      const userDocSnapshot = await getDoc(userDocRef);
+      return userDocSnapshot.data();
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error("Error: ", errorCode, errorMessage);
+    });
+}
+
+export function createDJ(
+  email: string,
+  password: string,
+  newDJ: {
+    email?: string;
+    password?: string;
+    city?: string;
+    username?: string;
+    genre?: string;
+    occasions?: string;
+    price?: number;
+    description?: string;
+  }
+) {
   return createUserWithEmailAndPassword(auth, email, password)
-     .then(async (userCredential) => {
- 
-       const user = userCredential.user;
-       console.log(user.email)
-       console.log("Signed up: ", user.uid);
- 
-       const djRef = collection(db, "djs");
-       await setDoc(doc(djRef, user.uid), newDJ);
-       
-       const djDocRef = doc(djRef, user.uid);
-       const djDocSnapshot = await getDoc(djDocRef);
-       return djDocSnapshot.data()
-     })
-     .catch((error) => {
-       const errorCode = error.code;
-       const errorMessage = error.message;
-       console.error("Error: ", errorCode, errorMessage);
-     });
- }
+    .then(async (userCredential) => {
+      const user = userCredential.user;
+      console.log(user.email);
+      console.log("Signed up: ", user.uid);
+
+      const djRef = collection(db, "djs");
+      await setDoc(doc(djRef, user.uid), newDJ);
+
+      const djDocRef = doc(djRef, user.uid);
+      const djDocSnapshot = await getDoc(djDocRef);
+      return djDocSnapshot.data();
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error("Error: ", errorCode, errorMessage);
+    });
+}
 
 export function signIn(email: string, password: string) {
   signInWithEmailAndPassword(auth, email, password)
@@ -127,7 +142,7 @@ export async function getAllDjs() {
   getAllDjsSnapshot.forEach((doc) => {
     djsArray.push(doc.data() as DJ);
   });
-return djsArray
+  return djsArray;
 }
 
 //   const q1 = query(collection(db, "users"));
