@@ -20,6 +20,7 @@ import {
 } from "firebase/auth";
 import firebase from "firebase/compat/app";
 export {firebase}
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDmik3S723nZR-fFM70ilaoAObfPCBKpGc",
@@ -33,7 +34,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-const auth = getAuth(app);
+export const auth = getAuth(app);
+export const storage = getStorage(app)
 
 onAuthStateChanged(auth, (user: FirebaseUser | null) => {
   if (user) {
@@ -51,16 +53,17 @@ interface User {
   first_name: string;
   surname: string;
   city: string;
+  profile_picture?: string | null
 }
 
 interface DJ extends User {
   genre: string;
-  Occasions: string;
-  Price: number;  
-  Description: string;
+  occasions: string;
+  price: number;  
+  description: string;
 }
 
-export function createUser(email: string, password:string , newUser: {email?: string, password?: string, city?: string, username?: string}) {
+export function createUser(email: string, password:string , newUser: {email?: string, password?: string, city?: string, username?: string, profile_picture?: string | null | undefined}) {
   
   return createUserWithEmailAndPassword(auth, email, password)
      .then(async (userCredential) => {
@@ -84,7 +87,7 @@ export function createUser(email: string, password:string , newUser: {email?: st
  }
  
 
-export function createDJ(email: string, password:string , newDJ: {email?: string, password?: string, city?: string, username?: string, genre?: string, occasions?: string, price?: number, description?: string}) {
+export function createDJ(email: string, password:string , newDJ: {email?: string, password?: string, city?: string, username?: string, genre?: string, occasions?: string, price?: number, description?: string, profile_picture?: string}) {
   
   return createUserWithEmailAndPassword(auth, email, password)
      .then(async (userCredential) => {
