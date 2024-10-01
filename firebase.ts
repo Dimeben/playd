@@ -5,10 +5,12 @@ import {
   doc,
   setDoc,
   getDoc,
+  addDoc,
   query,
   getDocs,
   DocumentData,
   QuerySnapshot,
+  where,
 } from "firebase/firestore";
 
 import {
@@ -19,8 +21,8 @@ import {
   User as FirebaseUser,
 } from "firebase/auth";
 import firebase from "firebase/compat/app";
-export {firebase}
-import { getStorage } from 'firebase/storage';
+export { firebase };
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDmik3S723nZR-fFM70ilaoAObfPCBKpGc",
@@ -35,8 +37,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
-export const storage = getStorage(app)
+export const storage = getStorage(app);
 
+const usersRef = collection(db, "users");
+const djRef = collection(db, "djs");
+const feedbackRef = collection(db, "feedback");
+const bookingsRef = collection(db, "bookings");
 
 onAuthStateChanged(auth, (user: FirebaseUser | null) => {
   if (user) {
@@ -51,49 +57,87 @@ interface User {
   first_name: string;
   surname: string;
   city: string;
-  profile_picture?: string | null
+  profile_picture?: string | null;
 }
 
 interface DJ extends User {
   genres: string[];
-  occasions: string[]
-  price: number;  
+  occasions: string[];
+  price: number;
   description: string;
 }
 
-export function createUser(email: string, password:string , newUser: {email?: string, password?: string, city?: string, username?: string, profile_picture?: string | null | undefined}) {
-  
-  return createUserWithEmailAndPassword(auth, email, password)
-     .then(async (userCredential) => {
- 
-       const user = userCredential.user;
-       console.log(user.email)
-       console.log("Signed up: ", user.uid);
- 
-       const usersRef = collection(db, "users");
-       await setDoc(doc(usersRef, user.uid), newUser);
-       
-       const userDocRef = doc(usersRef, user.uid);
-       const userDocSnapshot = await getDoc(userDocRef);
-       return userDocSnapshot.data()
-     })
-     .catch((error) => {
-       const errorCode = error.code;
-       const errorMessage = error.message;
-       console.error("Error: ", errorCode, errorMessage);
-     });
- }
- 
+interface Feedback {
+  author: string;
+  body: string;
+  booking_id: string;
+  date: Date;
+  dj: string;
+  stars: number;
+  title: string;
+}
 
-export function createDJ(email: string, password:string , newDJ: {email?: string, password?: string, city?: string, username?: string, genres?: string[], occasions?: string[], price?: number, description?: string, profile_picture?:  string | null | undefined}) {
-  
+interface Bookings {
+  client: string;
+  comments: string;
+  event_details: string;
+  date: Date;
+  dj: string;
+  location: string;
+  occasion: string;
+}
+
+export function createUser(
+  email: string,
+  password: string,
+  newUser: {
+    email?: string;
+    password?: string;
+    city?: string;
+    username?: string;
+    profile_picture?: string | null | undefined;
+  }
+) {
   return createUserWithEmailAndPassword(auth, email, password)
     .then(async (userCredential) => {
       const user = userCredential.user;
       console.log(user.email);
       console.log("Signed up: ", user.uid);
 
-      const djRef = collection(db, "djs");
+      await setDoc(doc(usersRef, user.uid), newUser);
+
+      const userDocRef = doc(usersRef, user.uid);
+      const userDocSnapshot = await getDoc(userDocRef);
+      return userDocSnapshot.data();
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error("Error: ", errorCode, errorMessage);
+    });
+}
+
+export function createDJ(
+  email: string,
+  password: string,
+  newDJ: {
+    email?: string;
+    password?: string;
+    city?: string;
+    username?: string;
+    genres?: string[];
+    occasions?: string[];
+    price?: number;
+    description?: string;
+    profile_picture?: string | null | undefined;
+  }
+) {
+  return createUserWithEmailAndPassword(auth, email, password)
+    .then(async (userCredential) => {
+      const user = userCredential.user;
+      console.log(user.email);
+      console.log("Signed up: ", user.uid);
+
       await setDoc(doc(djRef, user.uid), newDJ);
 
       const djDocRef = doc(djRef, user.uid);
@@ -111,7 +155,7 @@ export function signIn(email: string, password: string) {
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
-      console.log("Signed in: ", user.uid);
+      console.log("Signed in: ", user);
     })
     .catch((error) => {
       const errorCode = error.code;
@@ -130,11 +174,107 @@ export async function getAllDjs() {
   return djsArray;
 }
 
-//   const q1 = query(collection(db, "users"));
-//   const usersArray: User[] = [];
-//   const querySnapshot1: QuerySnapshot<DocumentData> = await getDocs(q1);
-//   querySnapshot1.forEach((doc) => {
-//     usersArray.push(doc.data() as User);
+export async function getFeedbackByDj(loggedInDj: string) {
+  const feedbackQuery = query(feedbackRef, where("dj", "==", loggedInDj));
+  const feedbackArray: Feedback[] = [];
+  const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
+    feedbackQuery
+  );
+  querySnapshot.forEach((doc) => {
+    feedbackArray.push(doc.data() as Feedback);
+  });
+  return feedbackArray;
+}
+
+export async function getBookingByDj(loggedInDj: string) {
+  const bookingsQuery = query(bookingsRef, where("dj", "==", loggedInDj));
+  const bookingArray: Bookings[] = [];
+  const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
+    bookingsQuery
+  );
+  querySnapshot.forEach((doc) => {
+    bookingArray.push(doc.data() as Bookings);
+  });
+  return bookingArray;
+}
+
+export async function getBookingByUser(loggedInUser: string) {
+  const bookingsQuery = query(bookingsRef, where("client", "==", loggedInUser));
+  const bookingArray: Bookings[] = [];
+  const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
+    bookingsQuery
+  );
+  querySnapshot.forEach((doc) => {
+    bookingArray.push(doc.data() as Bookings);
+  });
+  return bookingArray;
+}
+
+export async function getUserById(userId: string) {
+  const singleUserRef = doc(db, "users", userId);
+  const docSnap = await getDoc(singleUserRef);
+
+  if (docSnap.exists()) {
+    return docSnap.data();
+  } else {
+    console.log("No such document!");
+  }
+}
+
+export async function getDjById(djId: string) {
+  const singleDjRef = doc(db, "djs", djId);
+  const docSnap = await getDoc(singleDjRef);
+
+  if (docSnap.exists()) {
+    return docSnap.data();
+  } else {
+    console.log("No such document!");
+  }
+}
+
+export async function createBooking(newBooking: {
+  client: string;
+  comments: string;
+  event_details: string;
+  date: Date;
+  dj: string;
+  location: string;
+  occasion: string;
+}) {
+  try {
+    await addDoc(bookingsRef, newBooking);
+  } catch (error) {
+    console.error("Error: Booking failed!");
+  }
+}
+
+export async function createFeedback(newFeedback: {
+  author: string;
+  body: string;
+  booking_id: string;
+  date: Date;
+  dj: string;
+  stars: number;
+  title: string;
+}) {
+  try {
+    await addDoc(feedbackRef, newFeedback);
+  } catch (error) {
+    console.error("Error: Feedback failed!");
+  }
+}
+
+// const updateRef = doc(db, "djs", "qFDY0PmT2UAWa8BWRfFP");
+
+// await updateDoc(updateRef, {
+//   city: "London",
+// })
+//   .then(async () => {
+//     const updateSnap = await getDoc(updateRef);
+//     console.log(updateSnap.data());
+//   })
+//   .catch((err) => {
+//     console.log(err);
 //   });
 
 // main().catch((err) => console.error(err));
