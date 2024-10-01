@@ -7,11 +7,11 @@ export default function RootLayout() {
     <Stack>
       <Stack.Screen
         name="(tabs)"
-        options={{ headerShown: false, href: null }}
+        options={{ headerShown: false}}
       />
       <Stack.Screen
         name="index"
-        options={{ title: "Dj Profile", href: null }}
+        options={{ title: "Dj Profile"}}
       />
 
       <Stack.Screen name="+not-found" />
