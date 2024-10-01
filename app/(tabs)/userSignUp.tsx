@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { createUser } from '../../firebase'; 
+import { firebase } from "../../firebase"
+import * as ImagePicker from "expo-image-picker"
+import * as FileSystem from 'expo-file-system'
+import { storage } from '../../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export default function UserSignUp() {
   const [username, setUsername] = useState('');
@@ -12,6 +17,67 @@ export default function UserSignUp() {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false); 
   const [showPassword, setShowPassword] = useState(false); 
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [image, setImage] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false)
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+
+  interface CreateUserParams {
+    email?: string;
+    password?: string;
+    city?: string;
+    username?: string;
+    profile_picture?: string | null;
+  }
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0]?.uri);
+    }
+  };
+
+  const uploadMedia = async () => {
+    setUploading(true);
+  
+    try {
+      if (!image) {
+        console.error('No image selected');
+        return;
+      }
+  
+      const { uri } = await FileSystem.getInfoAsync(image);
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.onload = () => {
+          resolve(xhr.response as Blob);
+        };
+        xhr.onerror = (e) => {
+          reject(new TypeError('Network request failed'));
+        };
+        xhr.responseType = 'blob';
+        xhr.open('GET', uri, true);
+        xhr.send(null);
+      });
+  
+      const filename = image.substring(image.lastIndexOf('/') + 1);
+      const imageRef = ref(storage, filename);
+      await uploadBytes(imageRef, blob);
+      setUploading(false);
+      const url = await getDownloadURL(imageRef);
+      setProfilePicture(url);
+      Alert.alert('Photo Uploaded');
+      setImage(null);
+    } catch (error) {
+      console.error(error);
+      setUploading(false);
+    }
+  };
 
   const clearForm = () => {
     setUsername('');
@@ -19,6 +85,7 @@ export default function UserSignUp() {
     setPassword('');
     setConfirmPassword('');
     setCity('');
+    setProfilePicture(null)
   };
 
   const handleUserRegister = async () => {
@@ -32,6 +99,7 @@ export default function UserSignUp() {
         username,
         email,
         city,
+        profile_picture: profilePicture,
       });
       
       clearForm();
@@ -59,6 +127,16 @@ export default function UserSignUp() {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>User Registration</Text>
+      <TouchableOpacity onPress={pickImage}>
+        <Text>Select an Image</Text>
+      </TouchableOpacity>
+      <View>
+        {image && <Image source={{ uri: image}}
+        style={{width: 300, height: 300}}/>} 
+        <TouchableOpacity onPress={uploadMedia}>
+          <Text>Upload Image</Text>
+        </TouchableOpacity>
+      </View>
       <TextInput
         style={styles.input}
         placeholder="Username"
