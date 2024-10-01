@@ -24,7 +24,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       console.log(
         "User State Changed:",
-        user.uid,
+        user?.uid,
         "Authenticated?",
         isAuthenticated
       ); // debugging
