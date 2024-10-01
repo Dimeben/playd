@@ -55,8 +55,8 @@ interface User {
 }
 
 interface DJ extends User {
-  genre: string;
-  occasions: string;
+  genres: string[];
+  occasions: string[]
   price: number;  
   description: string;
 }
@@ -85,7 +85,7 @@ export function createUser(email: string, password:string , newUser: {email?: st
  }
  
 
-export function createDJ(email: string, password:string , newDJ: {email?: string, password?: string, city?: string, username?: string, genre?: string, occasions?: string, price?: number, description?: string, profile_picture?:  string | null | undefined}) {
+export function createDJ(email: string, password:string , newDJ: {email?: string, password?: string, city?: string, username?: string, genres?: string[], occasions?: string[], price?: number, description?: string, profile_picture?:  string | null | undefined}) {
   
   return createUserWithEmailAndPassword(auth, email, password)
     .then(async (userCredential) => {

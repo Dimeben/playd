@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Image } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { createDJ } from '../../firebase';
-import * as ImagePicker from "expo-image-picker"
-import * as FileSystem from 'expo-file-system'
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from 'expo-file-system';
 import { storage } from '../../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
@@ -13,26 +13,26 @@ export default function DjSignUp() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [city, setCity] = useState('');
-  const [genre, setGenre] = useState('');
-  const [occasions, setOccasions] = useState('');
+  const [genre, setGenre] = useState(''); // single input for genre
+  const [genres, setGenres] = useState<string[]>([]); // array for multiple genres
+  const [occasion, setOccasion] = useState(''); // single input for occasion
+  const [occasions, setOccasions] = useState<string[]>([]); // array for multiple occasions
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false); 
-  const [showPassword, setShowPassword] = useState(false); 
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); 
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [image, setImage] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false)
+  const [uploading, setUploading] = useState(false);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
   interface CreateDJParams {
     username: string;
-    first_name: string;
-    surname: string;
     city: string;
-    profile_picture?: string | null
-    genre: string;
-    occasions: string;
-    price: number;  
+    profile_picture?: string | null;
+    genres: string[]; 
+    occasions: string[];
+    price: number;
     description: string;
   }
 
@@ -51,13 +51,13 @@ export default function DjSignUp() {
 
   const uploadMedia = async () => {
     setUploading(true);
-  
+
     try {
       if (!image) {
         console.error('No image selected');
         return;
       }
-  
+
       const { uri } = await FileSystem.getInfoAsync(image);
       const blob = await new Promise<Blob>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -71,7 +71,7 @@ export default function DjSignUp() {
         xhr.open('GET', uri, true);
         xhr.send(null);
       });
-  
+
       const filename = image.substring(image.lastIndexOf('/') + 1);
       const imageRef = ref(storage, filename);
       await uploadBytes(imageRef, blob);
@@ -93,7 +93,9 @@ export default function DjSignUp() {
     setConfirmPassword('');
     setCity('');
     setGenre('');
-    setOccasions('');
+    setGenres([]);
+    setOccasion('');
+    setOccasions([]);
     setPrice('');
     setDescription('');
   };
@@ -107,16 +109,15 @@ export default function DjSignUp() {
     try {
       await createDJ(email, password, {
         username,
-        email,
         city,
-        genre,
+        genres,
         occasions,
         price: parseFloat(price),
         description,
         profile_picture: profilePicture,
       });
-      
-      clearForm();     
+
+      clearForm();
       setShowSuccessMessage(true);
 
       setTimeout(() => {
@@ -125,6 +126,20 @@ export default function DjSignUp() {
     } catch (error) {
       const errorMessage = (error as Error).message || 'An error occurred during registration.';
       Alert.alert('Error', errorMessage);
+    }
+  };
+
+  const addGenre = () => {
+    if (genre && !genres.includes(genre)) {
+      setGenres([...genres, genre]);
+      setGenre('');
+    }
+  };
+
+  const addOccasion = () => {
+    if (occasion && !occasions.includes(occasion)) {
+      setOccasions([...occasions, occasion]);
+      setOccasion('');
     }
   };
 
@@ -143,8 +158,7 @@ export default function DjSignUp() {
         <Text>Select an Image</Text>
       </TouchableOpacity>
       <View>
-        {image && <Image source={{ uri: image}}
-        style={{width: 300, height: 300}}/>} 
+        {image && <Image source={{ uri: image }} style={{ width: 300, height: 300 }} />}
         <TouchableOpacity onPress={uploadMedia}>
           <Text>Upload Image</Text>
         </TouchableOpacity>
@@ -167,18 +181,37 @@ export default function DjSignUp() {
         value={city}
         onChangeText={setCity}
       />
+      
       <TextInput
         style={styles.input}
         placeholder="Genre"
         value={genre}
         onChangeText={setGenre}
       />
+      <Button title="Add Genre" onPress={addGenre} />
+
+      <View>
+        <Text>Genres:</Text>
+        {genres.map((g, index) => (
+          <Text key={index}>{g}</Text>
+        ))}
+      </View>
+
       <TextInput
         style={styles.input}
-        placeholder="Occasions"
-        value={occasions}
-        onChangeText={setOccasions}
+        placeholder="Occasion"
+        value={occasion}
+        onChangeText={setOccasion}
       />
+      <Button title="Add Occasion" onPress={addOccasion} />
+
+      <View>
+        <Text>Occasions:</Text>
+        {occasions.map((o, index) => (
+          <Text key={index}>{o}</Text>
+        ))}
+      </View>
+
       <TextInput
         style={styles.input}
         placeholder="Price"
@@ -192,7 +225,7 @@ export default function DjSignUp() {
         value={description}
         onChangeText={setDescription}
       />
-      
+
       <View style={styles.passwordContainer}>
         <TextInput
           style={styles.passwordInput}
