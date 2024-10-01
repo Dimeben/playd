@@ -9,32 +9,40 @@ import {
   ScrollView,
   SafeAreaView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { db } from "../../firebase";
 import { useLocalSearchParams } from "expo-router";
 import { doc, getDoc } from "firebase/firestore";
 import FeedbackForSingleDj from "../../components/FeedbackForSingleDj";
-import { getAuth } from "firebase/auth";
-
+import { AuthContext } from "@/contexts/AuthContext";
 const DjProfilePage = () => {
-  const params = useLocalSearchParams();
-  const auth = getAuth();
-  const docRef = doc(
-    db,
-    "djs",
-    `${
-      auth.currentUser !== null ? auth.currentUser.uid : "30ooJWJYBoNFJkCugnOE"
-    }`
-  );
+  // const user = useNavigationState((state) => {
+  //   console.log(state.routes[state.index]);
+  // });
+  const { userId } = useContext(AuthContext);
+
+  // const docRef = doc(
+  //   db,
+  //   "djs",
+  //   `${
+  //     auth?.currentUser !== null
+  //       ? auth?.currentUser.uid
+  //       : "30ooJWJYBoNFJkCugnOE"
+  //   }`
+  // );
+
+  const docRef = doc(db, "djs", userId);
   const [dj, setDj] = useState({});
   useEffect(() => {
     const getDjData = () => {
-      getDoc(docRef).then((data) => {
-        const snapDoc = data.data();
-        if (snapDoc) {
-          setDj(snapDoc);
-        } else console.log("Doesnt exist");
-      });
+      getDoc(docRef)
+        .then((data) => {
+          const snapDoc = data.data();
+          if (snapDoc) {
+            setDj(snapDoc);
+          } else console.log("Dj doesn't exist");
+        })
+        .catch((err) => console.log(err.message));
     };
     getDjData();
   }, []);
@@ -54,9 +62,10 @@ const DjProfilePage = () => {
           <Text>First Name: {dj.first_name}</Text>
           <Text>Surname: {dj.surname}</Text>
           <Text>City: {dj.city}</Text>
-          <Text>Genre: {dj.genre}</Text>
-          <Text>Occasions: {dj.occasion}</Text>
+          <Text>Genre: {dj.genres?.join(", ")}</Text>
+          <Text>Occasions: {dj.occasion?.join(", ")}</Text>
           <Text>Price: {dj.price}</Text>
+          <Text>Rating: {dj.rating}</Text>
           <Text>Description: {dj.description}</Text>
         </Pressable>
       </View>

@@ -38,7 +38,7 @@ const FeedbackForSingleDj = ({ dj }) => {
       {dj.username === feedbackList.username ? (
         feedbackList.map((feedback) => {
           return (
-            <Pressable>
+            <Pressable key={feedback.id}>
               <Text>Author: {feedback.author}</Text>
               <Text>Dj: {feedback.dj}</Text>
               <Text>Stars: {feedback.first_name}</Text>
