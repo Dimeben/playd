@@ -14,11 +14,19 @@ import { db } from "../../firebase";
 import { useLocalSearchParams } from "expo-router";
 import { doc, getDoc } from "firebase/firestore";
 import FeedbackForSingleDj from "../../components/FeedbackForSingleDj";
-const DjProfilePage = () => {
-  const { id } = useLocalSearchParams();
-  const docRef = doc(db, "djs", `CN4PMi9efQHuTVX6N09I`);
-  const [dj, setDj] = useState({});
+import { getAuth } from "firebase/auth";
 
+const DjProfilePage = () => {
+  const params = useLocalSearchParams();
+  const auth = getAuth();
+  const docRef = doc(
+    db,
+    "djs",
+    `${
+      auth.currentUser !== null ? auth.currentUser.uid : "30ooJWJYBoNFJkCugnOE"
+    }`
+  );
+  const [dj, setDj] = useState({});
   useEffect(() => {
     const getDjData = () => {
       getDoc(docRef).then((data) => {
@@ -35,7 +43,6 @@ const DjProfilePage = () => {
     <View style={styles.container}>
       <SafeAreaView />
       <Text style={styles.heading}>{dj.username}</Text>
-
       <Image
         style={styles.image}
         source={{ uri: dj.profile_picture }}
@@ -48,30 +55,14 @@ const DjProfilePage = () => {
           <Text>Surname: {dj.surname}</Text>
           <Text>City: {dj.city}</Text>
           <Text>Genre: {dj.genre}</Text>
-          <Text>Occasions: {dj.occasions}</Text>
+          <Text>Occasions: {dj.occasion}</Text>
           <Text>Price: {dj.price}</Text>
           <Text>Description: {dj.description}</Text>
         </Pressable>
       </View>
       <View style={styles.card}>
         <Text style={styles.heading}>Feedback</Text>
-        {/* <FlatList
-          data={feedbackData}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => {
-            return (
-              <Pressable>
-                <ScrollView>
-                  <Text>Username: {item.username}</Text>
-                  <Text>Stars: {item.stars}</Text>
-                  <Text>Title: {item.title}</Text>
-                  <Text>{item.body}</Text>
-                </ScrollView>
-              </Pressable>
-            );
-          }}
-        /> */}
-        <FeedbackForSingleDj />
+        <FeedbackForSingleDj dj={dj} />
       </View>
     </View>
   );
