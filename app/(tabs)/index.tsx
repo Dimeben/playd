@@ -11,6 +11,8 @@ const Index = () => {
       <Link href="/(tabs)/manageBookings">Manage Bookings Screen</Link>
       <Link href="/(tabs)/search">Search Screen</Link>
       <Link href="/(tabs)/login">Login Screen</Link>
+      <Link href="/(tabs)/userSignUp">User Sign Up</Link>
+      <Link href="/(tabs)/djSignUp">Dj Sign Up</Link>
     </View>
   );
 };
