@@ -18,6 +18,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   deleteUser as firebaseDeleteUser,
+  signOut as firebaseSignOut,
 } from "firebase/auth";
 import { app, db, auth } from "./firebaseConfig";
 import { isUsernameTaken } from "./utils";
@@ -186,6 +187,20 @@ export function signIn(email: string, password: string) {
       console.error("Error: ", errorCode, errorMessage);
     });
 }
+
+export async function signOut() {
+  try {
+    if (!auth) {
+      throw new Error("Authentication instance is undefined.");
+    }
+    await firebaseSignOut(auth);
+    console.log("User signed out successfully.");
+  } catch (error) {
+    console.error("Error signing out: ", error);
+    throw error;
+  }
+}
+
 
 export async function getAllDjs() {
   const allDjs = query(collection(db, "djs"));
