@@ -12,6 +12,7 @@ import {
   QuerySnapshot,
   where,
   updateDoc,
+  Timestamp
 } from "firebase/firestore";
 
 import {
@@ -88,6 +89,7 @@ interface User {
 }
 
 interface DJ extends User {
+  id?: string;
   genres: string[];
   occasions: string[];
   price: number;
@@ -237,6 +239,24 @@ export async function getAllDjs() {
   return djsArray;
 }
 
+export async function getAllDjsList () {
+  const allDjs = query(collection(db, "djs"));
+  const djsArray: DJ[] = [];
+  const getAllDjsSnapshot: QuerySnapshot<DocumentData> = await getDocs(allDjs);
+
+  getAllDjsSnapshot.forEach((doc) => {
+    const data = doc.data() as DJ;
+    djsArray.push({
+      id: doc.id,
+      ...data,
+      genres: data.genres || [],
+    });
+  });
+
+  return djsArray;
+}
+
+
 export async function getFeedbackByDj(loggedInDj: string) {
   const feedbackQuery = query(feedbackRef, where("dj", "==", loggedInDj));
   const feedbackArray: Feedback[] = [];
@@ -305,9 +325,15 @@ export async function createBooking(newBooking: {
   occasion: string;
 }) {
   try {
-    await addDoc(bookingsRef, newBooking);
+
+    const bookingWithTimestamp = {
+      ...newBooking,
+      date: Timestamp.fromDate(newBooking.date),
+    };
+    await addDoc(bookingsRef, bookingWithTimestamp);
+    console.log("Booking created successfully!");
   } catch (error) {
-    console.error("Error: Booking failed!");
+    console.error("Error: Booking failed!", error);
   }
 }
 
