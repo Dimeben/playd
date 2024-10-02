@@ -21,10 +21,10 @@ import { app, db, auth } from "./firebaseConfig";
 import { isUsernameTaken } from "./utils";
 import { DJ, Feedback, Bookings } from "./types";
 
-const usersRef = collection(db, "users");
-const djRef = collection(db, "djs");
-const feedbackRef = collection(db, "feedback");
-const bookingsRef = collection(db, "bookings");
+export const usersRef = collection(db, "users");
+export const djRef = collection(db, "djs");
+export const feedbackRef = collection(db, "feedback");
+export const bookingsRef = collection(db, "bookings");
 
 export async function createUser(
   email: string,
