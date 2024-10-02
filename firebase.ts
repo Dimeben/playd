@@ -11,6 +11,7 @@ import {
   DocumentData,
   QuerySnapshot,
   where,
+  updateDoc,
 } from "firebase/firestore";
 
 import {
@@ -93,6 +94,8 @@ export function createUser(
   newUser: {
     email?: string;
     password?: string;
+    first_name?: string;
+    surname?: string;
     city?: string;
     username?: string;
     profile_picture?: string | null | undefined;
@@ -123,6 +126,8 @@ export function createDJ(
   newDJ: {
     email?: string;
     password?: string;
+    first_name?: string;
+    surname?: string;
     city?: string;
     username?: string;
     genres?: string[];
@@ -264,17 +269,39 @@ export async function createFeedback(newFeedback: {
   }
 }
 
-// const updateRef = doc(db, "djs", "qFDY0PmT2UAWa8BWRfFP");
+export async function patchDj(djId: string, patchedDJ: {
+    city?: string;
+    username?: string;
+    genres?: string[];
+    occasions?: string[];
+    price?: number;
+    description?: string;
+    profile_picture?: string | null | undefined,
+}) {
+   const updateDjRef = doc(db, "djs", djId)
+   await updateDoc(updateDjRef, patchedDJ).then(async () => {
+    const updateSnap = await getDoc(updateDjRef)
+    return updateSnap.data()
+   }).catch((err) => {
+    console.log(err)
+   })
+}
 
-// await updateDoc(updateRef, {
-//   city: "London",
-// })
-//   .then(async () => {
-//     const updateSnap = await getDoc(updateRef);
-//     console.log(updateSnap.data());
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
+export async function patchUser(userId: string, patchedUser: {
+  first_name?: string,
+  surname?: string,
+  city?: string,
+  username?: string,
+  profile_picture?: string | null | undefined,
+}) {
+   const updateUserRef = doc(db, "users", userId)
+   await updateDoc(updateUserRef, patchedUser).then(async () => {
+    const updateSnap = await getDoc(updateUserRef)
+    return updateSnap.data()
+   }).catch((err) => {
+    console.log(err)
+   })
+}
+
 
 // main().catch((err) => console.error(err));
