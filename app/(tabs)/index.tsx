@@ -8,6 +8,7 @@ const Index = () => {
       <Text>Index Screen</Text>
       <Link href="/">Home Screen</Link>
       <Link href="/(tabs)/profile">Profile Screen</Link>
+      <Link href="/(tabs)/djprofile">Dj Profile Screen</Link>
       <Link href="/(tabs)/manageBookings">Manage Bookings Screen</Link>
       <Link href="/(tabs)/search">Search Screen</Link>
       <Link href="/(tabs)/login">Login Screen</Link>

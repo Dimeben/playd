@@ -1,10 +1,8 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-
 export default function RootLayout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   return (
     <Tabs
       screenOptions={{
@@ -51,6 +49,15 @@ export default function RootLayout() {
               color={color}
               size={size}
             />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="djprofile"
+        options={{
+          tabBarLabel: "Dj Profile",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person-outline" color={color} size={size} />
           ),
         }}
       />
