@@ -20,6 +20,8 @@ import { storage } from "../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function DjSignUp() {
+  const [firstName, setFirstName] = useState("");
+  const [surname, setSurname] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,6 +41,8 @@ export default function DjSignUp() {
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
   interface CreateDJParams {
+    first_name: string;
+    surname: string; 
     username: string;
     city: string;
     profile_picture?: string | null;
@@ -99,6 +103,8 @@ export default function DjSignUp() {
   };
 
   const clearForm = () => {
+    setFirstName("");
+    setSurname("");
     setUsername("");
     setEmail("");
     setPassword("");
@@ -120,6 +126,8 @@ export default function DjSignUp() {
 
     try {
       await createDJ(email, password, {
+        first_name: firstName,
+        surname, 
         username,
         city,
         genres,
@@ -171,6 +179,21 @@ export default function DjSignUp() {
     >
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.header}>DJ Registration</Text>
+        
+        <TextInput
+          style={styles.input}
+          placeholder="First Name"
+          value={firstName}
+          onChangeText={setFirstName}
+        />
+        
+        <TextInput
+          style={styles.input}
+          placeholder="Surname"
+          value={surname}
+          onChangeText={setSurname}
+        />
+
         <TouchableOpacity onPress={pickImage}>
           <Text>Select an Image</Text>
         </TouchableOpacity>
@@ -291,41 +314,34 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 16,
-    backgroundColor: "#fff",
-    justifyContent: "center",
-    alignItems: "center",
+  },
+  input: {
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 12,
+    paddingHorizontal: 8,
   },
   header: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 16,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    padding: 10,
-    marginVertical: 5,
-    borderRadius: 5,
-    width: "100%",
+    marginBottom: 20,
   },
   passwordContainer: {
     flexDirection: "row",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginVertical: 5,
-    width: "100%",
+    marginBottom: 12,
   },
   passwordInput: {
     flex: 1,
-    padding: 10,
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    paddingHorizontal: 8,
   },
   successMessage: {
-    fontSize: 20,
+    fontSize: 18,
     color: "green",
-    textAlign: "center",
     marginBottom: 20,
   },
 });

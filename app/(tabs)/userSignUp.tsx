@@ -14,6 +14,8 @@ export default function UserSignUp() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [city, setCity] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [surname, setSurname] = useState('');
   const [showSuccessMessage, setShowSuccessMessage] = useState(false); 
   const [showPassword, setShowPassword] = useState(false); 
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -27,6 +29,8 @@ export default function UserSignUp() {
     city?: string;
     username?: string;
     profile_picture?: string | null;
+    first_name?: string;
+    surname?: string;
   }
 
   const pickImage = async () => {
@@ -85,7 +89,9 @@ export default function UserSignUp() {
     setPassword('');
     setConfirmPassword('');
     setCity('');
-    setProfilePicture(null)
+    setFirstName('');
+    setSurname('');
+    setProfilePicture(null);
   };
 
   const handleUserRegister = async () => {
@@ -97,7 +103,8 @@ export default function UserSignUp() {
     try {
       await createUser(email, password, {
         username,
-        email,
+        first_name: firstName,
+        surname,
         city,
         profile_picture: profilePicture,
       });
@@ -137,6 +144,21 @@ export default function UserSignUp() {
           <Text>Upload Image</Text>
         </TouchableOpacity>
       </View>
+      
+      <TextInput
+        style={styles.input}
+        placeholder="First Name"
+        value={firstName}
+        onChangeText={setFirstName}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Surname"
+        value={surname}
+        onChangeText={setSurname}
+      />
+
       <TextInput
         style={styles.input}
         placeholder="Username"

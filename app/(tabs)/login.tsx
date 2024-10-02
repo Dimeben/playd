@@ -32,10 +32,16 @@ export default function Login() {
       const user = userCredential.user;
 
       router.push("/(tabs)/profile");
+      clearForm()
     } catch (error) {
       Alert.alert("Login Error", "Invalid email or password");
     }
   };
+
+  const clearForm = () => {
+    setEmail("");
+    setPassword("");
+  }
 
   return (
     <View style={styles.container}>
