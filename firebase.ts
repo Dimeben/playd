@@ -17,15 +17,18 @@ import {
 import {
   getAuth,
   getReactNativePersistence,
+  inMemoryPersistence,
   initializeAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   User as FirebaseUser,
+  Auth,
 } from "firebase/auth";
 import firebase from "firebase/compat/app";
 export { firebase };
 import { getStorage } from "firebase/storage";
+import { Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const firebaseConfig = {
@@ -40,9 +43,26 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-export const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(AsyncStorage),
-});
+
+export let auth: Auth | undefined;
+
+const isReactNative = () => {
+  return Platform.OS === "ios" || Platform.OS === "android";
+};
+
+if (isReactNative()) {
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage),
+  });
+} else {
+  auth = initializeAuth(app, {
+    persistence: inMemoryPersistence,
+  });
+}
+
+// export const auth = initializeAuth(app, {
+//   persistence: getReactNativePersistence(AsyncStorage),
+// });
 export const storage = getStorage(app);
 
 const usersRef = collection(db, "users");
@@ -274,39 +294,48 @@ export async function createFeedback(newFeedback: {
   }
 }
 
-export async function patchDj(djId: string, patchedDJ: {
+export async function patchDj(
+  djId: string,
+  patchedDJ: {
     city?: string;
     username?: string;
     genres?: string[];
     occasions?: string[];
     price?: number;
     description?: string;
-    profile_picture?: string | null | undefined,
-}) {
-   const updateDjRef = doc(db, "djs", djId)
-   await updateDoc(updateDjRef, patchedDJ).then(async () => {
-    const updateSnap = await getDoc(updateDjRef)
-    return updateSnap.data()
-   }).catch((err) => {
-    console.log(err)
-   })
+    profile_picture?: string | null | undefined;
+  }
+) {
+  const updateDjRef = doc(db, "djs", djId);
+  await updateDoc(updateDjRef, patchedDJ)
+    .then(async () => {
+      const updateSnap = await getDoc(updateDjRef);
+      return updateSnap.data();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
-export async function patchUser(userId: string, patchedUser: {
-  first_name?: string,
-  surname?: string,
-  city?: string,
-  username?: string,
-  profile_picture?: string | null | undefined,
-}) {
-   const updateUserRef = doc(db, "users", userId)
-   await updateDoc(updateUserRef, patchedUser).then(async () => {
-    const updateSnap = await getDoc(updateUserRef)
-    return updateSnap.data()
-   }).catch((err) => {
-    console.log(err)
-   })
+export async function patchUser(
+  userId: string,
+  patchedUser: {
+    first_name?: string;
+    surname?: string;
+    city?: string;
+    username?: string;
+    profile_picture?: string | null | undefined;
+  }
+) {
+  const updateUserRef = doc(db, "users", userId);
+  await updateDoc(updateUserRef, patchedUser)
+    .then(async () => {
+      const updateSnap = await getDoc(updateUserRef);
+      return updateSnap.data();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
-
 
 // main().catch((err) => console.error(err));
