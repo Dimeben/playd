@@ -50,7 +50,10 @@ export default function DjSignUp() {
     occasions: string[];
     price: number;
     description: string;
+    rating: number;
   }
+
+  const rating = 0
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -135,6 +138,7 @@ export default function DjSignUp() {
         price: parseFloat(price),
         description,
         profile_picture: profilePicture,
+        rating,
       });
 
       clearForm();

@@ -92,6 +92,7 @@ interface DJ extends User {
   occasions: string[];
   price: number;
   description: string;
+  rating: number;
 }
 
 interface Feedback {
@@ -176,6 +177,7 @@ export async function createDJ(
     price?: number;
     description?: string;
     profile_picture?: string | null | undefined;
+    rating: number;
   }
 ) {
   try {
