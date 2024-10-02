@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Image } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { createBooking } from "@/firebase";
-import moment from "moment"; // Import moment.js for better date handling
+import moment from "moment"; 
 
 const BookDj = () => {
   const router = useRouter();
@@ -19,18 +19,17 @@ const BookDj = () => {
     comments: "",
     event_details: "",
     date: "",
-    time: "", // New field for time
+    time: "", 
     location: "",
     occasion: "",
     dj: selectedDj?.username || "",
   });
 
-  // Function to format the date to dd/mm/yyyy with auto "/" insertion
   const handleDateInput = (text: string) => {
     const cleanedText = text.replace(/\D/g, "");
     let formattedText = cleanedText;
 
-    // Add "/" after day and month
+    
     if (cleanedText.length >= 3) {
       formattedText = cleanedText.slice(0, 2) + "/" + cleanedText.slice(2);
     }
@@ -41,7 +40,6 @@ const BookDj = () => {
     setNewBooking({ ...newBooking, date: formattedText });
   };
 
-  // Function to handle time input (HH:mm)
   const handleTimeInput = (text: string) => {
     const cleanedText = text.replace(/\D/g, "");
     let formattedText = cleanedText;
@@ -55,7 +53,7 @@ const BookDj = () => {
 
   const handleBookingSubmit = () => {
     try {
-      // Validate and format the date and time
+
       const [day, month, year] = newBooking.date.split("/");
       const formattedDate = moment(`${year}-${month}-${day}`, "YYYY-MM-DD");
 
@@ -70,12 +68,12 @@ const BookDj = () => {
         return;
       }
 
-      // Combine date and time into a single Date object
+    
       const combinedDateTime = moment(`${newBooking.date} ${newBooking.time}`, "DD/MM/YYYY HH:mm").toDate();
 
       const bookingWithDateTime = {
         ...newBooking,
-        date: combinedDateTime, // The combined date and time
+        date: combinedDateTime, 
       };
 
       createBooking(bookingWithDateTime);
@@ -124,16 +122,16 @@ const BookDj = () => {
         style={styles.input}
         placeholder="Event Date (dd/mm/yyyy)"
         value={newBooking.date}
-        onChangeText={handleDateInput} // Use the custom date handler
-        maxLength={10} // Limit to dd/mm/yyyy format
+        onChangeText={handleDateInput} 
+        maxLength={10} 
         keyboardType="numeric"
       />
       <TextInput
         style={styles.input}
         placeholder="Event Time (HH:mm)"
-        value={newBooking.time} // Time field
+        value={newBooking.time} 
         onChangeText={handleTimeInput}
-        maxLength={5} // Limit to HH:mm format
+        maxLength={5} 
         keyboardType="numeric"
       />
       <TextInput
