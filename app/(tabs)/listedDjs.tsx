@@ -4,6 +4,7 @@ import { Picker } from "@react-native-picker/picker";
 import { getAllDjsList } from "../../firebase";
 import { useRouter } from "expo-router"; 
 import { ScrollView } from "react-native-gesture-handler";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 interface DJ {
   id?: string;
@@ -124,7 +125,7 @@ const DjList = () => {
   }
 
   return (
-    <ScrollView>
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <View style={styles.container}>
       <Text style={styles.header}>Filter DJs By:</Text>
 
@@ -177,7 +178,7 @@ const DjList = () => {
         contentContainerStyle={styles.listContainer}
       />
     </View>
-    </ScrollView>
+    </GestureHandlerRootView>
   );
 };
 
