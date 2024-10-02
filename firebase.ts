@@ -30,6 +30,7 @@ export { firebase };
 import { getStorage } from "firebase/storage";
 import { Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import profile from "./app/(tabs)/profile";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDmik3S723nZR-fFM70ilaoAObfPCBKpGc",
@@ -132,10 +133,18 @@ export async function createUser(
   }
 ) {
   try {
+    if (!auth) {
+      throw new Error("Authentication instance is undefined.");
+    }
     const usernameExists = await isUsernameTaken(newUser.username!, usersRef);
     if (usernameExists) {
       console.log(usernameExists, "Username Exists")
       throw new Error('Username is already taken.');
+    }
+
+    const defaultProfilePicture = "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/DJ-1.jpg?alt=media&token=b112f41e-5c50-44b7-b0ce-45240bef1cec";
+    if (!newUser.profile_picture) {
+      newUser.profile_picture = defaultProfilePicture;
     }
 
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -170,9 +179,17 @@ export async function createDJ(
   }
 ) {
   try {
+    if (!auth) {
+      throw new Error("Authentication instance is undefined.");
+    }
     const usernameExists = await isUsernameTaken(newDJ.username!, djRef);
     if (usernameExists) {
       throw new Error('Username is already taken.');
+    }
+
+    const defaultProfilePicture = "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/DJ-1.jpg?alt=media&token=b112f41e-5c50-44b7-b0ce-45240bef1cec";
+    if (!newDJ.profile_picture) {
+      newDJ.profile_picture = defaultProfilePicture;
     }
 
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -193,6 +210,9 @@ export async function createDJ(
 }
 
 export function signIn(email: string, password: string) {
+  if (!auth) {
+    throw new Error("Authentication instance is undefined.");
+  }
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
