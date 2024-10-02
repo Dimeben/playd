@@ -93,12 +93,17 @@ interface Bookings {
   occasion: string;
 }
 
-export function createUser(
+async function isUsernameTaken(username: string, ref: any): Promise<boolean> {
+  const q = query(ref, where("username", "==", username));
+  const querySnapshot = await getDocs(q);
+  console.log(querySnapshot, "Query Snapshot")
+  return !querySnapshot.empty;
+}
+
+export async function createUser(
   email: string,
   password: string,
   newUser: {
-    email?: string;
-    password?: string;
     first_name?: string;
     surname?: string;
     city?: string;
@@ -106,31 +111,33 @@ export function createUser(
     profile_picture?: string | null | undefined;
   }
 ) {
-  return createUserWithEmailAndPassword(auth, email, password)
-    .then(async (userCredential) => {
-      const user = userCredential.user;
-      console.log(user.email);
-      console.log("Signed up: ", user.uid);
+  try {
+    const usernameExists = await isUsernameTaken(newUser.username!, usersRef);
+    if (usernameExists) {
+      console.log(usernameExists, "Username Exists")
+      throw new Error('Username is already taken.');
+    }
 
-      await setDoc(doc(usersRef, user.uid), newUser);
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-      const userDocRef = doc(usersRef, user.uid);
-      const userDocSnapshot = await getDoc(userDocRef);
-      return userDocSnapshot.data();
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.error("Error: ", errorCode, errorMessage);
-    });
+    console.log("Signed up: ", user.uid);
+
+    await setDoc(doc(usersRef, user.uid), newUser);
+    const userDocRef = doc(usersRef, user.uid);
+    const userDocSnapshot = await getDoc(userDocRef);
+    return userDocSnapshot.data();
+
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
 }
 
-export function createDJ(
+export async function createDJ(
   email: string,
   password: string,
   newDJ: {
-    email?: string;
-    password?: string;
     first_name?: string;
     surname?: string;
     city?: string;
@@ -142,23 +149,27 @@ export function createDJ(
     profile_picture?: string | null | undefined;
   }
 ) {
-  return createUserWithEmailAndPassword(auth, email, password)
-    .then(async (userCredential) => {
-      const user = userCredential.user;
-      console.log(user.email);
-      console.log("Signed up: ", user.uid);
+  try {
+    const usernameExists = await isUsernameTaken(newDJ.username!, djRef);
+    if (usernameExists) {
+      throw new Error('Username is already taken.');
+    }
 
-      await setDoc(doc(djRef, user.uid), newDJ);
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-      const djDocRef = doc(djRef, user.uid);
-      const djDocSnapshot = await getDoc(djDocRef);
-      return djDocSnapshot.data();
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.error("Error: ", errorCode, errorMessage);
-    });
+    console.log("Signed up: ", user.uid);
+
+
+    await setDoc(doc(djRef, user.uid), newDJ);
+    const djDocRef = doc(djRef, user.uid);
+    const djDocSnapshot = await getDoc(djDocRef);
+    return djDocSnapshot.data();
+
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
 }
 
 export function signIn(email: string, password: string) {
