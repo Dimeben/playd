@@ -11,15 +11,17 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { db } from "../../firebase";
-import { useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
 import { doc, getDoc } from "firebase/firestore";
 import FeedbackForSingleDj from "../../components/FeedbackForSingleDj";
 import { AuthContext } from "@/contexts/AuthContext";
+import { getAuth } from "firebase/auth";
+
 const DjProfilePage = () => {
   // const user = useNavigationState((state) => {
   //   console.log(state.routes[state.index]);
   // });
-  const { userId } = useContext(AuthContext);
+  const { isAuthenticated, userId, username } = useContext(AuthContext);
 
   // const docRef = doc(
   //   db,
@@ -30,51 +32,67 @@ const DjProfilePage = () => {
   //       : "30ooJWJYBoNFJkCugnOE"
   //   }`
   // );
+  if (isAuthenticated) {
+    const docRef = doc(
+      db,
+      "djs",
+      `${userId != null ? userId : "30ooJWJYBoNFJkCugnOE"}`
+    );
+    const [dj, setDj] = useState({});
+    useEffect(() => {
+      const getDjData = () => {
+        getDoc(docRef)
+          .then((data) => {
+            const snapDoc = data.data();
+            if (snapDoc) {
+              setDj(snapDoc);
+            } else console.log("Dj doesn't exist");
+          })
+          .catch((err) => console.log(err.message));
+      };
+      getDjData();
+    }, [dj]);
 
-  const docRef = doc(db, "djs", userId);
-  const [dj, setDj] = useState({});
-  useEffect(() => {
-    const getDjData = () => {
-      getDoc(docRef)
-        .then((data) => {
-          const snapDoc = data.data();
-          if (snapDoc) {
-            setDj(snapDoc);
-          } else console.log("Dj doesn't exist");
-        })
-        .catch((err) => console.log(err.message));
-    };
-    getDjData();
-  }, []);
-
-  return (
-    <View style={styles.container}>
-      <SafeAreaView />
-      <Text style={styles.heading}>{dj.username}</Text>
-      <Image
-        style={styles.image}
-        source={{ uri: dj.profile_picture }}
-        contentFit="cover"
-      />
-      <View style={styles.card}>
-        <Pressable>
-          <Text>Username: {dj.username}</Text>
-          <Text>First Name: {dj.first_name}</Text>
-          <Text>Surname: {dj.surname}</Text>
-          <Text>City: {dj.city}</Text>
-          <Text>Genre: {dj.genres?.join(", ")}</Text>
-          <Text>Occasions: {dj.occasion?.join(", ")}</Text>
-          <Text>Price: {dj.price}</Text>
-          <Text>Rating: {dj.rating}</Text>
-          <Text>Description: {dj.description}</Text>
-        </Pressable>
+    return (
+      <View style={styles.container}>
+        <SafeAreaView />
+        <Text style={styles.heading}>{dj.username}</Text>
+        <Image
+          style={styles.image}
+          source={{
+            uri:
+              dj.profile_picture != null
+                ? dj.profile_picture
+                : "https://www.shutterstock.com/image-photo/zhangjiajie-national-forest-park-unesco-260nw-2402891639.jpg",
+          }}
+          contentFit="cover"
+        />
+        <View style={styles.card}>
+          <Pressable>
+            <Text>Username: {dj.username}</Text>
+            <Text>First Name: {dj.first_name}</Text>
+            <Text>Surname: {dj.surname}</Text>
+            <Text>City: {dj.city}</Text>
+            <Text>Genre: {dj.genres?.join(", ")}</Text>
+            <Text>Occasions: {dj.occasion?.join(", ")}</Text>
+            <Text>Price: {dj.price}</Text>
+            <Text>Rating: {dj.rating}</Text>
+            <Text>Description: {dj.description}</Text>
+          </Pressable>
+        </View>
+        <View style={styles.card}>
+          <Text style={styles.heading}>Feedback</Text>
+          <FeedbackForSingleDj dj={dj} />
+        </View>
       </View>
-      <View style={styles.card}>
-        <Text style={styles.heading}>Feedback</Text>
-        <FeedbackForSingleDj dj={dj} />
-      </View>
-    </View>
-  );
+    );
+  } else
+    return (
+      <SafeAreaView>
+        <Text style={styles.loginMessage}>You must login first</Text>
+        <Link href="/(tabs)/login">Login Screen</Link>
+      </SafeAreaView>
+    );
 };
 
 export default DjProfilePage;
@@ -113,6 +131,12 @@ const styles = StyleSheet.create({
     }),
   },
   heading: {
-    fontSize: "30%",
+    fontSize: 30,
+  },
+  loginMessage: {
+    fontSize: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 30,
   },
 });

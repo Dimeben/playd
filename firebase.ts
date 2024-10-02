@@ -15,6 +15,8 @@ import {
 
 import {
   getAuth,
+  getReactNativePersistence,
+  initializeAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -23,6 +25,7 @@ import {
 import firebase from "firebase/compat/app";
 export { firebase };
 import { getStorage } from "firebase/storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDmik3S723nZR-fFM70ilaoAObfPCBKpGc",
@@ -36,7 +39,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-export const auth = getAuth(app);
+export const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
 export const storage = getStorage(app);
 
 const usersRef = collection(db, "users");

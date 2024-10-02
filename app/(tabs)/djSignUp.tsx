@@ -1,24 +1,33 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Image } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { createDJ } from '../../firebase';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+  Image,
+} from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { createDJ } from "../../firebase";
 import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from 'expo-file-system';
-import { storage } from '../../firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import * as FileSystem from "expo-file-system";
+import { storage } from "../../firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function DjSignUp() {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [city, setCity] = useState('');
-  const [genre, setGenre] = useState(''); // single input for genre
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [city, setCity] = useState("");
+  const [genre, setGenre] = useState(""); // single input for genre
   const [genres, setGenres] = useState<string[]>([]); // array for multiple genres
-  const [occasion, setOccasion] = useState(''); // single input for occasion
+  const [occasion, setOccasion] = useState(""); // single input for occasion
   const [occasions, setOccasions] = useState<string[]>([]); // array for multiple occasions
-  const [price, setPrice] = useState('');
-  const [description, setDescription] = useState('');
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -30,7 +39,7 @@ export default function DjSignUp() {
     username: string;
     city: string;
     profile_picture?: string | null;
-    genres: string[]; 
+    genres: string[];
     occasions: string[];
     price: number;
     description: string;
@@ -54,7 +63,7 @@ export default function DjSignUp() {
 
     try {
       if (!image) {
-        console.error('No image selected');
+        console.error("No image selected");
         return;
       }
 
@@ -65,20 +74,20 @@ export default function DjSignUp() {
           resolve(xhr.response as Blob);
         };
         xhr.onerror = (e) => {
-          reject(new TypeError('Network request failed'));
+          reject(new TypeError("Network request failed"));
         };
-        xhr.responseType = 'blob';
-        xhr.open('GET', uri, true);
+        xhr.responseType = "blob";
+        xhr.open("GET", uri, true);
         xhr.send(null);
       });
 
-      const filename = image.substring(image.lastIndexOf('/') + 1);
+      const filename = image.substring(image.lastIndexOf("/") + 1);
       const imageRef = ref(storage, filename);
       await uploadBytes(imageRef, blob);
       setUploading(false);
       const url = await getDownloadURL(imageRef);
       setProfilePicture(url);
-      Alert.alert('Photo Uploaded');
+      Alert.alert("Photo Uploaded");
       setImage(null);
     } catch (error) {
       console.error(error);
@@ -87,22 +96,22 @@ export default function DjSignUp() {
   };
 
   const clearForm = () => {
-    setUsername('');
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
-    setCity('');
-    setGenre('');
+    setUsername("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setCity("");
+    setGenre("");
     setGenres([]);
-    setOccasion('');
+    setOccasion("");
     setOccasions([]);
-    setPrice('');
-    setDescription('');
+    setPrice("");
+    setDescription("");
   };
 
   const handleDJRegister = async () => {
     if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match.');
+      Alert.alert("Error", "Passwords do not match.");
       return;
     }
 
@@ -124,22 +133,23 @@ export default function DjSignUp() {
         setShowSuccessMessage(false);
       }, 3000);
     } catch (error) {
-      const errorMessage = (error as Error).message || 'An error occurred during registration.';
-      Alert.alert('Error', errorMessage);
+      const errorMessage =
+        (error as Error).message || "An error occurred during registration.";
+      Alert.alert("Error", errorMessage);
     }
   };
 
   const addGenre = () => {
     if (genre && !genres.includes(genre)) {
       setGenres([...genres, genre]);
-      setGenre('');
+      setGenre("");
     }
   };
 
   const addOccasion = () => {
     if (occasion && !occasions.includes(occasion)) {
       setOccasions([...occasions, occasion]);
-      setOccasion('');
+      setOccasion("");
     }
   };
 
@@ -158,7 +168,9 @@ export default function DjSignUp() {
         <Text>Select an Image</Text>
       </TouchableOpacity>
       <View>
-        {image && <Image source={{ uri: image }} style={{ width: 300, height: 300 }} />}
+        {image && (
+          <Image source={{ uri: image }} style={{ width: 300, height: 300 }} />
+        )}
         <TouchableOpacity onPress={uploadMedia}>
           <Text>Upload Image</Text>
         </TouchableOpacity>
@@ -181,7 +193,7 @@ export default function DjSignUp() {
         value={city}
         onChangeText={setCity}
       />
-      
+
       <TextInput
         style={styles.input}
         placeholder="Genre"
@@ -235,7 +247,11 @@ export default function DjSignUp() {
           onChangeText={setPassword}
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color="gray" />
+          <Ionicons
+            name={showPassword ? "eye-off" : "eye"}
+            size={24}
+            color="gray"
+          />
         </TouchableOpacity>
       </View>
 
@@ -247,8 +263,14 @@ export default function DjSignUp() {
           secureTextEntry={!showConfirmPassword}
           onChangeText={setConfirmPassword}
         />
-        <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-          <Ionicons name={showConfirmPassword ? 'eye-off' : 'eye'} size={24} color="gray" />
+        <TouchableOpacity
+          onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+        >
+          <Ionicons
+            name={showConfirmPassword ? "eye-off" : "eye"}
+            size={24}
+            color="gray"
+          />
         </TouchableOpacity>
       </View>
 
@@ -261,32 +283,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     padding: 10,
     marginVertical: 5,
     borderRadius: 5,
-    width: '100%',
+    width: "100%",
   },
   passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 5,
     paddingHorizontal: 10,
     marginVertical: 5,
-    width: '100%',
+    width: "100%",
   },
   passwordInput: {
     flex: 1,
@@ -294,8 +316,8 @@ const styles = StyleSheet.create({
   },
   successMessage: {
     fontSize: 20,
-    color: 'green',
-    textAlign: 'center',
+    color: "green",
+    textAlign: "center",
     marginBottom: 20,
   },
 });
