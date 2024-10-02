@@ -1,0 +1,283 @@
+import {
+  collection,
+  doc,
+  setDoc,
+  getDoc,
+  addDoc,
+  query,
+  getDocs,
+  DocumentData,
+  QuerySnapshot,
+  where,
+  updateDoc,
+} from "firebase/firestore";
+
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
+
+import { app, db, auth } from "./firebaseConfig";
+import { isUsernameTaken } from "./utils";
+import { DJ, Feedback, Bookings } from "./types";
+
+const usersRef = collection(db, "users");
+const djRef = collection(db, "djs");
+const feedbackRef = collection(db, "feedback");
+const bookingsRef = collection(db, "bookings");
+
+export async function createUser(
+  email: string,
+  password: string,
+  newUser: {
+    first_name?: string;
+    surname?: string;
+    city?: string;
+    username?: string;
+    profile_picture?: string | null | undefined;
+  }
+) {
+  try {
+    if (!auth) {
+      throw new Error("Authentication instance is undefined.");
+    }
+    const usernameExists = await isUsernameTaken(newUser.username!, usersRef);
+    if (usernameExists) {
+      console.log(usernameExists, "Username Exists");
+      throw new Error("Username is already taken.");
+    }
+
+    const defaultProfilePicture =
+      "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/DJ-1.jpg?alt=media&token=b112f41e-5c50-44b7-b0ce-45240bef1cec";
+    if (!newUser.profile_picture) {
+      newUser.profile_picture = defaultProfilePicture;
+    }
+
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const user = userCredential.user;
+
+    console.log("Signed up: ", user.uid);
+
+    await setDoc(doc(usersRef, user.uid), newUser);
+    const userDocRef = doc(usersRef, user.uid);
+    const userDocSnapshot = await getDoc(userDocRef);
+    return userDocSnapshot.data();
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+}
+
+export async function createDJ(
+  email: string,
+  password: string,
+  newDJ: {
+    first_name?: string;
+    surname?: string;
+    city?: string;
+    username?: string;
+    genres?: string[];
+    occasions?: string[];
+    price?: number;
+    description?: string;
+    profile_picture?: string | null | undefined;
+    rating: number;
+  }
+) {
+  try {
+    if (!auth) {
+      throw new Error("Authentication instance is undefined.");
+    }
+    const usernameExists = await isUsernameTaken(newDJ.username!, djRef);
+    if (usernameExists) {
+      throw new Error("Username is already taken.");
+    }
+
+    const defaultProfilePicture =
+      "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/DJ-1.jpg?alt=media&token=b112f41e-5c50-44b7-b0ce-45240bef1cec";
+    if (!newDJ.profile_picture) {
+      newDJ.profile_picture = defaultProfilePicture;
+    }
+
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const user = userCredential.user;
+
+    console.log("Signed up: ", user.uid);
+
+    await setDoc(doc(djRef, user.uid), newDJ);
+    const djDocRef = doc(djRef, user.uid);
+    const djDocSnapshot = await getDoc(djDocRef);
+    return djDocSnapshot.data();
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+}
+
+export function signIn(email: string, password: string) {
+  if (!auth) {
+    throw new Error("Authentication instance is undefined.");
+  }
+  signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+      console.log("Signed in: ", user);
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error("Error: ", errorCode, errorMessage);
+    });
+}
+
+export async function getAllDjs() {
+  const allDjs = query(collection(db, "djs"));
+  const djsArray: DJ[] = [];
+  const getAllDjsSnapshot: QuerySnapshot<DocumentData> = await getDocs(allDjs);
+  getAllDjsSnapshot.forEach((doc) => {
+    djsArray.push(doc.data() as DJ);
+  });
+  return djsArray;
+}
+
+export async function getFeedbackByDj(loggedInDj: string) {
+  const feedbackQuery = query(feedbackRef, where("dj", "==", loggedInDj));
+  const feedbackArray: Feedback[] = [];
+  const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
+    feedbackQuery
+  );
+  querySnapshot.forEach((doc) => {
+    feedbackArray.push(doc.data() as Feedback);
+  });
+  return feedbackArray;
+}
+
+export async function getBookingByDj(loggedInDj: string) {
+  const bookingsQuery = query(bookingsRef, where("dj", "==", loggedInDj));
+  const bookingArray: Bookings[] = [];
+  const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
+    bookingsQuery
+  );
+  querySnapshot.forEach((doc) => {
+    bookingArray.push(doc.data() as Bookings);
+  });
+  return bookingArray;
+}
+
+export async function getBookingByUser(loggedInUser: string) {
+  const bookingsQuery = query(bookingsRef, where("client", "==", loggedInUser));
+  const bookingArray: Bookings[] = [];
+  const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
+    bookingsQuery
+  );
+  querySnapshot.forEach((doc) => {
+    bookingArray.push(doc.data() as Bookings);
+  });
+  return bookingArray;
+}
+
+export async function getUserById(userId: string) {
+  const singleUserRef = doc(db, "users", userId);
+  const docSnap = await getDoc(singleUserRef);
+
+  if (docSnap.exists()) {
+    return docSnap.data();
+  } else {
+    console.log("No such document!");
+  }
+}
+
+export async function getDjById(djId: string) {
+  const singleDjRef = doc(db, "djs", djId);
+  const docSnap = await getDoc(singleDjRef);
+
+  if (docSnap.exists()) {
+    return docSnap.data();
+  } else {
+    console.log("No such document!");
+  }
+}
+
+export async function createBooking(newBooking: {
+  client: string;
+  comments: string;
+  event_details: string;
+  date: Date;
+  dj: string;
+  location: string;
+  occasion: string;
+}) {
+  try {
+    await addDoc(bookingsRef, newBooking);
+  } catch (error) {
+    console.error("Error: Booking failed!");
+  }
+}
+
+export async function createFeedback(newFeedback: {
+  author: string;
+  body: string;
+  booking_id: string;
+  date: Date;
+  dj: string;
+  stars: number;
+  title: string;
+}) {
+  try {
+    await addDoc(feedbackRef, newFeedback);
+  } catch (error) {
+    console.error("Error: Feedback failed!");
+  }
+}
+
+export async function patchDj(
+  djId: string,
+  patchedDJ: {
+    city?: string;
+    username?: string;
+    genres?: string[];
+    occasions?: string[];
+    price?: number;
+    description?: string;
+    profile_picture?: string | null | undefined;
+  }
+) {
+  const updateDjRef = doc(db, "djs", djId);
+  await updateDoc(updateDjRef, patchedDJ)
+    .then(async () => {
+      const updateSnap = await getDoc(updateDjRef);
+      return updateSnap.data();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+export async function patchUser(
+  userId: string,
+  patchedUser: {
+    first_name?: string;
+    surname?: string;
+    city?: string;
+    username?: string;
+    profile_picture?: string | null | undefined;
+  }
+) {
+  const updateUserRef = doc(db, "users", userId);
+  await updateDoc(updateUserRef, patchedUser)
+    .then(async () => {
+      const updateSnap = await getDoc(updateUserRef);
+      return updateSnap.data();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
