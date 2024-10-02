@@ -10,13 +10,15 @@ import {
   QuerySnapshot,
   where,
   updateDoc,
+  deleteDoc,
+  Timestamp,
 } from "firebase/firestore";
 
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  deleteUser as firebaseDeleteUser,
 } from "firebase/auth";
-
 import { app, db, auth } from "./firebaseConfig";
 import { isUsernameTaken } from "./utils";
 import { DJ, Feedback, Bookings } from "./types";
@@ -122,6 +124,53 @@ export async function createDJ(
   }
 }
 
+
+
+export async function deleteUser(userId: string) {
+  try {
+    if (!auth) {
+      throw new Error("Authentication instance is undefined.");
+    }
+    const user = auth.currentUser;
+    if (!user || user.uid !== userId) {
+      throw new Error("No valid authenticated user found for deletion.");
+    }
+
+    const userDocRef = doc(usersRef, userId);
+    await deleteDoc(userDocRef);
+    console.log(`User document with ID ${userId} deleted from Firestore`);
+
+    await firebaseDeleteUser(user);
+    console.log(`User with ID ${userId} deleted from Firebase Authentication`);
+  } catch (error) {
+    console.error("Error deleting user: ", error);
+    throw error;
+  }
+}
+
+export async function deleteDJ(userId: string) {
+  try {
+    if (!auth) {
+      throw new Error("Authentication instance is undefined.");
+    }
+    const user = auth.currentUser;
+    if (!user || user.uid !== userId) {
+      throw new Error("No valid authenticated DJ found for deletion.");
+    }
+
+    const djDocRef = doc(djRef, userId);
+    await deleteDoc(djDocRef);
+    console.log(`DJ document with ID ${userId} deleted from Firestore`);
+
+    await firebaseDeleteUser(user);
+    console.log(`DJ with ID ${userId} deleted from Firebase Authentication`);
+  } catch (error) {
+    console.error("Error deleting DJ: ", error);
+    throw error;
+  }
+}
+
+
 export function signIn(email: string, password: string) {
   if (!auth) {
     throw new Error("Authentication instance is undefined.");
@@ -216,9 +265,15 @@ export async function createBooking(newBooking: {
   occasion: string;
 }) {
   try {
-    await addDoc(bookingsRef, newBooking);
+
+    const bookingWithTimestamp = {
+      ...newBooking,
+      date: Timestamp.fromDate(newBooking.date),
+    };
+    await addDoc(bookingsRef, bookingWithTimestamp);
+    console.log("Booking created successfully!");
   } catch (error) {
-    console.error("Error: Booking failed!");
+    console.error("Error: Booking failed!", error);
   }
 }
 
