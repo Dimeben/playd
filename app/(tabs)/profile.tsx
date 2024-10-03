@@ -38,7 +38,7 @@ const profile = () => {
           .catch((err) => console.log(err.message));
       };
       getUserData();
-    }, [user]);
+    }, [userId]);
 
     return (
       <View style={styles.container}>
@@ -50,6 +50,7 @@ const profile = () => {
             uri:
               user.profile_picture != null
                 ? user.profile_picture
+                : "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/User-2.webp?alt=media&token=8284f3f1-d2e5-40bf-af04-6d395211d6c8",
                 : "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/User-2.webp?alt=media&token=8284f3f1-d2e5-40bf-af04-6d395211d6c8",
           }}
           contentFit="cover"

@@ -14,8 +14,13 @@ import { getAllDjsList } from "../../firebase/firestore";
 import { useRouter } from "expo-router";
 import { ScrollView } from "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 interface DJ {
+  description: string;
+  rating: number;
+  surname: any;
+  first_name: any;
   id?: string;
   username: string;
   city: string;
@@ -28,7 +33,14 @@ interface DJ {
 const DjList = () => {
   const [djs, setDjs] = useState<DJ[]>([]);
   const [filteredDjs, setFilteredDjs] = useState<DJ[]>([]);
+  const [filteredDjs, setFilteredDjs] = useState<DJ[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCity, setSelectedCity] = useState<string | undefined>();
+  const [selectedGenre, setSelectedGenre] = useState<string | undefined>();
+  const [selectedOccasion, setSelectedOccasion] = useState<
+    string | undefined
+  >();
+  const router = useRouter();
   const [selectedCity, setSelectedCity] = useState<string | undefined>();
   const [selectedGenre, setSelectedGenre] = useState<string | undefined>();
   const [selectedOccasion, setSelectedOccasion] = useState<
@@ -43,16 +55,21 @@ const DjList = () => {
   useEffect(() => {
     const fetchDjs = async () => {
       try {
-        const djData = await getAllDjsList();
+        const djData = await getAllDjs();
         const validDjs = djData.filter((dj) => dj.id !== undefined) as DJ[];
         setDjs(validDjs);
+
 
         setCityOptions([...new Set(validDjs.map((dj) => dj.city))]);
         setGenreOptions([...new Set(validDjs.flatMap((dj) => dj.genres))]);
         setOccasionOptions([
           ...new Set(validDjs.flatMap((dj) => dj.occasions)),
         ]);
+        setOccasionOptions([
+          ...new Set(validDjs.flatMap((dj) => dj.occasions)),
+        ]);
 
+        setFilteredDjs(validDjs);
         setFilteredDjs(validDjs);
       } catch (error) {
         console.error("Error fetching DJs: ", error);
@@ -64,11 +81,13 @@ const DjList = () => {
     fetchDjs();
   }, []);
 
+
   const handleCityChange = (city: string | undefined) => {
     setSelectedCity(city);
     setSelectedGenre(undefined);
     setSelectedOccasion(undefined);
   };
+
 
   const clearFilters = () => {
     setSelectedCity(undefined);
@@ -77,31 +96,46 @@ const DjList = () => {
     setFilteredDjs(djs);
   };
 
+
   useEffect(() => {
     let filtered = [...djs];
+
 
     if (selectedCity) {
       filtered = filtered.filter((dj) => dj.city === selectedCity);
     }
 
+
     if (selectedGenre) {
       filtered = filtered.filter(
         (dj) => Array.isArray(dj.genres) && dj.genres.includes(selectedGenre)
       );
+      filtered = filtered.filter(
+        (dj) => Array.isArray(dj.genres) && dj.genres.includes(selectedGenre)
+      );
     }
+
 
     if (selectedOccasion) {
       filtered = filtered.filter(
         (dj) =>
           Array.isArray(dj.occasions) && dj.occasions.includes(selectedOccasion)
       );
+      filtered = filtered.filter(
+        (dj) =>
+          Array.isArray(dj.occasions) && dj.occasions.includes(selectedOccasion)
+      );
     }
+
 
     setFilteredDjs(filtered);
   }, [selectedCity, selectedGenre, selectedOccasion, djs]);
 
+
   const handleNavigateToProfile = (dj: DJ) => {
     router.push({
+      pathname: "/(tabs)/bookdj",
+      params: { dj: JSON.stringify(dj) },
       pathname: "/(tabs)/bookdj",
       params: { dj: JSON.stringify(dj) },
     });
@@ -140,6 +174,8 @@ const DjList = () => {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Text style={styles.header}>Filter DJs By:</Text>
+      <View style={styles.container}>
+        <Text style={styles.header}>Filter DJs By:</Text>
 
         {/* City Picker */}
         <Picker
@@ -152,7 +188,30 @@ const DjList = () => {
             <Picker.Item key={index} label={city} value={city} />
           ))}
         </Picker>
+        {/* City Picker */}
+        <Picker
+          selectedValue={selectedCity}
+          style={styles.picker}
+          onValueChange={(itemValue) => handleCityChange(itemValue)}
+        >
+          <Picker.Item label="Select City" value={undefined} />
+          {cityOptions.map((city, index) => (
+            <Picker.Item key={index} label={city} value={city} />
+          ))}
+        </Picker>
 
+        {/* Genre Picker */}
+        <Picker
+          selectedValue={selectedGenre}
+          style={styles.picker}
+          onValueChange={(itemValue) => setSelectedGenre(itemValue)}
+          enabled={!!selectedCity}
+        >
+          <Picker.Item label="Select Genre" value={undefined} />
+          {genreOptions.map((genre, index) => (
+            <Picker.Item key={index} label={genre} value={genre} />
+          ))}
+        </Picker>
         {/* Genre Picker */}
         <Picker
           selectedValue={selectedGenre}
@@ -178,10 +237,32 @@ const DjList = () => {
             <Picker.Item key={index} label={occasion} value={occasion} />
           ))}
         </Picker>
+        {/* Occasion Picker */}
+        <Picker
+          selectedValue={selectedOccasion}
+          style={styles.picker}
+          onValueChange={(itemValue) => setSelectedOccasion(itemValue)}
+          enabled={!!selectedCity}
+        >
+          <Picker.Item label="Select Occasion" value={undefined} />
+          {occasionOptions.map((occasion, index) => (
+            <Picker.Item key={index} label={occasion} value={occasion} />
+          ))}
+        </Picker>
 
         {/* Clear Filters Button */}
         <Button title="Clear All Filters" onPress={clearFilters} />
+        {/* Clear Filters Button */}
+        <Button title="Clear All Filters" onPress={clearFilters} />
 
+        {/* Filtered DJ List */}
+        <FlatList
+          data={filteredDjs}
+          renderItem={renderDjCard}
+          keyExtractor={(item, index) => item.id || index.toString()}
+          contentContainerStyle={styles.listContainer}
+        />
+      </View>
         {/* Filtered DJ List */}
         <FlatList
           data={filteredDjs}
@@ -215,40 +296,49 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   card: {
-    flexDirection: "row",
+    padding: 10,
     backgroundColor: "#fff",
     borderRadius: 8,
-    marginVertical: 8,
-    padding: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
+    shadowColor: "grey",
     shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    marginBottom: 15,
+    elevation: 3,
   },
   profilePicture: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginRight: 16,
-  },
-  cardContent: {
-    justifyContent: "center",
+    width: 100,
+    height: 100,
+    borderRadius: 50,
   },
   name: {
     fontSize: 18,
     fontWeight: "bold",
+    marginTop: 10,
   },
   genre: {
     fontSize: 14,
-    color: "#555",
+    color: "gray",
+    marginTop: 5,
   },
-  city: {
+  occasions: {
     fontSize: 14,
-    color: "#999",
+    color: "gray",
+    marginTop: 5,
   },
   price: {
+    fontSize: 16,
+    marginTop: 5,
+    color: "black",
+  },
+  description: {
+    fontSize: 12,
+    color: "gray",
+    marginTop: 5,
+  },
+  rating: {
     fontSize: 14,
-    color: "#333",
+    color: "orange",
+    marginTop: 5,
   },
 });
