@@ -54,6 +54,15 @@ export default function RootLayout() {
       />
 
       <Tabs.Screen
+        name="profile"
+        options={{
+          tabBarLabel: "Profile",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person-outline" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="editdjprofile"
         options={{
           href: null,

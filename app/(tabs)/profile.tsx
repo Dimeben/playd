@@ -11,9 +11,10 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { db } from "../../firebase/firebaseConfig";
+import { db } from "../../firebase/firebaseConfig";
 import { Link, useLocalSearchParams } from "expo-router";
 import { doc, getDoc } from "firebase/firestore";
-import { AuthContext } from "@/contexts/AuthContext";
+import { AuthContext } from "../../contexts/AuthContext";
 import { getAuth } from "firebase/auth";
 import { User } from "@/firebase/types";
 import { getUserById } from "@/firebase/firestore";

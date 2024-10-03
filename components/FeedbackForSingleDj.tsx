@@ -1,7 +1,7 @@
 import { View, Text, Pressable } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../firebase/firebaseConfig";
 import { AuthContext } from "@/contexts/AuthContext";
 
 const FeedbackForSingleDj = () => {

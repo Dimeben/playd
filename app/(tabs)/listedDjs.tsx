@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, Image, StyleSheet, ActivityIndicator, Pressable, Button } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  StyleSheet,
+  ActivityIndicator,
+  Pressable,
+  Button,
+} from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { getAllDjs } from "../../firebase/firestore";
 import { useRouter } from "expo-router"; 
@@ -11,10 +20,18 @@ const DjList = () => {
   const [djs, setDjs] = useState<import("../../firebase/types").DJ[]>([]);
   const [filteredDjs, setFilteredDjs] = useState<import("../../firebase/types").DJ[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCity, setSelectedCity] = useState<string | undefined>(); 
-  const [selectedGenre, setSelectedGenre] = useState<string | undefined>(); 
-  const [selectedOccasion, setSelectedOccasion] = useState<string | undefined>(); 
-  const router = useRouter(); 
+  const [selectedCity, setSelectedCity] = useState<string | undefined>();
+  const [selectedGenre, setSelectedGenre] = useState<string | undefined>();
+  const [selectedOccasion, setSelectedOccasion] = useState<
+    string | undefined
+  >();
+  const router = useRouter();
+  const [selectedCity, setSelectedCity] = useState<string | undefined>();
+  const [selectedGenre, setSelectedGenre] = useState<string | undefined>();
+  const [selectedOccasion, setSelectedOccasion] = useState<
+    string | undefined
+  >();
+  const router = useRouter();
 
   const [cityOptions, setCityOptions] = useState<string[]>([]);
   const [genreOptions, setGenreOptions] = useState<string[]>([]);
@@ -41,7 +58,12 @@ const DjList = () => {
 
         setCityOptions([...new Set(validDjs.map((dj) => dj.city))]);
         setGenreOptions([...new Set(validDjs.flatMap((dj) => dj.genres))]);
-        setOccasionOptions([...new Set(validDjs.flatMap((dj) => dj.occasions))]);
+        setOccasionOptions([
+          ...new Set(validDjs.flatMap((dj) => dj.occasions)),
+        ]);
+        setOccasionOptions([
+          ...new Set(validDjs.flatMap((dj) => dj.occasions)),
+        ]);
 
         setFilteredDjs(validDjs);
       } catch (error) {
@@ -54,14 +76,14 @@ const DjList = () => {
     fetchDjs();
   }, []);
 
-  
+
   const handleCityChange = (city: string | undefined) => {
     setSelectedCity(city);
     setSelectedGenre(undefined);
     setSelectedOccasion(undefined);
   };
 
-  
+
   const clearFilters = () => {
     setSelectedCity(undefined);
     setSelectedGenre(undefined);
@@ -69,27 +91,42 @@ const DjList = () => {
     setFilteredDjs(djs);
   };
 
-  
+
   useEffect(() => {
     let filtered = [...djs];
-  
+
+
     if (selectedCity) {
       filtered = filtered.filter((dj) => dj.city === selectedCity);
     }
-  
+
+
     if (selectedGenre) {
-      filtered = filtered.filter((dj) => Array.isArray(dj.genres) && dj.genres.includes(selectedGenre));
+      filtered = filtered.filter(
+        (dj) => Array.isArray(dj.genres) && dj.genres.includes(selectedGenre)
+      );
+      filtered = filtered.filter(
+        (dj) => Array.isArray(dj.genres) && dj.genres.includes(selectedGenre)
+      );
     }
-  
+
+
     if (selectedOccasion) {
-      filtered = filtered.filter((dj) => Array.isArray(dj.occasions) && dj.occasions.includes(selectedOccasion));
+      filtered = filtered.filter(
+        (dj) =>
+          Array.isArray(dj.occasions) && dj.occasions.includes(selectedOccasion)
+      );
+      filtered = filtered.filter(
+        (dj) =>
+          Array.isArray(dj.occasions) && dj.occasions.includes(selectedOccasion)
+      );
     }
-  
+
+
     setFilteredDjs(filtered);
   }, [selectedCity, selectedGenre, selectedOccasion, djs]);
-  
 
-  
+
   const handleNavigateToProfile = (dj: DJ) => {
     router.push({
       pathname: "/(tabs)/bookdj", 
@@ -109,16 +146,16 @@ const DjList = () => {
       <View style={styles.card}>
         {item.profile_picture && (
           <Image
-            source={{ uri: item.profile_picture || 'https://via.placeholder.com/150' }}
+            source={{
+              uri: item.profile_picture || "https://via.placeholder.com/150",
+            }}
             style={styles.profilePicture}
           />
         )}
         <View style={styles.cardContent}>
           {item.username && <Text style={styles.name}>{item.username}</Text>}
           {Array.isArray(item.genres) && item.genres.length > 0 && (
-            <Text style={styles.genre}>
-              {item.genres.join(", ")}
-            </Text>
+            <Text style={styles.genre}>{item.genres.join(", ")}</Text>
           )}
           {item.city && <Text style={styles.city}>{item.city}</Text>}
           {item.price !== undefined && (
@@ -209,40 +246,49 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   card: {
-    flexDirection: "row",
+    padding: 10,
     backgroundColor: "#fff",
     borderRadius: 8,
-    marginVertical: 8,
-    padding: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
+    shadowColor: "grey",
     shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    marginBottom: 15,
+    elevation: 3,
   },
   profilePicture: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginRight: 16,
-  },
-  cardContent: {
-    justifyContent: "center",
+    width: 100,
+    height: 100,
+    borderRadius: 50,
   },
   name: {
     fontSize: 18,
     fontWeight: "bold",
+    marginTop: 10,
   },
   genre: {
     fontSize: 14,
-    color: "#555",
+    color: "gray",
+    marginTop: 5,
   },
-  city: {
+  occasions: {
     fontSize: 14,
-    color: "#999",
+    color: "gray",
+    marginTop: 5,
   },
   price: {
+    fontSize: 16,
+    marginTop: 5,
+    color: "black",
+  },
+  description: {
+    fontSize: 12,
+    color: "gray",
+    marginTop: 5,
+  },
+  rating: {
     fontSize: 14,
-    color: "#333",
+    color: "orange",
+    marginTop: 5,
   },
 });

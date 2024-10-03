@@ -10,13 +10,12 @@ export async function isUsernameTaken(
   return !querySnapshot.empty;
 }
 
-
 export async function isDjAccount(djId: string): Promise<boolean> {
   let isDj = true;
   try {
     const docRef = doc(db, "djs", djId);
     const docSnap = await getDoc(docRef);
-    
+
     if (docSnap.exists()) {
       isDj = true;
     } else {

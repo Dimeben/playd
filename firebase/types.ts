@@ -12,6 +12,7 @@ export interface DJ extends User {
   price: number;
   description: string;
   rating: number;
+  id: string;
 }
 
 export interface Feedback {

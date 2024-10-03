@@ -15,10 +15,15 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { getDjById, signOut } from "../../firebase/firestore";
+import { db, auth } from "../../firebase/firebaseConfig";
+import { Link, useLocalSearchParams } from "expo-router";
+import { doc, getDoc } from "firebase/firestore";
 import FeedbackForSingleDj from "../../components/FeedbackForSingleDj";
 import { AuthContext } from "@/contexts/AuthContext";
 import { DJ } from "@/firebase/types";
 
+import { getAuth, signOut } from "firebase/auth";
+import { WebView } from "react-native-webview";
 const DjProfilePage = () => {
   const { isAuthenticated, userId, username } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
