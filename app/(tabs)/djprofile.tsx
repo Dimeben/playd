@@ -20,7 +20,7 @@ import { doc, getDoc } from "firebase/firestore";
 import FeedbackForSingleDj from "../../components/FeedbackForSingleDj";
 import { AuthContext } from "@/contexts/AuthContext";
 import { getAuth, signOut } from "firebase/auth";
-
+import { WebView } from "react-native-webview";
 const DjProfilePage = () => {
   // const user = useNavigationState((state) => {
   //   console.log(state.routes[state.index]);
@@ -28,6 +28,7 @@ const DjProfilePage = () => {
   const { isAuthenticated, userId, username } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
   const [isDjLoggedIn, setIsDjLoggedIn] = useState(false);
+  const [soundcloudName, setSoundcloudName] = useState("chaunconscious");
   // const docRef = doc(
   //   db,
   //   "djs",
@@ -37,6 +38,14 @@ const DjProfilePage = () => {
   //       : "30ooJWJYBoNFJkCugnOE"
   //   }`
   // );
+  const iframeString = `${`<iframe
+      allowtransparency="true"
+      scrolling="no"
+      frameborder="no"
+      src="https://w.soundcloud.com/icon/?url=http%3A%2F%2Fsoundcloud.com%2F${soundcloudName}&color=orange_white&size=32"
+      style="width: 32px; height: 32px;"
+    ></iframe>`}`;
+
   const handleLogout = () => {
     signOut(auth)
       .then((response) => {
@@ -92,6 +101,46 @@ const DjProfilePage = () => {
                   : "https://www.shutterstock.com/image-photo/zhangjiajie-national-forest-park-unesco-260nw-2402891639.jpg",
             }}
             contentFit="cover"
+          />
+          {/* <WebView
+            scalesPageToFit={true}
+            bounces={false}
+            javaScriptEnabled
+            style={{ height: 500, width: 300 }}
+            source={{
+              html: `
+                  <!DOCTYPE html>
+                  <html>
+                    <head></head> // <--add header styles if needed
+                    <body>
+                      <div id="baseDiv">${iframeString}</div> //<--- add your iframe here
+                    </body>
+                  </html>
+            `,
+            }}
+            automaticallyAdjustContentInsets={false}
+          /> */}
+          <View style={styles.formContainer}>
+            <View style={styles.inputContainer}>
+              <TextInput
+                label="SoundcloudName"
+                placeholder={`Input Your SoundCloud Name`}
+                placeholderTextColor={"black"}
+                value={soundcloudName}
+                onChangeText={setSoundcloudName}
+                style={styles.input}
+                underlineColorAndroid="transparent"
+                autoCapitalize="none"
+              />
+            </View>
+
+            {/* <TouchableOpacity style={styles.button} onPress={displaySoundcloud}>
+              <Text style={styles.buttonText}>Submit</Text>
+            </TouchableOpacity> */}
+          </View>
+          <WebView
+            source={{ html: { iframeString } }}
+            style={{ marginTop: 20 }}
           />
           <ScrollView>
             <View style={styles.container}>
