@@ -1,7 +1,5 @@
-import { initializeApp } from "firebase/app";
 import {
   collection,
-  getFirestore,
   doc,
   setDoc,
   getDoc,
@@ -12,117 +10,24 @@ import {
   QuerySnapshot,
   where,
   updateDoc,
-  Timestamp
+  deleteDoc,
+  Timestamp,
 } from "firebase/firestore";
 
 import {
-  getAuth,
-  getReactNativePersistence,
-  inMemoryPersistence,
-  initializeAuth,
-  onAuthStateChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  User as FirebaseUser,
-  Auth,
+  deleteUser as firebaseDeleteUser,
+  signOut as firebaseSignOut,
 } from "firebase/auth";
-import firebase from "firebase/compat/app";
-export { firebase };
-import { getStorage } from "firebase/storage";
-import { Platform } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import profile from "./app/(tabs)/profile";
+import { app, db, auth } from "./firebaseConfig";
+import { isUsernameTaken } from "./utils";
+import { DJ, Feedback, Bookings } from "./types";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDmik3S723nZR-fFM70ilaoAObfPCBKpGc",
-  authDomain: "find-my-dj-3a559.firebaseapp.com",
-  projectId: "find-my-dj-3a559",
-  storageBucket: "find-my-dj-3a559.appspot.com",
-  messagingSenderId: "230071268783",
-  appId: "1:230071268783:web:01c20d2e1f29178f566b5a",
-  measurementId: "G-TXBJCGPGC6",
-};
-
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
-
-export let auth: Auth | undefined;
-
-const isReactNative = () => {
-  return Platform.OS === "ios" || Platform.OS === "android";
-};
-
-if (isReactNative()) {
-  auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(AsyncStorage),
-  });
-} else {
-  auth = initializeAuth(app, {
-    persistence: inMemoryPersistence,
-  });
-}
-
-// export const auth = initializeAuth(app, {
-//   persistence: getReactNativePersistence(AsyncStorage),
-// });
-export const storage = getStorage(app);
-
-const usersRef = collection(db, "users");
-const djRef = collection(db, "djs");
-const feedbackRef = collection(db, "feedback");
-const bookingsRef = collection(db, "bookings");
-
-onAuthStateChanged(auth, (user: FirebaseUser | null) => {
-  if (user) {
-    // console.log("Current logged-in user: ", user.uid);
-  } else {
-    // console.log("No user is currently logged in.");
-  }
-});
-
-interface User {
-  username: string;
-  first_name: string;
-  surname: string;
-  city: string;
-  profile_picture?: string | null;
-}
-
-interface DJ extends User {
-  id?: string;
-  genres: string[];
-  occasions: string[];
-  price: number;
-  description: string;
-  rating: number;
-}
-
-interface Feedback {
-  author: string;
-  body: string;
-  booking_id: string;
-  date: Date;
-  dj: string;
-  stars: number;
-  title: string;
-}
-
-interface Bookings {
-  client: string;
-  comments: string;
-  event_details: string;
-  date: Date;
-  dj: string;
-  location: string;
-  occasion: string;
-}
-
-async function isUsernameTaken(username: string, ref: any): Promise<boolean> {
-  const q = query(ref, where("username", "==", username));
-  const querySnapshot = await getDocs(q);
-  console.log(querySnapshot, "Query Snapshot")
-  return !querySnapshot.empty;
-}
+export const usersRef = collection(db, "users");
+export const djRef = collection(db, "djs");
+export const feedbackRef = collection(db, "feedback");
+export const bookingsRef = collection(db, "bookings");
 
 export async function createUser(
   email: string,
@@ -141,16 +46,21 @@ export async function createUser(
     }
     const usernameExists = await isUsernameTaken(newUser.username!, usersRef);
     if (usernameExists) {
-      console.log(usernameExists, "Username Exists")
-      throw new Error('Username is already taken.');
+      console.log(usernameExists, "Username Exists");
+      throw new Error("Username is already taken.");
     }
 
-    const defaultProfilePicture = "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/DJ-1.jpg?alt=media&token=b112f41e-5c50-44b7-b0ce-45240bef1cec";
+    const defaultProfilePicture =
+      "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/DJ-1.jpg?alt=media&token=b112f41e-5c50-44b7-b0ce-45240bef1cec";
     if (!newUser.profile_picture) {
       newUser.profile_picture = defaultProfilePicture;
     }
 
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
     const user = userCredential.user;
 
     console.log("Signed up: ", user.uid);
@@ -159,7 +69,6 @@ export async function createUser(
     const userDocRef = doc(usersRef, user.uid);
     const userDocSnapshot = await getDoc(userDocRef);
     return userDocSnapshot.data();
-
   } catch (error) {
     console.error("Error: ", error);
     throw error;
@@ -188,30 +97,80 @@ export async function createDJ(
     }
     const usernameExists = await isUsernameTaken(newDJ.username!, djRef);
     if (usernameExists) {
-      throw new Error('Username is already taken.');
+      throw new Error("Username is already taken.");
     }
 
-    const defaultProfilePicture = "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/DJ-1.jpg?alt=media&token=b112f41e-5c50-44b7-b0ce-45240bef1cec";
+    const defaultProfilePicture =
+      "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/DJ-1.jpg?alt=media&token=b112f41e-5c50-44b7-b0ce-45240bef1cec";
     if (!newDJ.profile_picture) {
       newDJ.profile_picture = defaultProfilePicture;
     }
 
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
     const user = userCredential.user;
 
     console.log("Signed up: ", user.uid);
-
 
     await setDoc(doc(djRef, user.uid), newDJ);
     const djDocRef = doc(djRef, user.uid);
     const djDocSnapshot = await getDoc(djDocRef);
     return djDocSnapshot.data();
-
   } catch (error) {
     console.error("Error: ", error);
     throw error;
   }
 }
+
+
+
+export async function deleteUser(userId: string) {
+  try {
+    if (!auth) {
+      throw new Error("Authentication instance is undefined.");
+    }
+    const user = auth.currentUser;
+    if (!user || user.uid !== userId) {
+      throw new Error("No valid authenticated user found for deletion.");
+    }
+
+    const userDocRef = doc(usersRef, userId);
+    await deleteDoc(userDocRef);
+    console.log(`User document with ID ${userId} deleted from Firestore`);
+
+    await firebaseDeleteUser(user);
+    console.log(`User with ID ${userId} deleted from Firebase Authentication`);
+  } catch (error) {
+    console.error("Error deleting user: ", error);
+    throw error;
+  }
+}
+
+export async function deleteDJ(userId: string) {
+  try {
+    if (!auth) {
+      throw new Error("Authentication instance is undefined.");
+    }
+    const user = auth.currentUser;
+    if (!user || user.uid !== userId) {
+      throw new Error("No valid authenticated DJ found for deletion.");
+    }
+
+    const djDocRef = doc(djRef, userId);
+    await deleteDoc(djDocRef);
+    console.log(`DJ document with ID ${userId} deleted from Firestore`);
+
+    await firebaseDeleteUser(user);
+    console.log(`DJ with ID ${userId} deleted from Firebase Authentication`);
+  } catch (error) {
+    console.error("Error deleting DJ: ", error);
+    throw error;
+  }
+}
+
 
 export function signIn(email: string, password: string) {
   if (!auth) {
@@ -229,6 +188,20 @@ export function signIn(email: string, password: string) {
     });
 }
 
+export async function signOut() {
+  try {
+    if (!auth) {
+      throw new Error("Authentication instance is undefined.");
+    }
+    await firebaseSignOut(auth);
+    console.log("User signed out successfully.");
+  } catch (error) {
+    console.error("Error signing out: ", error);
+    throw error;
+  }
+}
+
+
 export async function getAllDjs() {
   const allDjs = query(collection(db, "djs"));
   const djsArray: DJ[] = [];
@@ -238,24 +211,6 @@ export async function getAllDjs() {
   });
   return djsArray;
 }
-
-export async function getAllDjsList () {
-  const allDjs = query(collection(db, "djs"));
-  const djsArray: DJ[] = [];
-  const getAllDjsSnapshot: QuerySnapshot<DocumentData> = await getDocs(allDjs);
-
-  getAllDjsSnapshot.forEach((doc) => {
-    const data = doc.data() as DJ;
-    djsArray.push({
-      id: doc.id,
-      ...data,
-      genres: data.genres || [],
-    });
-  });
-
-  return djsArray;
-}
-
 
 export async function getFeedbackByDj(loggedInDj: string) {
   const feedbackQuery = query(feedbackRef, where("dj", "==", loggedInDj));
@@ -396,5 +351,3 @@ export async function patchUser(
       console.log(err);
     });
 }
-
-// main().catch((err) => console.error(err));
