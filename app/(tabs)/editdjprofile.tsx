@@ -1,30 +1,46 @@
 import {
   View,
   Text,
-  Button,
   SafeAreaView,
   StyleSheet,
   TextInput,
   TouchableOpacity,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { AuthContext } from "@/contexts/AuthContext";
-import { patchDj } from "../../firebase/firestore";
-import { doc, getDoc } from "firebase/firestore";
+import { patchDj, getDjById } from "../../firebase/firestore";
+
+
+interface DJProfile {
+  first_name?: string;
+  surname?: string;
+  username: string;
+  city: string;
+  price: string;
+  description: string;
+  genres?: string[];
+  occasions?: string[];
+}
 
 const EditDjProfile = () => {
   const router = useRouter();
   const { userId } = useContext(AuthContext);
-  const [dj, setDj] = useState({});
-  const [updateFields, setUpdateFields] = useState({
+  const [dj, setDj] = useState<DJProfile | null>(null);
+  const [updateFields, setUpdateFields] = useState<DJProfile>({
+    first_name: "",
+    surname: "",
     username: "",
     city: "",
     price: "",
-    description: ""
+    description: "",
+    genres: [],
+    occasions: [],
   });
+
   const [updateMessage, setUpdateMessage] = useState("");
   const [goBackIsVisible, setGoBackIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,35 +53,46 @@ const EditDjProfile = () => {
         return;
       }
       try {
-        const docRef = doc(db, "djs", userId);
-        const data = await getDoc(docRef);
-        if (data.exists()) {
-          setDj(data.data());
-          setUpdateFields(data.data());
+        const djData = await getDjById(userId);
+        if (djData) {
+          setDj(djData);
+          setUpdateFields(djData);
         } else {
           console.log("DJ doesn't exist");
         }
       } catch (error) {
         console.log((error as Error).message);
+        Alert.alert("Error", "Failed to fetch DJ data. Please try again.");
       }
-      setIsLoading(false); // Ensure loading state is updated after fetching data
+      setIsLoading(false);
     };
 
     getDjData();
   }, [userId]);
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: keyof DJProfile, value: string) => {
     setUpdateFields((prev) => ({ ...prev, [field]: value }));
   };
 
+  const validateFields = () => {
+    for (const key in updateFields) {
+      if (updateFields[key as keyof DJProfile] === "") {
+        Alert.alert("Validation Error", `${key} cannot be empty.`);
+        return false;
+      }
+    }
+    return true;
+  };
+
   const updateDjProfile = async () => {
+    if (!validateFields()) return;
     try {
       const updatedData = {
         ...updateFields,
-        price: updateFields.price ? parseFloat(updateFields.price) : undefined // Ensure price is a number
+        price: updateFields.price ? parseFloat(updateFields.price) : undefined, 
       };
       const updatedDj = await patchDj(userId, updatedData);
-      setDj(updatedDj); // Update local DJ state if needed
+      setDj(updatedDj);
       setUpdateMessage("Successfully Updated Profile");
       setGoBackIsVisible(true);
     } catch (err) {
@@ -74,49 +101,41 @@ const EditDjProfile = () => {
     }
   };
 
-  // const resetPassword = async () => {
-  //   const email = ""
-  //   try {
-  //     await sendPasswordResetEmail(auth, email);
-  //     setUpdateMessage("Password reset email sent!");
-  //   } catch (error) {
-  //     Alert.alert("Error", error.message);
-  //   }
-  // };
-
   return (
     <ScrollView>
       <View style={styles.container}>
         <SafeAreaView />
-        <Text style={styles.heading}>Edit Your Profile...</Text>
-        {goBackIsVisible && (
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => router.back()}
-          >
-            <Text style={styles.buttonText}>Go Back</Text>
-          </TouchableOpacity>
+        <Text style={styles.heading}>Edit Your Profile:</Text>
+        {isLoading ? ( 
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
+          <>
+            {goBackIsVisible && (
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => router.back()}
+              >
+                <Text style={styles.buttonText}>Go Back</Text>
+              </TouchableOpacity>
+            )}
+            <Text style={styles.messageText}>{updateMessage}</Text>
+            {Object.keys(updateFields).map((key) => (
+              <View key={key} style={styles.formContainer}>
+                <TextInput
+                  placeholder={`Enter your ${key}...`}
+                  placeholderTextColor={"black"}
+                  value={updateFields[key as keyof DJProfile].toString()}
+                  onChangeText={(value) => handleInputChange(key as keyof DJProfile, value)}
+                  style={styles.input}
+                  underlineColorAndroid="transparent"
+                />
+              </View>
+            ))}
+            <TouchableOpacity style={styles.button} onPress={updateDjProfile}>
+              <Text style={styles.buttonText}>Submit</Text>
+            </TouchableOpacity>
+          </>
         )}
-        <Text style={styles.messageText}>{updateMessage}</Text>
-        {Object.keys(updateFields).map((key) => (
-          <View key={key} style={styles.formContainer}>
-            <TextInput
-              placeholder={`Enter your ${key}...`}
-              placeholderTextColor={"black"}
-              value={updateFields[key].toString()}
-              onChangeText={(value) => handleInputChange(key, value)}
-              style={styles.input}
-              underlineColorAndroid="transparent"
-            />
-          </View>
-        ))}
-        <TouchableOpacity style={styles.button} onPress={updateDjProfile}>
-          <Text style={styles.buttonText}>Submit</Text>
-        </TouchableOpacity>
-        {/* Uncomment to enable password reset */}
-        {/* <TouchableOpacity style={styles.button} onPress={resetPassword}>
-          <Text style={styles.passwordText}>Reset Password</Text>
-        </TouchableOpacity> */}
       </View>
     </ScrollView>
   );
@@ -136,14 +155,12 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     flexDirection: "row",
-    // height: 80,
     marginLeft: 10,
     marginRight: 10,
-    // marginTop: 100,
   },
   input: {
     height: 48,
-    border: 2,
+    borderWidth: 2,
     borderRadius: 5,
     overflow: "hidden",
     backgroundColor: "white",
@@ -151,25 +168,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 5,
     fontSize: 20,
-  },
-  inputMultiline: {
-    height: "auto",
-    border: 2,
-    borderRadius: 5,
-    overflow: "hidden",
-    backgroundColor: "white",
-    paddingLeft: 16,
-    flex: 1,
-    marginRight: 5,
-    fontSize: 20,
-  },
-  inputContainer: {
-    flex: 1,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    width: 50,
   },
   button: {
     height: 47,
@@ -181,23 +179,9 @@ const styles = StyleSheet.create({
     padding: 5,
     margin: 5,
   },
-  buttonPassword: {
-    height: 47,
-    width: 300,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 5,
-    margin: 5,
-  },
   buttonText: {
     color: "white",
     fontSize: 20,
-  },
-  passwordText: {
-    fontSize: 20,
-  },
-  multilineText: {
-    minHeight: 100,
   },
   messageText: {
     marginBottom: 10,

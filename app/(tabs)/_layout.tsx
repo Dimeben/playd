@@ -52,6 +52,7 @@ export default function RootLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
         name="editdjprofile"
         options={{

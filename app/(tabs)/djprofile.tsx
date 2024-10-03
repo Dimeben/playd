@@ -14,11 +14,11 @@ import {
   Alert,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useLocalSearchParams } from "expo-router";
 import { getDjById, signOut } from "../../firebase/firestore";
 import FeedbackForSingleDj from "../../components/FeedbackForSingleDj";
 import { AuthContext } from "@/contexts/AuthContext";
 import { DJ } from "@/firebase/types";
+
 const DjProfilePage = () => {
   const { isAuthenticated, userId, username } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
@@ -26,12 +26,14 @@ const DjProfilePage = () => {
 
   useEffect(() => {
     const fetchDjData = async () => {
+      setIsLoading(true);
+
       if (!userId) {
         console.log("User ID is null");
         setIsLoading(false);
         return;
       }
-  
+
       try {
         const djData = await getDjById(userId);
         if (djData) {
@@ -41,14 +43,15 @@ const DjProfilePage = () => {
         }
       } catch (error) {
         console.error("Error fetching DJ data:", (error as Error).message);
+        Alert.alert("Error", "Unable to fetch DJ data. Please try again.");
       } finally {
         setIsLoading(false);
       }
     };
-  
+
     fetchDjData();
   }, [userId]);
-  
+
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -60,7 +63,7 @@ const DjProfilePage = () => {
 
   if (!dj) {
     return (
-      <SafeAreaView>
+      <SafeAreaView style={styles.loadingContainer}>
         <Text style={styles.errorMessage}>DJ profile not found</Text>
       </SafeAreaView>
     );
@@ -84,20 +87,19 @@ const DjProfilePage = () => {
             <Text>First Name: {dj?.first_name}</Text>
             <Text>Surname: {dj?.surname}</Text>
             <Text>City: {dj?.city}</Text>
-            <Text>Genre: {dj?.genres?.join(", ")}</Text>
+            <Text>Genres: {dj?.genres?.join(", ")}</Text>
             <Text>Occasions: {dj?.occasions?.join(", ")}</Text>
             <Text>Price: {dj?.price}</Text>
             <Text>Rating: {dj?.rating}</Text>
             <Text>Description: {dj?.description}</Text>
           </View>
-          ...
         </View>
       </ScrollView>
     </>
   );
-
-  
 };
+
+export default DjProfilePage;
 
 const styles = StyleSheet.create({
   container: {
