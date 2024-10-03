@@ -14,7 +14,6 @@ import {
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { createDJ } from "../../firebase/firestore";
-import { createDJ } from "../../firebase/firestore";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { storage } from "../../firebase/storage";

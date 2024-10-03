@@ -26,12 +26,6 @@ const DjList = () => {
     string | undefined
   >();
   const router = useRouter();
-  const [selectedCity, setSelectedCity] = useState<string | undefined>();
-  const [selectedGenre, setSelectedGenre] = useState<string | undefined>();
-  const [selectedOccasion, setSelectedOccasion] = useState<
-    string | undefined
-  >();
-  const router = useRouter();
 
   const [cityOptions, setCityOptions] = useState<string[]>([]);
   const [genreOptions, setGenreOptions] = useState<string[]>([]);
@@ -152,7 +146,7 @@ const DjList = () => {
             style={styles.profilePicture}
           />
         )}
-        <View style={styles.cardContent}>
+        <View style={styles.card}>
           {item.username && <Text style={styles.name}>{item.username}</Text>}
           {Array.isArray(item.genres) && item.genres.length > 0 && (
             <Text style={styles.genre}>{item.genres.join(", ")}</Text>
@@ -265,6 +259,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginTop: 10,
+  },
+  city: {
+    fontSize: 14,
+    color: "gray",
+    marginTop: 5,
   },
   genre: {
     fontSize: 14,

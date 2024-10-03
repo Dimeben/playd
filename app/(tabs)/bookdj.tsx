@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Image } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { createBooking } from "../../firebase/firestore";
+import { createBooking, getFeedbackByDj } from "../../firebase/firestore";
 import moment from "moment";
 
 const BookDj = () => {
@@ -21,7 +21,6 @@ const BookDj = () => {
     comments: "",
     event_details: "",
     date: "",
-    time: "",
     time: "",
     location: "",
     occasion: "",
@@ -101,14 +100,9 @@ const BookDj = () => {
         `${newBooking.date} ${newBooking.time}`,
         "DD/MM/YYYY HH:mm"
       ).toDate();
-      const combinedDateTime = moment(
-        `${newBooking.date} ${newBooking.time}`,
-        "DD/MM/YYYY HH:mm"
-      ).toDate();
 
       const bookingWithDateTime = {
         ...newBooking,
-        date: combinedDateTime,
         date: combinedDateTime,
       };
 
@@ -124,14 +118,10 @@ const BookDj = () => {
 
   return (
     <View style={styles.container}>
-      {/* DJ Card at the Top */}
+
       {selectedDj && (
         <View style={styles.djCard}>
           <Image
-            source={{
-              uri:
-                selectedDj.profile_picture || "https://via.placeholder.com/150",
-            }}
             source={{
               uri:
                 selectedDj.profile_picture || "https://via.placeholder.com/150",
@@ -152,7 +142,6 @@ const BookDj = () => {
         </View>
       )}
 
-      {/* Booking Form */}
       <Text style={styles.header}>Create a New Booking</Text>
 
       <TextInput
@@ -168,16 +157,11 @@ const BookDj = () => {
         onChangeText={(text) =>
           setNewBooking({ ...newBooking, event_details: text })
         }
-        onChangeText={(text) =>
-          setNewBooking({ ...newBooking, event_details: text })
-        }
       />
       <TextInput
         style={styles.input}
         placeholder="Event Date (dd/mm/yyyy)"
         value={newBooking.date}
-        onChangeText={handleDateInput}
-        maxLength={10}
         onChangeText={handleDateInput}
         maxLength={10}
         keyboardType="numeric"
@@ -186,9 +170,7 @@ const BookDj = () => {
         style={styles.input}
         placeholder="Event Time (HH:mm)"
         value={newBooking.time}
-        value={newBooking.time}
         onChangeText={handleTimeInput}
-        maxLength={5}
         maxLength={5}
         keyboardType="numeric"
       />
@@ -196,9 +178,6 @@ const BookDj = () => {
         style={styles.input}
         placeholder="Event Location"
         value={newBooking.location}
-        onChangeText={(text) =>
-          setNewBooking({ ...newBooking, location: text })
-        }
         onChangeText={(text) =>
           setNewBooking({ ...newBooking, location: text })
         }
@@ -210,17 +189,11 @@ const BookDj = () => {
         onChangeText={(text) =>
           setNewBooking({ ...newBooking, occasion: text })
         }
-        onChangeText={(text) =>
-          setNewBooking({ ...newBooking, occasion: text })
-        }
       />
       <TextInput
         style={styles.input}
         placeholder="Additional Comments"
         value={newBooking.comments}
-        onChangeText={(text) =>
-          setNewBooking({ ...newBooking, comments: text })
-        }
         onChangeText={(text) =>
           setNewBooking({ ...newBooking, comments: text })
         }

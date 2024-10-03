@@ -1,54 +1,47 @@
 import { View, Text, Pressable } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-import { db } from "../firebase/firebaseConfig";
 import { AuthContext } from "@/contexts/AuthContext";
+import { DJ } from "../firebase/types";
+import { getFeedbackByDj } from "../firebase/firestore";
 
-const FeedbackForSingleDj = () => {
-  const { userId, username } = useContext(AuthContext);
-  //   const [feedback, setFeedback] = useState("");
-  const [feedbackList, setFeedbackList] = useState([]);
-  //   const feedRef = doc(db, "feedback", `GSZ6GaZzXoWDE8LUA0n3`);
-  const feedbackCollectionRef = collection(db, "feedback");
-  //   useEffect(() => {
-  //     const getFeedbackData = () => {
-  //       getDoc(feedRef).then((data) => {
-  //         const snapDoc = data.data();
-  //         if (snapDoc) {
-  //           setFeedback(snapDoc);
-  //         } else console.log("Doesnt exist");
-  //       });
-  //     };
-  //     getFeedbackData();
-  //   }, []);
+interface FeedbackForSingleDjProps {
+  dj: DJ;
+}
 
-  const getFeedbackList = () => {
-    const data = getDocs(feedbackCollectionRef).then((feedback) => {
-      const filteredData = feedback.docs.map((individualFeedback) => {
-        return { ...individualFeedback.data(), id: individualFeedback.id };
-      });
-      setFeedbackList(filteredData);
-    });
-  };
+interface Feedback {
+  id: string;
+  author: string;
+  dj: string;
+  stars: number;
+  title: string;
+  body: string;
+}
+
+const FeedbackForSingleDj: React.FC<FeedbackForSingleDjProps> = ({ dj }) => {
+  const { username } = useContext(AuthContext);
+  const [feedbackList, setFeedbackList] = useState<Feedback[]>([]);
 
   useEffect(() => {
-    getFeedbackList();
-  }, []);
+    const fetchFeedback = async () => {
+      const feedbackData: any = await getFeedbackByDj(dj.id);
+      setFeedbackList(feedbackData);
+    };
+
+    fetchFeedback();
+  }, [dj.id]);
 
   return (
     <View>
-      {username === feedbackList.username ? (
-        feedbackList.map((feedback) => {
-          return (
-            <Pressable key={feedback.id}>
-              <Text>Author: {feedback.author}</Text>
-              <Text>Dj: {feedback.dj}</Text>
-              <Text>Stars: {feedback.first_name}</Text>
-              <Text>Title: {feedback.surname}</Text>
-              <Text>{feedback.body}</Text>
-            </Pressable>
-          );
-        })
+      {feedbackList.length > 0 ? (
+        feedbackList.map((feedback) => (
+          <Pressable key={feedback.id}>
+            <Text>Author: {feedback.author}</Text>
+            <Text>DJ: {feedback.dj}</Text>
+            <Text>Stars: {feedback.stars}</Text>
+            <Text>Title: {feedback.title}</Text>
+            <Text>{feedback.body}</Text>
+          </Pressable>
+        ))
       ) : (
         <Text>No feedback yet!</Text>
       )}

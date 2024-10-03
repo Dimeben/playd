@@ -53,7 +53,7 @@ const EditDjProfile = () => {
         return;
       }
       try {
-        const djData = await getDjById(userId);
+        const djData: any = await getDjById(userId);
         if (djData) {
           setDj(djData);
           setUpdateFields(djData);
@@ -85,19 +85,22 @@ const EditDjProfile = () => {
   };
 
   const updateDjProfile = async () => {
+    if (!userId) {
+      return Alert.alert("Invalid user ID.")
+    }
     if (!validateFields()) return;
     try {
       const updatedData = {
         ...updateFields,
         price: updateFields.price ? parseFloat(updateFields.price) : undefined, 
       };
-      const updatedDj = await patchDj(userId, updatedData);
+      const updatedDj: any = await patchDj(userId, updatedData);
       setDj(updatedDj);
       setUpdateMessage("Successfully Updated Profile");
       setGoBackIsVisible(true);
     } catch (err) {
-      console.error(err.message);
-      Alert.alert("Update Failed", err.message);
+      console.error((err as Error).message);
+      Alert.alert("Update Failed", (err as Error).message);
     }
   };
 
@@ -124,7 +127,7 @@ const EditDjProfile = () => {
                 <TextInput
                   placeholder={`Enter your ${key}...`}
                   placeholderTextColor={"black"}
-                  value={updateFields[key as keyof DJProfile].toString()}
+                  value={updateFields[key as keyof DJProfile]?.toString()}
                   onChangeText={(value) => handleInputChange(key as keyof DJProfile, value)}
                   style={styles.input}
                   underlineColorAndroid="transparent"
