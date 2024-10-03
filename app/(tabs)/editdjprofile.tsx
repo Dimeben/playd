@@ -11,13 +11,11 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "expo-router";
-import { AuthContext } from "@/contexts/AuthContext";
-import { db } from "@/firebase/firebaseConfig";
-import { auth } from "@/firebase/firebaseConfig";
+import { AuthContext } from "../../contexts/AuthContext";
+import { db } from "../../firebase/firebaseConfig";
+import { auth } from "../../firebase/firebaseConfig";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import { setupMicrotasks } from "react-native-reanimated/lib/typescript/reanimated2/threads";
-
 const EditDjProfile = () => {
   const router = useRouter();
   const { userId, username } = useContext(AuthContext);

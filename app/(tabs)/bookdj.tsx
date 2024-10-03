@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Image } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { createBooking } from "@/firebase/firestore";
+import { createBooking } from "../../firebase/firestore";
 import moment from "moment";
-import { getFeedbackByDj } from "@/firebase/firestore";
-import { ScrollView } from "react-native-gesture-handler";
 
 const BookDj = () => {
   const router = useRouter();
   const { dj } = useLocalSearchParams();
 
   const selectedDj = Array.isArray(dj)
+    ? JSON.parse(dj[0])
+    : dj
     ? JSON.parse(dj[0])
     : dj
     ? JSON.parse(dj)
@@ -21,6 +21,7 @@ const BookDj = () => {
     comments: "",
     event_details: "",
     date: "",
+    time: "",
     time: "",
     location: "",
     occasion: "",
@@ -47,10 +48,17 @@ const BookDj = () => {
     const cleanedText = text.replace(/\D/g, "");
     let formattedText = cleanedText;
 
+
     if (cleanedText.length >= 3) {
       formattedText = cleanedText.slice(0, 2) + "/" + cleanedText.slice(2);
     }
     if (cleanedText.length >= 5) {
+      formattedText =
+        cleanedText.slice(0, 2) +
+        "/" +
+        cleanedText.slice(2, 4) +
+        "/" +
+        cleanedText.slice(4, 8);
       formattedText =
         cleanedText.slice(0, 2) +
         "/" +
@@ -93,14 +101,20 @@ const BookDj = () => {
         `${newBooking.date} ${newBooking.time}`,
         "DD/MM/YYYY HH:mm"
       ).toDate();
+      const combinedDateTime = moment(
+        `${newBooking.date} ${newBooking.time}`,
+        "DD/MM/YYYY HH:mm"
+      ).toDate();
 
       const bookingWithDateTime = {
         ...newBooking,
+        date: combinedDateTime,
         date: combinedDateTime,
       };
 
       createBooking(bookingWithDateTime);
       alert("Booking created successfully!");
+      router.back();
       router.back();
     } catch (error) {
       console.error("Error creating booking: ", error);
@@ -114,6 +128,10 @@ const BookDj = () => {
       {selectedDj && (
         <View style={styles.djCard}>
           <Image
+            source={{
+              uri:
+                selectedDj.profile_picture || "https://via.placeholder.com/150",
+            }}
             source={{
               uri:
                 selectedDj.profile_picture || "https://via.placeholder.com/150",
@@ -150,11 +168,16 @@ const BookDj = () => {
         onChangeText={(text) =>
           setNewBooking({ ...newBooking, event_details: text })
         }
+        onChangeText={(text) =>
+          setNewBooking({ ...newBooking, event_details: text })
+        }
       />
       <TextInput
         style={styles.input}
         placeholder="Event Date (dd/mm/yyyy)"
         value={newBooking.date}
+        onChangeText={handleDateInput}
+        maxLength={10}
         onChangeText={handleDateInput}
         maxLength={10}
         keyboardType="numeric"
@@ -163,7 +186,9 @@ const BookDj = () => {
         style={styles.input}
         placeholder="Event Time (HH:mm)"
         value={newBooking.time}
+        value={newBooking.time}
         onChangeText={handleTimeInput}
+        maxLength={5}
         maxLength={5}
         keyboardType="numeric"
       />
@@ -171,6 +196,9 @@ const BookDj = () => {
         style={styles.input}
         placeholder="Event Location"
         value={newBooking.location}
+        onChangeText={(text) =>
+          setNewBooking({ ...newBooking, location: text })
+        }
         onChangeText={(text) =>
           setNewBooking({ ...newBooking, location: text })
         }
@@ -182,11 +210,17 @@ const BookDj = () => {
         onChangeText={(text) =>
           setNewBooking({ ...newBooking, occasion: text })
         }
+        onChangeText={(text) =>
+          setNewBooking({ ...newBooking, occasion: text })
+        }
       />
       <TextInput
         style={styles.input}
         placeholder="Additional Comments"
         value={newBooking.comments}
+        onChangeText={(text) =>
+          setNewBooking({ ...newBooking, comments: text })
+        }
         onChangeText={(text) =>
           setNewBooking({ ...newBooking, comments: text })
         }

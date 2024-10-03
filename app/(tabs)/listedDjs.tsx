@@ -6,13 +6,14 @@ import {
   Image,
   StyleSheet,
   ActivityIndicator,
+  Pressable,
   Button,
-  TouchableOpacity,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { getAllDjs } from "@/firebase/firestore";
+import { getAllDjsList } from "../../firebase/firestore";
 import { useRouter } from "expo-router";
 import { ScrollView } from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 interface DJ {
@@ -32,7 +33,14 @@ interface DJ {
 const DjList = () => {
   const [djs, setDjs] = useState<DJ[]>([]);
   const [filteredDjs, setFilteredDjs] = useState<DJ[]>([]);
+  const [filteredDjs, setFilteredDjs] = useState<DJ[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCity, setSelectedCity] = useState<string | undefined>();
+  const [selectedGenre, setSelectedGenre] = useState<string | undefined>();
+  const [selectedOccasion, setSelectedOccasion] = useState<
+    string | undefined
+  >();
+  const router = useRouter();
   const [selectedCity, setSelectedCity] = useState<string | undefined>();
   const [selectedGenre, setSelectedGenre] = useState<string | undefined>();
   const [selectedOccasion, setSelectedOccasion] = useState<
@@ -51,12 +59,17 @@ const DjList = () => {
         const validDjs = djData.filter((dj) => dj.id !== undefined) as DJ[];
         setDjs(validDjs);
 
+
         setCityOptions([...new Set(validDjs.map((dj) => dj.city))]);
         setGenreOptions([...new Set(validDjs.flatMap((dj) => dj.genres))]);
         setOccasionOptions([
           ...new Set(validDjs.flatMap((dj) => dj.occasions)),
         ]);
+        setOccasionOptions([
+          ...new Set(validDjs.flatMap((dj) => dj.occasions)),
+        ]);
 
+        setFilteredDjs(validDjs);
         setFilteredDjs(validDjs);
       } catch (error) {
         console.error("Error fetching DJs: ", error);
@@ -68,11 +81,13 @@ const DjList = () => {
     fetchDjs();
   }, []);
 
+
   const handleCityChange = (city: string | undefined) => {
     setSelectedCity(city);
     setSelectedGenre(undefined);
     setSelectedOccasion(undefined);
   };
+
 
   const clearFilters = () => {
     setSelectedCity(undefined);
@@ -81,59 +96,74 @@ const DjList = () => {
     setFilteredDjs(djs);
   };
 
+
   useEffect(() => {
     let filtered = [...djs];
+
 
     if (selectedCity) {
       filtered = filtered.filter((dj) => dj.city === selectedCity);
     }
 
+
     if (selectedGenre) {
       filtered = filtered.filter(
         (dj) => Array.isArray(dj.genres) && dj.genres.includes(selectedGenre)
       );
+      filtered = filtered.filter(
+        (dj) => Array.isArray(dj.genres) && dj.genres.includes(selectedGenre)
+      );
     }
+
 
     if (selectedOccasion) {
       filtered = filtered.filter(
         (dj) =>
           Array.isArray(dj.occasions) && dj.occasions.includes(selectedOccasion)
       );
+      filtered = filtered.filter(
+        (dj) =>
+          Array.isArray(dj.occasions) && dj.occasions.includes(selectedOccasion)
+      );
     }
+
 
     setFilteredDjs(filtered);
   }, [selectedCity, selectedGenre, selectedOccasion, djs]);
 
+
   const handleNavigateToProfile = (dj: DJ) => {
     router.push({
+      pathname: "/(tabs)/bookdj",
+      params: { dj: JSON.stringify(dj) },
       pathname: "/(tabs)/bookdj",
       params: { dj: JSON.stringify(dj) },
     });
   };
 
   const renderDjCard = ({ item }: { item: DJ }) => (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() => handleNavigateToProfile(item)}
-    >
-      <Image
-        source={{
-          uri: item.profile_picture || "https://via.placeholder.com/150",
-        }}
-        style={styles.profilePicture}
-        accessibilityLabel={`Profile picture of ${item.first_name} ${item.surname}`}
-      />
-      <Text style={styles.name}>
-        {item.first_name} {item.surname}
-      </Text>
-      {Array.isArray(item.genres) && item.genres.length > 0 && (
-        <Text style={styles.genre}>Genre: {item.genres.join(", ")}</Text>
-      )}
-      <Text style={styles.occasions}>Occasions: {item.occasions}</Text>
-      <Text style={styles.price}>Price: £{item.price}</Text>
-      <Text style={styles.description}>{item.description}</Text>
-      <Text style={styles.rating}>Rating: {item.rating}</Text>
-    </TouchableOpacity>
+    <Pressable onPress={() => handleNavigateToProfile(item)}>
+      <View style={styles.card}>
+        {item.profile_picture && (
+          <Image
+            source={{
+              uri: item.profile_picture || "https://via.placeholder.com/150",
+            }}
+            style={styles.profilePicture}
+          />
+        )}
+        <View style={styles.cardContent}>
+          {item.username && <Text style={styles.name}>{item.username}</Text>}
+          {Array.isArray(item.genres) && item.genres.length > 0 && (
+            <Text style={styles.genre}>{item.genres.join(", ")}</Text>
+          )}
+          {item.city && <Text style={styles.city}>{item.city}</Text>}
+          {item.price !== undefined && (
+            <Text style={styles.price}>Price: £{item.price}</Text>
+          )}
+        </View>
+      </View>
+    </Pressable>
   );
 
   if (loading) {
@@ -142,6 +172,8 @@ const DjList = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <Text style={styles.header}>Filter DJs By:</Text>
       <View style={styles.container}>
         <Text style={styles.header}>Filter DJs By:</Text>
 
@@ -156,7 +188,30 @@ const DjList = () => {
             <Picker.Item key={index} label={city} value={city} />
           ))}
         </Picker>
+        {/* City Picker */}
+        <Picker
+          selectedValue={selectedCity}
+          style={styles.picker}
+          onValueChange={(itemValue) => handleCityChange(itemValue)}
+        >
+          <Picker.Item label="Select City" value={undefined} />
+          {cityOptions.map((city, index) => (
+            <Picker.Item key={index} label={city} value={city} />
+          ))}
+        </Picker>
 
+        {/* Genre Picker */}
+        <Picker
+          selectedValue={selectedGenre}
+          style={styles.picker}
+          onValueChange={(itemValue) => setSelectedGenre(itemValue)}
+          enabled={!!selectedCity}
+        >
+          <Picker.Item label="Select Genre" value={undefined} />
+          {genreOptions.map((genre, index) => (
+            <Picker.Item key={index} label={genre} value={genre} />
+          ))}
+        </Picker>
         {/* Genre Picker */}
         <Picker
           selectedValue={selectedGenre}
@@ -182,10 +237,32 @@ const DjList = () => {
             <Picker.Item key={index} label={occasion} value={occasion} />
           ))}
         </Picker>
+        {/* Occasion Picker */}
+        <Picker
+          selectedValue={selectedOccasion}
+          style={styles.picker}
+          onValueChange={(itemValue) => setSelectedOccasion(itemValue)}
+          enabled={!!selectedCity}
+        >
+          <Picker.Item label="Select Occasion" value={undefined} />
+          {occasionOptions.map((occasion, index) => (
+            <Picker.Item key={index} label={occasion} value={occasion} />
+          ))}
+        </Picker>
 
         {/* Clear Filters Button */}
         <Button title="Clear All Filters" onPress={clearFilters} />
+        {/* Clear Filters Button */}
+        <Button title="Clear All Filters" onPress={clearFilters} />
 
+        {/* Filtered DJ List */}
+        <FlatList
+          data={filteredDjs}
+          renderItem={renderDjCard}
+          keyExtractor={(item, index) => item.id || index.toString()}
+          contentContainerStyle={styles.listContainer}
+        />
+      </View>
         {/* Filtered DJ List */}
         <FlatList
           data={filteredDjs}
