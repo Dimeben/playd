@@ -125,8 +125,6 @@ export async function createDJ(
   }
 }
 
-
-
 export async function deleteUser(userId: string) {
   try {
     if (!auth) {
@@ -171,7 +169,6 @@ export async function deleteDJ(userId: string) {
   }
 }
 
-
 export function signIn(email: string, password: string) {
   if (!auth) {
     throw new Error("Authentication instance is undefined.");
@@ -201,13 +198,17 @@ export async function signOut() {
   }
 }
 
-
-export async function getAllDjs() {
+export async function getAllDjs(): Promise<DJ[]> {
   const allDjs = query(collection(db, "djs"));
   const djsArray: DJ[] = [];
   const getAllDjsSnapshot: QuerySnapshot<DocumentData> = await getDocs(allDjs);
+
   getAllDjsSnapshot.forEach((doc) => {
-    djsArray.push(doc.data() as DJ);
+    const djData = doc.data() as Omit<DJ, "id">;
+    djsArray.push({
+      id: doc.id,
+      ...djData,
+    });
   });
   return djsArray;
 }
@@ -280,7 +281,6 @@ export async function createBooking(newBooking: {
   occasion: string;
 }) {
   try {
-
     const bookingWithTimestamp = {
       ...newBooking,
       date: Timestamp.fromDate(newBooking.date),

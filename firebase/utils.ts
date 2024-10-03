@@ -1,5 +1,5 @@
 import { query, where, getDocs, getDoc, doc } from "firebase/firestore";
-import { db } from "@/firebase/firebaseConfig";
+import { db } from "./firebaseConfig";
 
 export async function isUsernameTaken(
   username: string,

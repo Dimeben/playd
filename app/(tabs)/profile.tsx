@@ -10,7 +10,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { db } from "../../firebase";
+import { db } from "@/firebase/firebaseConfig";
 import { Link, useLocalSearchParams } from "expo-router";
 import { doc, getDoc } from "firebase/firestore";
 import { AuthContext } from "@/contexts/AuthContext";
