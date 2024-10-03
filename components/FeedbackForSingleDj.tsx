@@ -1,9 +1,11 @@
 import { View, Text, Pressable } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
+import { AuthContext } from "@/contexts/AuthContext";
 
-const FeedbackForSingleDj = ({ dj }) => {
+const FeedbackForSingleDj = () => {
+  const { userId, username } = useContext(AuthContext);
   //   const [feedback, setFeedback] = useState("");
   const [feedbackList, setFeedbackList] = useState([]);
   //   const feedRef = doc(db, "feedback", `GSZ6GaZzXoWDE8LUA0n3`);
@@ -35,7 +37,7 @@ const FeedbackForSingleDj = ({ dj }) => {
 
   return (
     <View>
-      {dj.username === feedbackList.username ? (
+      {username === feedbackList.username ? (
         feedbackList.map((feedback) => {
           return (
             <Pressable key={feedback.id}>

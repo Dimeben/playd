@@ -42,7 +42,7 @@ export default function DjSignUp() {
 
   interface CreateDJParams {
     first_name: string;
-    surname: string; 
+    surname: string;
     username: string;
     city: string;
     profile_picture?: string | null;
@@ -53,7 +53,7 @@ export default function DjSignUp() {
     rating: number;
   }
 
-  const rating = 0
+  const rating = 0;
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -130,7 +130,7 @@ export default function DjSignUp() {
     try {
       await createDJ(email, password, {
         first_name: firstName,
-        surname, 
+        surname,
         username,
         city,
         genres,
@@ -177,140 +177,145 @@ export default function DjSignUp() {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.header}>DJ Registration</Text>
-        
-        <TextInput
-          style={styles.input}
-          placeholder="First Name"
-          value={firstName}
-          onChangeText={setFirstName}
-        />
-        
-        <TextInput
-          style={styles.input}
-          placeholder="Surname"
-          value={surname}
-          onChangeText={setSurname}
-        />
+    <ScrollView>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <ScrollView contentContainerStyle={styles.container}>
+          <Text style={styles.header}>DJ Registration</Text>
 
-        <TouchableOpacity onPress={pickImage}>
-          <Text>Select an Image</Text>
-        </TouchableOpacity>
-        <View>
-          {image && (
-            <Image source={{ uri: image }} style={{ width: 300, height: 300 }} />
-          )}
-          <TouchableOpacity onPress={uploadMedia}>
-            <Text>Upload Image</Text>
-          </TouchableOpacity>
-        </View>
-        <TextInput
-          style={styles.input}
-          placeholder="Username"
-          value={username}
-          onChangeText={setUsername}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="City"
-          value={city}
-          onChangeText={setCity}
-        />
-
-        <TextInput
-          style={styles.input}
-          placeholder="Genre"
-          value={genre}
-          onChangeText={setGenre}
-        />
-        <Button title="Add Genre" onPress={addGenre} />
-
-        <View>
-          <Text>Genres:</Text>
-          {genres.map((g, index) => (
-            <Text key={index}>{g}</Text>
-          ))}
-        </View>
-
-        <TextInput
-          style={styles.input}
-          placeholder="Occasion"
-          value={occasion}
-          onChangeText={setOccasion}
-        />
-        <Button title="Add Occasion" onPress={addOccasion} />
-
-        <View>
-          <Text>Occasions:</Text>
-          {occasions.map((o, index) => (
-            <Text key={index}>{o}</Text>
-          ))}
-        </View>
-
-        <TextInput
-          style={styles.input}
-          placeholder="Price"
-          keyboardType="numeric"
-          value={price}
-          onChangeText={setPrice}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Description"
-          value={description}
-          onChangeText={setDescription}
-        />
-
-        <View style={styles.passwordContainer}>
           <TextInput
-            style={styles.passwordInput}
-            placeholder="Password"
-            value={password}
-            secureTextEntry={!showPassword}
-            onChangeText={setPassword}
+            style={styles.input}
+            placeholder="First Name"
+            value={firstName}
+            onChangeText={setFirstName}
           />
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Ionicons
-              name={showPassword ? "eye-off" : "eye"}
-              size={24}
-              color="gray"
-            />
-          </TouchableOpacity>
-        </View>
 
-        <View style={styles.passwordContainer}>
           <TextInput
-            style={styles.passwordInput}
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            secureTextEntry={!showConfirmPassword}
-            onChangeText={setConfirmPassword}
+            style={styles.input}
+            placeholder="Surname"
+            value={surname}
+            onChangeText={setSurname}
           />
-          <TouchableOpacity
-            onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-          >
-            <Ionicons
-              name={showConfirmPassword ? "eye-off" : "eye"}
-              size={24}
-              color="gray"
-            />
-          </TouchableOpacity>
-        </View>
 
-        <Button title="Register as DJ" onPress={handleDJRegister} />
-      </ScrollView>
-    </KeyboardAvoidingView>
+          <TouchableOpacity onPress={pickImage}>
+            <Text>Select an Image</Text>
+          </TouchableOpacity>
+          <View>
+            {image && (
+              <Image
+                source={{ uri: image }}
+                style={{ width: 300, height: 300 }}
+              />
+            )}
+            <TouchableOpacity onPress={uploadMedia}>
+              <Text>Upload Image</Text>
+            </TouchableOpacity>
+          </View>
+          <TextInput
+            style={styles.input}
+            placeholder="Username"
+            value={username}
+            onChangeText={setUsername}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="City"
+            value={city}
+            onChangeText={setCity}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Genre"
+            value={genre}
+            onChangeText={setGenre}
+          />
+          <Button title="Add Genre" onPress={addGenre} />
+
+          <View>
+            <Text>Genres:</Text>
+            {genres.map((g, index) => (
+              <Text key={index}>{g}</Text>
+            ))}
+          </View>
+
+          <TextInput
+            style={styles.input}
+            placeholder="Occasion"
+            value={occasion}
+            onChangeText={setOccasion}
+          />
+          <Button title="Add Occasion" onPress={addOccasion} />
+
+          <View>
+            <Text>Occasions:</Text>
+            {occasions.map((o, index) => (
+              <Text key={index}>{o}</Text>
+            ))}
+          </View>
+
+          <TextInput
+            style={styles.input}
+            placeholder="Price"
+            keyboardType="numeric"
+            value={price}
+            onChangeText={setPrice}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Description"
+            value={description}
+            onChangeText={setDescription}
+          />
+
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Password"
+              value={password}
+              secureTextEntry={!showPassword}
+              onChangeText={setPassword}
+            />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <Ionicons
+                name={showPassword ? "eye-off" : "eye"}
+                size={24}
+                color="gray"
+              />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              secureTextEntry={!showConfirmPassword}
+              onChangeText={setConfirmPassword}
+            />
+            <TouchableOpacity
+              onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              <Ionicons
+                name={showConfirmPassword ? "eye-off" : "eye"}
+                size={24}
+                color="gray"
+              />
+            </TouchableOpacity>
+          </View>
+
+          <Button title="Register as DJ" onPress={handleDJRegister} />
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 
