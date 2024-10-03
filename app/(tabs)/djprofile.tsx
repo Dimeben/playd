@@ -63,7 +63,7 @@ const DjProfilePage = () => {
     };
     getDjData();
     setIsLoading(false);
-  }, [dj]);
+  }, [userId]);
   // if (isLoading) {
   //   return (
   //     <Text style={styles.heading}>
