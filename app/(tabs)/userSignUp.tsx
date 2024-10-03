@@ -1,26 +1,36 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, SafeAreaView, Image } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { createUser } from '../../firebase'; 
-import { firebase } from "../../firebase"
-import * as ImagePicker from "expo-image-picker"
-import * as FileSystem from 'expo-file-system'
-import { storage } from '../../firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+  SafeAreaView,
+  Image,
+} from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { createUser } from "../../firebase/firestore";
+import { firebase } from "../../firebase/firebaseConfig";
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
+import { storage } from "../../firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function UserSignUp() {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [city, setCity] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [surname, setSurname] = useState('');
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false); 
-  const [showPassword, setShowPassword] = useState(false); 
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [city, setCity] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [surname, setSurname] = useState("");
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [image, setImage] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false)
+  const [uploading, setUploading] = useState(false);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
   interface CreateUserParams {
@@ -48,13 +58,13 @@ export default function UserSignUp() {
 
   const uploadMedia = async () => {
     setUploading(true);
-  
+
     try {
       if (!image) {
-        console.error('No image selected');
+        console.error("No image selected");
         return;
       }
-  
+
       const { uri } = await FileSystem.getInfoAsync(image);
       const blob = await new Promise<Blob>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -62,20 +72,20 @@ export default function UserSignUp() {
           resolve(xhr.response as Blob);
         };
         xhr.onerror = (e) => {
-          reject(new TypeError('Network request failed'));
+          reject(new TypeError("Network request failed"));
         };
-        xhr.responseType = 'blob';
-        xhr.open('GET', uri, true);
+        xhr.responseType = "blob";
+        xhr.open("GET", uri, true);
         xhr.send(null);
       });
-  
-      const filename = image.substring(image.lastIndexOf('/') + 1);
+
+      const filename = image.substring(image.lastIndexOf("/") + 1);
       const imageRef = ref(storage, filename);
       await uploadBytes(imageRef, blob);
       setUploading(false);
       const url = await getDownloadURL(imageRef);
       setProfilePicture(url);
-      Alert.alert('Photo Uploaded');
+      Alert.alert("Photo Uploaded");
       setImage(null);
     } catch (error) {
       console.error(error);
@@ -84,19 +94,19 @@ export default function UserSignUp() {
   };
 
   const clearForm = () => {
-    setUsername('');
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
-    setCity('');
-    setFirstName('');
-    setSurname('');
+    setUsername("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setCity("");
+    setFirstName("");
+    setSurname("");
     setProfilePicture(null);
   };
 
   const handleUserRegister = async () => {
     if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match.');
+      Alert.alert("Error", "Passwords do not match.");
       return;
     }
 
@@ -108,18 +118,18 @@ export default function UserSignUp() {
         city,
         profile_picture: profilePicture,
       });
-      
+
       clearForm();
-      
+
       setShowSuccessMessage(true);
 
       setTimeout(() => {
         setShowSuccessMessage(false);
       }, 2000);
-      
     } catch (error) {
-      const errorMessage = (error as Error).message || 'An error occurred during registration.';
-      Alert.alert('Error', errorMessage);
+      const errorMessage =
+        (error as Error).message || "An error occurred during registration.";
+      Alert.alert("Error", errorMessage);
     }
   };
 
@@ -138,13 +148,14 @@ export default function UserSignUp() {
         <Text>Select an Image</Text>
       </TouchableOpacity>
       <View>
-        {image && <Image source={{ uri: image}}
-        style={{width: 300, height: 300}}/>} 
+        {image && (
+          <Image source={{ uri: image }} style={{ width: 300, height: 300 }} />
+        )}
         <TouchableOpacity onPress={uploadMedia}>
           <Text>Upload Image</Text>
         </TouchableOpacity>
       </View>
-      
+
       <TextInput
         style={styles.input}
         placeholder="First Name"
@@ -187,7 +198,11 @@ export default function UserSignUp() {
           onChangeText={setPassword}
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color="gray" />
+          <Ionicons
+            name={showPassword ? "eye-off" : "eye"}
+            size={24}
+            color="gray"
+          />
         </TouchableOpacity>
       </View>
 
@@ -199,8 +214,14 @@ export default function UserSignUp() {
           secureTextEntry={!showConfirmPassword}
           onChangeText={setConfirmPassword}
         />
-        <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-          <Ionicons name={showConfirmPassword ? 'eye-off' : 'eye'} size={24} color="gray" />
+        <TouchableOpacity
+          onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+        >
+          <Ionicons
+            name={showConfirmPassword ? "eye-off" : "eye"}
+            size={24}
+            color="gray"
+          />
         </TouchableOpacity>
       </View>
 
@@ -213,32 +234,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     padding: 10,
     marginVertical: 5,
     borderRadius: 5,
-    width: '100%',
+    width: "100%",
   },
   passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 5,
     paddingHorizontal: 10,
     marginVertical: 5,
-    width: '100%',
+    width: "100%",
   },
   passwordInput: {
     flex: 1,
@@ -246,8 +267,8 @@ const styles = StyleSheet.create({
   },
   successMessage: {
     fontSize: 20,
-    color: 'green',
-    textAlign: 'center',
+    color: "green",
+    textAlign: "center",
     marginBottom: 20,
   },
 });
