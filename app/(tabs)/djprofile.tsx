@@ -14,7 +14,7 @@ import {
   Alert,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { db, auth } from "../../firebase";
+import { db, auth } from "@/firebase/firebaseConfig";
 import { Link, useLocalSearchParams } from "expo-router";
 import { doc, getDoc } from "firebase/firestore";
 import FeedbackForSingleDj from "../../components/FeedbackForSingleDj";

@@ -13,10 +13,10 @@ import {
   Platform,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { createDJ } from "../../firebase";
+import { createDJ } from "@/firebase/firestore";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
-import { storage } from "../../firebase";
+import { storage } from "@/firebase/storage";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function DjSignUp() {

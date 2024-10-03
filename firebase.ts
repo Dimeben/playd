@@ -1,400 +1,398 @@
-import { initializeApp } from "firebase/app";
-import {
-  collection,
-  getFirestore,
-  doc,
-  setDoc,
-  getDoc,
-  addDoc,
-  query,
-  getDocs,
-  DocumentData,
-  QuerySnapshot,
-  where,
-  updateDoc,
-  Timestamp
-} from "firebase/firestore";
+// import { initializeApp } from "firebase/app";
+// import {
+//   collection,
+//   getFirestore,
+//   doc,
+//   setDoc,
+//   getDoc,
+//   addDoc,
+//   query,
+//   getDocs,
+//   DocumentData,
+//   QuerySnapshot,
+//   where,
+//   updateDoc,
+//   Timestamp
+// } from "firebase/firestore";
 
-import {
-  getAuth,
-  getReactNativePersistence,
-  inMemoryPersistence,
-  initializeAuth,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  User as FirebaseUser,
-  Auth,
-} from "firebase/auth";
-import firebase from "firebase/compat/app";
-export { firebase };
-import { getStorage } from "firebase/storage";
-import { Platform } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import profile from "./app/(tabs)/profile";
+// import {
+//   getAuth,
+//   getReactNativePersistence,
+//   inMemoryPersistence,
+//   initializeAuth,
+//   onAuthStateChanged,
+//   signInWithEmailAndPassword,
+//   createUserWithEmailAndPassword,
+//   User as FirebaseUser,
+//   Auth,
+// } from "firebase/auth";
+// import firebase from "firebase/compat/app";
+// export { firebase };
+// import { getStorage } from "firebase/storage";
+// import { Platform } from "react-native";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
+// import profile from "./app/(tabs)/profile";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDmik3S723nZR-fFM70ilaoAObfPCBKpGc",
-  authDomain: "find-my-dj-3a559.firebaseapp.com",
-  projectId: "find-my-dj-3a559",
-  storageBucket: "find-my-dj-3a559.appspot.com",
-  messagingSenderId: "230071268783",
-  appId: "1:230071268783:web:01c20d2e1f29178f566b5a",
-  measurementId: "G-TXBJCGPGC6",
-};
+// const firebaseConfig = {
+//   apiKey: "AIzaSyDmik3S723nZR-fFM70ilaoAObfPCBKpGc",
+//   authDomain: "find-my-dj-3a559.firebaseapp.com",
+//   projectId: "find-my-dj-3a559",
+//   storageBucket: "find-my-dj-3a559.appspot.com",
+//   messagingSenderId: "230071268783",
+//   appId: "1:230071268783:web:01c20d2e1f29178f566b5a",
+//   measurementId: "G-TXBJCGPGC6",
+// };
 
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+// const app = initializeApp(firebaseConfig);
+// export const db = getFirestore(app);
 
-export let auth: Auth | undefined;
+// export let auth: Auth | undefined;
 
-const isReactNative = () => {
-  return Platform.OS === "ios" || Platform.OS === "android";
-};
+// const isReactNative = () => {
+//   return Platform.OS === "ios" || Platform.OS === "android";
+// };
 
-if (isReactNative()) {
-  auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(AsyncStorage),
-  });
-} else {
-  auth = initializeAuth(app, {
-    persistence: inMemoryPersistence,
-  });
-}
+// if (isReactNative()) {
+//   auth = initializeAuth(app, {
+//     persistence: getReactNativePersistence(AsyncStorage),
+//   });
+// } else {
+//   auth = initializeAuth(app, {
+//     persistence: inMemoryPersistence,
+//   });
+// }
 
-// export const auth = initializeAuth(app, {
-//   persistence: getReactNativePersistence(AsyncStorage),
+// // export const auth = initializeAuth(app, {
+// //   persistence: getReactNativePersistence(AsyncStorage),
+// // });
+// export const storage = getStorage(app);
+
+// const usersRef = collection(db, "users");
+// const djRef = collection(db, "djs");
+// const feedbackRef = collection(db, "feedback");
+// const bookingsRef = collection(db, "bookings");
+
+// onAuthStateChanged(auth, (user: FirebaseUser | null) => {
+//   if (user) {
+//     // console.log("Current logged-in user: ", user.uid);
+//   } else {
+//     // console.log("No user is currently logged in.");
+//   }
 // });
-export const storage = getStorage(app);
 
-const usersRef = collection(db, "users");
-const djRef = collection(db, "djs");
-const feedbackRef = collection(db, "feedback");
-const bookingsRef = collection(db, "bookings");
+// interface User {
+//   username: string;
+//   first_name: string;
+//   surname: string;
+//   city: string;
+//   profile_picture?: string | null;
+// }
 
-onAuthStateChanged(auth, (user: FirebaseUser | null) => {
-  if (user) {
-    // console.log("Current logged-in user: ", user.uid);
-  } else {
-    // console.log("No user is currently logged in.");
-  }
-});
+// interface DJ extends User {
+//   id?: string;
+//   genres: string[];
+//   occasions: string[];
+//   price: number;
+//   description: string;
+//   rating: number;
+// }
 
-interface User {
-  username: string;
-  first_name: string;
-  surname: string;
-  city: string;
-  profile_picture?: string | null;
-}
+// interface Feedback {
+//   author: string;
+//   body: string;
+//   booking_id: string;
+//   date: Date;
+//   dj: string;
+//   stars: number;
+//   title: string;
+// }
 
-interface DJ extends User {
-  id?: string;
-  genres: string[];
-  occasions: string[];
-  price: number;
-  description: string;
-  rating: number;
-}
+// interface Bookings {
+//   client: string;
+//   comments: string;
+//   event_details: string;
+//   date: Date;
+//   dj: string;
+//   location: string;
+//   occasion: string;
+// }
 
-interface Feedback {
-  author: string;
-  body: string;
-  booking_id: string;
-  date: Date;
-  dj: string;
-  stars: number;
-  title: string;
-}
+// async function isUsernameTaken(username: string, ref: any): Promise<boolean> {
+//   const q = query(ref, where("username", "==", username));
+//   const querySnapshot = await getDocs(q);
+//   console.log(querySnapshot, "Query Snapshot")
+//   return !querySnapshot.empty;
+// }
 
-interface Bookings {
-  client: string;
-  comments: string;
-  event_details: string;
-  date: Date;
-  dj: string;
-  location: string;
-  occasion: string;
-}
+// export async function createUser(
+//   email: string,
+//   password: string,
+//   newUser: {
+//     first_name?: string;
+//     surname?: string;
+//     city?: string;
+//     username?: string;
+//     profile_picture?: string | null | undefined;
+//   }
+// ) {
+//   try {
+//     if (!auth) {
+//       throw new Error("Authentication instance is undefined.");
+//     }
+//     const usernameExists = await isUsernameTaken(newUser.username!, usersRef);
+//     if (usernameExists) {
+//       console.log(usernameExists, "Username Exists")
+//       throw new Error('Username is already taken.');
+//     }
 
-async function isUsernameTaken(username: string, ref: any): Promise<boolean> {
-  const q = query(ref, where("username", "==", username));
-  const querySnapshot = await getDocs(q);
-  console.log(querySnapshot, "Query Snapshot")
-  return !querySnapshot.empty;
-}
+//     const defaultProfilePicture = "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/DJ-1.jpg?alt=media&token=b112f41e-5c50-44b7-b0ce-45240bef1cec";
+//     if (!newUser.profile_picture) {
+//       newUser.profile_picture = defaultProfilePicture;
+//     }
 
-export async function createUser(
-  email: string,
-  password: string,
-  newUser: {
-    first_name?: string;
-    surname?: string;
-    city?: string;
-    username?: string;
-    profile_picture?: string | null | undefined;
-  }
-) {
-  try {
-    if (!auth) {
-      throw new Error("Authentication instance is undefined.");
-    }
-    const usernameExists = await isUsernameTaken(newUser.username!, usersRef);
-    if (usernameExists) {
-      console.log(usernameExists, "Username Exists")
-      throw new Error('Username is already taken.');
-    }
+//     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+//     const user = userCredential.user;
 
-    const defaultProfilePicture = "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/DJ-1.jpg?alt=media&token=b112f41e-5c50-44b7-b0ce-45240bef1cec";
-    if (!newUser.profile_picture) {
-      newUser.profile_picture = defaultProfilePicture;
-    }
+//     console.log("Signed up: ", user.uid);
 
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+//     await setDoc(doc(usersRef, user.uid), newUser);
+//     const userDocRef = doc(usersRef, user.uid);
+//     const userDocSnapshot = await getDoc(userDocRef);
+//     return userDocSnapshot.data();
 
-    console.log("Signed up: ", user.uid);
+//   } catch (error) {
+//     console.error("Error: ", error);
+//     throw error;
+//   }
+// }
 
-    await setDoc(doc(usersRef, user.uid), newUser);
-    const userDocRef = doc(usersRef, user.uid);
-    const userDocSnapshot = await getDoc(userDocRef);
-    return userDocSnapshot.data();
+// export async function createDJ(
+//   email: string,
+//   password: string,
+//   newDJ: {
+//     first_name?: string;
+//     surname?: string;
+//     city?: string;
+//     username?: string;
+//     genres?: string[];
+//     occasions?: string[];
+//     price?: number;
+//     description?: string;
+//     profile_picture?: string | null | undefined;
+//     rating: number;
+//   }
+// ) {
+//   try {
+//     if (!auth) {
+//       throw new Error("Authentication instance is undefined.");
+//     }
+//     const usernameExists = await isUsernameTaken(newDJ.username!, djRef);
+//     if (usernameExists) {
+//       throw new Error('Username is already taken.');
+//     }
 
-  } catch (error) {
-    console.error("Error: ", error);
-    throw error;
-  }
-}
+//     const defaultProfilePicture = "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/DJ-1.jpg?alt=media&token=b112f41e-5c50-44b7-b0ce-45240bef1cec";
+//     if (!newDJ.profile_picture) {
+//       newDJ.profile_picture = defaultProfilePicture;
+//     }
 
-export async function createDJ(
-  email: string,
-  password: string,
-  newDJ: {
-    first_name?: string;
-    surname?: string;
-    city?: string;
-    username?: string;
-    genres?: string[];
-    occasions?: string[];
-    price?: number;
-    description?: string;
-    profile_picture?: string | null | undefined;
-    rating: number;
-  }
-) {
-  try {
-    if (!auth) {
-      throw new Error("Authentication instance is undefined.");
-    }
-    const usernameExists = await isUsernameTaken(newDJ.username!, djRef);
-    if (usernameExists) {
-      throw new Error('Username is already taken.');
-    }
+//     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+//     const user = userCredential.user;
 
-    const defaultProfilePicture = "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/DJ-1.jpg?alt=media&token=b112f41e-5c50-44b7-b0ce-45240bef1cec";
-    if (!newDJ.profile_picture) {
-      newDJ.profile_picture = defaultProfilePicture;
-    }
+//     console.log("Signed up: ", user.uid);
 
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+//     await setDoc(doc(djRef, user.uid), newDJ);
+//     const djDocRef = doc(djRef, user.uid);
+//     const djDocSnapshot = await getDoc(djDocRef);
+//     return djDocSnapshot.data();
 
-    console.log("Signed up: ", user.uid);
+//   } catch (error) {
+//     console.error("Error: ", error);
+//     throw error;
+//   }
+// }
 
+// export function signIn(email: string, password: string) {
+//   if (!auth) {
+//     throw new Error("Authentication instance is undefined.");
+//   }
+//   signInWithEmailAndPassword(auth, email, password)
+//     .then((userCredential) => {
+//       const user = userCredential.user;
+//       console.log("Signed in: ", user);
+//     })
+//     .catch((error) => {
+//       const errorCode = error.code;
+//       const errorMessage = error.message;
+//       console.error("Error: ", errorCode, errorMessage);
+//     });
+// }
 
-    await setDoc(doc(djRef, user.uid), newDJ);
-    const djDocRef = doc(djRef, user.uid);
-    const djDocSnapshot = await getDoc(djDocRef);
-    return djDocSnapshot.data();
+// export async function getAllDjs() {
+//   const allDjs = query(collection(db, "djs"));
+//   const djsArray: DJ[] = [];
+//   const getAllDjsSnapshot: QuerySnapshot<DocumentData> = await getDocs(allDjs);
+//   getAllDjsSnapshot.forEach((doc) => {
+//     djsArray.push(doc.data() as DJ);
+//   });
+//   return djsArray;
+// }
 
-  } catch (error) {
-    console.error("Error: ", error);
-    throw error;
-  }
-}
+// export async function getAllDjsList () {
+//   const allDjs = query(collection(db, "djs"));
+//   const djsArray: DJ[] = [];
+//   const getAllDjsSnapshot: QuerySnapshot<DocumentData> = await getDocs(allDjs);
 
-export function signIn(email: string, password: string) {
-  if (!auth) {
-    throw new Error("Authentication instance is undefined.");
-  }
-  signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      console.log("Signed in: ", user);
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.error("Error: ", errorCode, errorMessage);
-    });
-}
+//   getAllDjsSnapshot.forEach((doc) => {
+//     const data = doc.data() as DJ;
+//     djsArray.push({
+//       id: doc.id,
+//       ...data,
+//       genres: data.genres || [],
+//     });
+//   });
 
-export async function getAllDjs() {
-  const allDjs = query(collection(db, "djs"));
-  const djsArray: DJ[] = [];
-  const getAllDjsSnapshot: QuerySnapshot<DocumentData> = await getDocs(allDjs);
-  getAllDjsSnapshot.forEach((doc) => {
-    djsArray.push(doc.data() as DJ);
-  });
-  return djsArray;
-}
+//   return djsArray;
+// }
 
-export async function getAllDjsList () {
-  const allDjs = query(collection(db, "djs"));
-  const djsArray: DJ[] = [];
-  const getAllDjsSnapshot: QuerySnapshot<DocumentData> = await getDocs(allDjs);
+// export async function getFeedbackByDj(loggedInDj: string) {
+//   const feedbackQuery = query(feedbackRef, where("dj", "==", loggedInDj));
+//   const feedbackArray: Feedback[] = [];
+//   const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
+//     feedbackQuery
+//   );
+//   querySnapshot.forEach((doc) => {
+//     feedbackArray.push(doc.data() as Feedback);
+//   });
+//   return feedbackArray;
+// }
 
-  getAllDjsSnapshot.forEach((doc) => {
-    const data = doc.data() as DJ;
-    djsArray.push({
-      id: doc.id,
-      ...data,
-      genres: data.genres || [],
-    });
-  });
+// export async function getBookingByDj(loggedInDj: string) {
+//   const bookingsQuery = query(bookingsRef, where("dj", "==", loggedInDj));
+//   const bookingArray: Bookings[] = [];
+//   const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
+//     bookingsQuery
+//   );
+//   querySnapshot.forEach((doc) => {
+//     bookingArray.push(doc.data() as Bookings);
+//   });
+//   return bookingArray;
+// }
 
-  return djsArray;
-}
+// export async function getBookingByUser(loggedInUser: string) {
+//   const bookingsQuery = query(bookingsRef, where("client", "==", loggedInUser));
+//   const bookingArray: Bookings[] = [];
+//   const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
+//     bookingsQuery
+//   );
+//   querySnapshot.forEach((doc) => {
+//     bookingArray.push(doc.data() as Bookings);
+//   });
+//   return bookingArray;
+// }
 
+// export async function getUserById(userId: string) {
+//   const singleUserRef = doc(db, "users", userId);
+//   const docSnap = await getDoc(singleUserRef);
 
-export async function getFeedbackByDj(loggedInDj: string) {
-  const feedbackQuery = query(feedbackRef, where("dj", "==", loggedInDj));
-  const feedbackArray: Feedback[] = [];
-  const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
-    feedbackQuery
-  );
-  querySnapshot.forEach((doc) => {
-    feedbackArray.push(doc.data() as Feedback);
-  });
-  return feedbackArray;
-}
+//   if (docSnap.exists()) {
+//     return docSnap.data();
+//   } else {
+//     console.log("No such document!");
+//   }
+// }
 
-export async function getBookingByDj(loggedInDj: string) {
-  const bookingsQuery = query(bookingsRef, where("dj", "==", loggedInDj));
-  const bookingArray: Bookings[] = [];
-  const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
-    bookingsQuery
-  );
-  querySnapshot.forEach((doc) => {
-    bookingArray.push(doc.data() as Bookings);
-  });
-  return bookingArray;
-}
+// export async function getDjById(djId: string) {
+//   const singleDjRef = doc(db, "djs", djId);
+//   const docSnap = await getDoc(singleDjRef);
 
-export async function getBookingByUser(loggedInUser: string) {
-  const bookingsQuery = query(bookingsRef, where("client", "==", loggedInUser));
-  const bookingArray: Bookings[] = [];
-  const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
-    bookingsQuery
-  );
-  querySnapshot.forEach((doc) => {
-    bookingArray.push(doc.data() as Bookings);
-  });
-  return bookingArray;
-}
+//   if (docSnap.exists()) {
+//     return docSnap.data();
+//   } else {
+//     console.log("No such document!");
+//   }
+// }
 
-export async function getUserById(userId: string) {
-  const singleUserRef = doc(db, "users", userId);
-  const docSnap = await getDoc(singleUserRef);
+// export async function createBooking(newBooking: {
+//   client: string;
+//   comments: string;
+//   event_details: string;
+//   date: Date;
+//   dj: string;
+//   location: string;
+//   occasion: string;
+// }) {
+//   try {
 
-  if (docSnap.exists()) {
-    return docSnap.data();
-  } else {
-    console.log("No such document!");
-  }
-}
+//     const bookingWithTimestamp = {
+//       ...newBooking,
+//       date: Timestamp.fromDate(newBooking.date),
+//     };
+//     await addDoc(bookingsRef, bookingWithTimestamp);
+//     console.log("Booking created successfully!");
+//   } catch (error) {
+//     console.error("Error: Booking failed!", error);
+//   }
+// }
 
-export async function getDjById(djId: string) {
-  const singleDjRef = doc(db, "djs", djId);
-  const docSnap = await getDoc(singleDjRef);
+// export async function createFeedback(newFeedback: {
+//   author: string;
+//   body: string;
+//   booking_id: string;
+//   date: Date;
+//   dj: string;
+//   stars: number;
+//   title: string;
+// }) {
+//   try {
+//     await addDoc(feedbackRef, newFeedback);
+//   } catch (error) {
+//     console.error("Error: Feedback failed!");
+//   }
+// }
 
-  if (docSnap.exists()) {
-    return docSnap.data();
-  } else {
-    console.log("No such document!");
-  }
-}
+// export async function patchDj(
+//   djId: string,
+//   patchedDJ: {
+//     city?: string;
+//     username?: string;
+//     genres?: string[];
+//     occasions?: string[];
+//     price?: number;
+//     description?: string;
+//     profile_picture?: string | null | undefined;
+//   }
+// ) {
+//   const updateDjRef = doc(db, "djs", djId);
+//   await updateDoc(updateDjRef, patchedDJ)
+//     .then(async () => {
+//       const updateSnap = await getDoc(updateDjRef);
+//       return updateSnap.data();
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     });
+// }
 
-export async function createBooking(newBooking: {
-  client: string;
-  comments: string;
-  event_details: string;
-  date: Date;
-  dj: string;
-  location: string;
-  occasion: string;
-}) {
-  try {
+// export async function patchUser(
+//   userId: string,
+//   patchedUser: {
+//     first_name?: string;
+//     surname?: string;
+//     city?: string;
+//     username?: string;
+//     profile_picture?: string | null | undefined;
+//   }
+// ) {
+//   const updateUserRef = doc(db, "users", userId);
+//   await updateDoc(updateUserRef, patchedUser)
+//     .then(async () => {
+//       const updateSnap = await getDoc(updateUserRef);
+//       return updateSnap.data();
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     });
+// }
 
-    const bookingWithTimestamp = {
-      ...newBooking,
-      date: Timestamp.fromDate(newBooking.date),
-    };
-    await addDoc(bookingsRef, bookingWithTimestamp);
-    console.log("Booking created successfully!");
-  } catch (error) {
-    console.error("Error: Booking failed!", error);
-  }
-}
-
-export async function createFeedback(newFeedback: {
-  author: string;
-  body: string;
-  booking_id: string;
-  date: Date;
-  dj: string;
-  stars: number;
-  title: string;
-}) {
-  try {
-    await addDoc(feedbackRef, newFeedback);
-  } catch (error) {
-    console.error("Error: Feedback failed!");
-  }
-}
-
-export async function patchDj(
-  djId: string,
-  patchedDJ: {
-    city?: string;
-    username?: string;
-    genres?: string[];
-    occasions?: string[];
-    price?: number;
-    description?: string;
-    profile_picture?: string | null | undefined;
-  }
-) {
-  const updateDjRef = doc(db, "djs", djId);
-  await updateDoc(updateDjRef, patchedDJ)
-    .then(async () => {
-      const updateSnap = await getDoc(updateDjRef);
-      return updateSnap.data();
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}
-
-export async function patchUser(
-  userId: string,
-  patchedUser: {
-    first_name?: string;
-    surname?: string;
-    city?: string;
-    username?: string;
-    profile_picture?: string | null | undefined;
-  }
-) {
-  const updateUserRef = doc(db, "users", userId);
-  await updateDoc(updateUserRef, patchedUser)
-    .then(async () => {
-      const updateSnap = await getDoc(updateUserRef);
-      return updateSnap.data();
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}
-
-// main().catch((err) => console.error(err));
+// // main().catch((err) => console.error(err));
