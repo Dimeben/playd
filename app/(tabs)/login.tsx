@@ -1,5 +1,5 @@
 // Login.tsx
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -12,36 +12,64 @@ import {
   Image,
 } from "react-native";
 import { Link, useRouter } from "expo-router";
-import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
+import { signIn } from "@/firebase/firestore";
+import { AuthContext } from "@/contexts/AuthContext";
+import { isDjAccount } from "@/firebase/utils";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const { isAuthenticated, userId, username } = useContext(AuthContext);
 
   const router = useRouter();
-  const auth = getAuth();
+
+  const clearForm = () => {
+    setEmail("");
+    setPassword("");
+  };
 
   const handleLogin = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
+      if (!email || !password) {
+        Alert.alert("Error", "Please enter an email and password");
+        return;
+      }
+      await signIn(email, password);
 
-      router.push("/(tabs)/profile");
-      clearForm()
+      const checkUserId = () => {
+        if (userId) {
+          proceedWithLogin(userId);
+        } else {
+          setTimeout(checkUserId, 500);
+        }
+      };
+
+      checkUserId();
     } catch (error) {
       Alert.alert("Login Error", "Invalid email or password");
     }
   };
 
-  const clearForm = () => {
-    setEmail("");
-    setPassword("");
-  }
+  const proceedWithLogin = async (userId: string) => {
+    try {
+      if (!userId) {
+        Alert.alert("Error", "UserID does not exist");
+        return;
+      }
+      const isDj = await isDjAccount(userId);
+
+      if (isDj) {
+        router.push("/(tabs)/djprofile");
+        clearForm();
+      } else {
+        router.push("/(tabs)/profile");
+        clearForm();
+      }
+    } catch (error) {
+      Alert.alert("Login Error", "Something went wrong!");
+    }
+  };
 
   return (
     <View style={styles.container}>
