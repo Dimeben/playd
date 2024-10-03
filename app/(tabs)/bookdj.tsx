@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Image } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { createBooking } from "@/firebase/firestore";
 import moment from "moment";
+import { getFeedbackByDj } from "@/firebase/firestore";
+import { ScrollView } from "react-native-gesture-handler";
 
 const BookDj = () => {
   const router = useRouter();
@@ -24,6 +26,22 @@ const BookDj = () => {
     occasion: "",
     dj: selectedDj?.username || "",
   });
+
+  const [feedbackData, setFeedbackData] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchFeedback = async () => {
+      if (selectedDj) {
+        try {
+          const feedbackArray = await getFeedbackByDj(selectedDj.id);
+          setFeedbackData(feedbackArray);
+        } catch (error) {
+          console.log("Error fetching feedback: ", error);
+        }
+      }
+    };
+    fetchFeedback();
+  }, [selectedDj]);
 
   const handleDateInput = (text: string) => {
     const cleanedText = text.replace(/\D/g, "");
@@ -178,6 +196,23 @@ const BookDj = () => {
     </View>
   );
 };
+
+{
+  /* <Text style={styles.header}>Reviews</Text>;
+<ScrollView contentContainerStyle={{ padding: 10}}>
+{feedbackData.length === 0 ? (
+  <Text>No Feedback Available</Text>
+) : (
+  feedbackData.map(feedback =>(
+    <View key={feedback.id} style={styles.feedbackContainer}>
+      <Text style={styles.}>Text:{feedback.}</Text>
+      <Text style={styles.}>Text:{feedback.}</Text>
+      <Text style={styles.}>Text:{feedback.}</Text>
+    </View>
+  ))
+)}
+</ScrollView> */
+}
 
 const styles = StyleSheet.create({
   container: {
