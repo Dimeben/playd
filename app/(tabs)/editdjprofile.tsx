@@ -9,367 +9,114 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { AuthContext } from "@/contexts/AuthContext";
-import { db } from "@/firebase";
-import { auth } from "../../firebase";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import { setupMicrotasks } from "react-native-reanimated/lib/typescript/reanimated2/threads";
+import { patchDj } from "../../firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 
 const EditDjProfile = () => {
   const router = useRouter();
-  const { userId, username } = useContext(AuthContext);
-
-  const [updateUsername, setUpdateUsername] = useState("");
-  const [updatePassword, setUpdatePassword] = useState("");
-  const [updateFirstName, setUpdateFirstName] = useState("");
-  const [updateSurname, setUpdateSurname] = useState("");
-  const [updateCity, setUpdateCity] = useState("");
-  const [updateGenre, setUpdateGenre] = useState([]);
-  const [updateOccasions, setUpdateOccasions] = useState([]);
-  const [updatePrice, setUpdatePrice] = useState();
-  const [updateDescription, setUpdateDescription] = useState("");
-
+  const { userId } = useContext(AuthContext);
+  const [dj, setDj] = useState({});
+  const [updateFields, setUpdateFields] = useState({
+    username: "",
+    city: "",
+    price: "",
+    description: ""
+  });
   const [updateMessage, setUpdateMessage] = useState("");
   const [goBackIsVisible, setGoBackIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [addGenre, setAddGenre] = useState([]);
-
-  const successMessage = "Sucessfully Updated ";
-
-  const inputRef = useRef();
-
-  //   const usernameRef = useRef("");
-  //   const passwordRef = useRef("");
-  //   const firstnameRef = useRef("");
-  //   const surnameRef = useRef("");
-  //   const cityRef = useRef("");
-  //   const genreRef = useRef("");
-  //   const occasionsRef = useRef("");
-  //   const priceRef = useRef("");
-  //   const descriptionRef = useRef("");
-
-  const docRef = doc(
-    db,
-    "djs",
-    `${userId != null ? userId : "30ooJWJYBoNFJkCugnOE"}`
-  );
-  const [dj, setDj] = useState({});
   useEffect(() => {
-    const getDjData = () => {
-      getDoc(docRef)
-        .then((data) => {
-          const snapDoc = data.data();
-          if (snapDoc) {
-            setDj(snapDoc);
-          } else console.log("Dj doesn't exist");
-        })
-        .catch((err) => console.log(err.message));
+    const getDjData = async () => {
+      if (!userId) {
+        console.log("User ID is null");
+        setIsLoading(false);
+        return;
+      }
+      try {
+        const docRef = doc(db, "djs", userId);
+        const data = await getDoc(docRef);
+        if (data.exists()) {
+          setDj(data.data());
+          setUpdateFields(data.data());
+        } else {
+          console.log("DJ doesn't exist");
+        }
+      } catch (error) {
+        console.log((error as Error).message);
+      }
+      setIsLoading(false); // Ensure loading state is updated after fetching data
     };
+
     getDjData();
-  }, [dj]);
+  }, [userId]);
 
-  const updatePwd = () => {
-    sendPasswordResetEmail(auth, email)
-      .then(() => {
-        setUpdateMessage("Password reset sent to your email!");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ..
-      });
+  const handleInputChange = (field, value) => {
+    setUpdateFields((prev) => ({ ...prev, [field]: value }));
   };
 
-  const addGenres = () => {
-    const data = {
-      genres: addGenre,
-    };
-    docRef
-      .add(data)
-      .then((prevData) => {
-        setAddGenre([{ ...prevData, data }]);
-        // release keyboard
-        //   Keyboard.dismiss();
-        setUpdateMessage(successMessage + "Genres");
-        setGoBackIsVisible(true);
-        console.log("clicked");
-      })
-      .catch((err) => {
-        Alert.alert(err);
-      });
-  };
-
-  {
-    /*
-      const addGenre = () => {
-    if (genre && !genres.includes(genre)) {
-      setGenres([...genres, genre]);
-      setGenre("");
-    }
-  };
-  */
-  }
-
-  const addOccasions = () => {};
-  //   const updateDJUsername = () => {
-  //     const usernameDoc = doc(db, "djs", userId);
-  //     updateDoc(usernameDoc, { username: updateUsername }).then(() =>
-  //       setUpdateUsernameMessage(successMessage + "Username")
-  //     );
-  //   };
-
-  const updateDJUsername = async () => {
+  const updateDjProfile = async () => {
     try {
-      const djDoc = doc(db, "djs", userId);
-      await updateDoc(djDoc, { username: updateUsername });
-      setUpdateMessage(successMessage + "Username");
+      const updatedData = {
+        ...updateFields,
+        price: updateFields.price ? parseFloat(updateFields.price) : undefined // Ensure price is a number
+      };
+      const updatedDj = await patchDj(userId, updatedData);
+      setDj(updatedDj); // Update local DJ state if needed
+      setUpdateMessage("Successfully Updated Profile");
       setGoBackIsVisible(true);
     } catch (err) {
-      console.log(err.message);
+      console.error(err.message);
+      Alert.alert("Update Failed", err.message);
     }
   };
 
-  const updateDJFirstName = async () => {
-    try {
-      const djDoc = doc(db, "djs", userId);
-
-      await updateDoc(djDoc, { first_name: updateFirstName });
-      setUpdateMessage(successMessage + "First Name");
-      setGoBackIsVisible(true);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-
-  const updateDJSurname = async () => {
-    try {
-      const djDoc = doc(db, "djs", userId);
-
-      await updateDoc(djDoc, { surname: updateSurname });
-      setUpdateMessage(successMessage + "Surname");
-      setGoBackIsVisible(true);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-
-  const updateDJCity = async () => {
-    try {
-      const djDoc = doc(db, "djs", userId);
-
-      await updateDoc(djDoc, { city: updateCity });
-      setUpdateMessage(successMessage + "City");
-      setGoBackIsVisible(true);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-
-  const updateDJPrice = async () => {
-    try {
-      const djDoc = doc(db, "djs", userId);
-
-      await updateDoc(djDoc, { price: updatePrice });
-      setUpdateMessage(successMessage + "Price");
-      setGoBackIsVisible(true);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-
-  const updateDJDescription = async () => {
-    try {
-      const djDoc = doc(db, "djs", userId);
-
-      await updateDoc(djDoc, { description: updateDescription });
-      setUpdateMessage(successMessage + "Description");
-      setGoBackIsVisible(true);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
+  // const resetPassword = async () => {
+  //   const email = ""
+  //   try {
+  //     await sendPasswordResetEmail(auth, email);
+  //     setUpdateMessage("Password reset email sent!");
+  //   } catch (error) {
+  //     Alert.alert("Error", error.message);
+  //   }
+  // };
 
   return (
     <ScrollView>
       <View style={styles.container}>
         <SafeAreaView />
         <Text style={styles.heading}>Edit Your Profile...</Text>
-        <View>
-          {goBackIsVisible && (
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => router.back()}
-            >
-              <Text style={styles.buttonText}>Go Back</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-        <Text></Text>
-        <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              label="Username"
-              ref={inputRef}
-              placeholder={`${
-                dj.username === "" ? "Write your username..." : dj.username
-              }`}
-              placeholderTextColor={"black"}
-              value={updateUsername}
-              onChangeText={setUpdateUsername}
-              style={styles.input}
-              underlineColorAndroid="transparent"
-              autoCapitalize="none"
-            />
-          </View>
-
-          <TouchableOpacity style={styles.button} onPress={updateDJUsername}>
-            <Text style={styles.buttonText}>Submit</Text>
+        {goBackIsVisible && (
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => router.back()}
+          >
+            <Text style={styles.buttonText}>Go Back</Text>
           </TouchableOpacity>
-        </View>
-        <View style={styles.formContainer}>
-          <TouchableOpacity style={styles.buttonPassword} onPress={updatePwd}>
-            <Text style={styles.passwordText}>Password Reset Button</Text>
-          </TouchableOpacity>
-        </View>
-
-        {updateMessage != "" && (
-          <Text style={styles.messageText}>
-            <SafeAreaView />
-            {updateMessage}
-          </Text>
         )}
-        <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
+        <Text style={styles.messageText}>{updateMessage}</Text>
+        {Object.keys(updateFields).map((key) => (
+          <View key={key} style={styles.formContainer}>
             <TextInput
-              label="First Name"
-              placeholder={`${
-                dj.first_name === "" ? "Write first name..." : dj.first_name
-              }`}
+              placeholder={`Enter your ${key}...`}
               placeholderTextColor={"black"}
-              value={updateFirstName}
-              onChangeText={setUpdateFirstName}
+              value={updateFields[key].toString()}
+              onChangeText={(value) => handleInputChange(key, value)}
               style={styles.input}
               underlineColorAndroid="transparent"
             />
           </View>
-          <TouchableOpacity style={styles.button} onPress={updateDJFirstName}>
-            <Text style={styles.buttonText}>Submit</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              label="Surname"
-              placeholder={`${
-                dj.surname === "" ? "Write your surname..." : dj.surname
-              }`}
-              placeholderTextColor={"black"}
-              value={updateSurname}
-              onChangeText={(surname) => setUpdateSurname(surname)}
-              style={styles.input}
-              underlineColorAndroid="transparent"
-            />
-          </View>
-          <TouchableOpacity style={styles.button} onPress={updateDJSurname}>
-            <Text style={styles.buttonText}>Submit</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              label="city"
-              placeholder={`${dj.city === "" ? "Write your city..." : dj.city}`}
-              placeholderTextColor={"black"}
-              value={updateCity}
-              onChangeText={(city) => setUpdateCity(city)}
-              style={styles.input}
-              underlineColorAndroid="transparent"
-            />
-          </View>
-          <TouchableOpacity style={styles.button} onPress={updateDJCity}>
-            <Text style={styles.buttonText}>Submit</Text>
-          </TouchableOpacity>
-        </View>
-        {/* NEED A FUNCTION TO PATCH THE ARRAYS */}
-        {/* <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              label="genre"
-              placeholder={`${
-                dj.genres === "" ? "Write your genres..." : dj.genres
-              }`}
-              placeholderTextColor={"black"}
-              value={updateGenre}
-              onChangeText={(genre) => setUpdateGenre(genre)}
-              style={styles.input}
-              underlineColorAndroid="transparent"
-            />
-          </View>
-          <TouchableOpacity style={styles.button} onPress={addGenres}>
-            <Text style={styles.buttonText}>Add</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              label="occasions"
-              placeholder={`${
-                dj.occasions === "" ? "Write your occasions..." : dj.occasions
-              }`}
-              placeholderTextColor={"black"}
-              value={updateOccasions}
-              onChangeText={setUpdateOccasions}
-              style={styles.input}
-              underlineColorAndroid="transparent"
-            />
-          </View>
-          <TouchableOpacity style={styles.button} onPress={addOccasions}>
-            <Text style={styles.buttonText}>Add</Text>
-          </TouchableOpacity>
-        </View> */}
-        <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              label="price"
-              placeholder={`${
-                dj.price === "" ? "Write your price..." : dj.price
-              }`}
-              placeholderTextColor={"black"}
-              value={updatePrice}
-              onChangeText={setUpdatePrice}
-              style={styles.input}
-              underlineColorAndroid="transparent"
-              keyboardType="decimal"
-            />
-          </View>
-          <TouchableOpacity style={styles.button} onPress={updateDJPrice}>
-            <Text style={styles.buttonText}>Submit</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              label="description"
-              placeholder={`${
-                dj.description === ""
-                  ? "Write your description..."
-                  : dj.description
-              }`}
-              placeholderTextColor={"black"}
-              value={updateDescription}
-              onChangeText={setUpdateDescription}
-              style={[styles.inputMultiline, styles.multilineText]}
-              underlineColorAndroid="transparent"
-              multiline={true}
-            />
-          </View>
-          <TouchableOpacity style={styles.button} onPress={updateDJDescription}>
-            <Text style={styles.buttonText}>Submit</Text>
-          </TouchableOpacity>
-        </View>
+        ))}
+        <TouchableOpacity style={styles.button} onPress={updateDjProfile}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableOpacity>
+        {/* Uncomment to enable password reset */}
+        {/* <TouchableOpacity style={styles.button} onPress={resetPassword}>
+          <Text style={styles.passwordText}>Reset Password</Text>
+        </TouchableOpacity> */}
       </View>
     </ScrollView>
   );

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Image } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { createBooking } from "@/firebase";
+import { createBooking } from "../../firebase/firestore";
 import moment from "moment"; 
 
 const BookDj = () => {

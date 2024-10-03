@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { createUser } from '../../firebase'; 
-import { firebase } from "../../firebase"
+import { createUser } from '../../firebase/firestore'; 
 import * as ImagePicker from "expo-image-picker"
 import * as FileSystem from 'expo-file-system'
-import { storage } from '../../firebase';
+import { storage } from '../../firebase/storage';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export default function UserSignUp() {

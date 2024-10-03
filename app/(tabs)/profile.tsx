@@ -10,14 +10,16 @@ import {
   SafeAreaView,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { db } from "../../firebase";
+import { db } from "../../firebase/firebaseConfig";
 import { Link, useLocalSearchParams } from "expo-router";
 import { doc, getDoc } from "firebase/firestore";
 import { AuthContext } from "@/contexts/AuthContext";
 import { getAuth } from "firebase/auth";
+import { User } from "@/firebase/types";
+import { getUserById } from "@/firebase/firestore";
 
 const profile = () => {
-
+  const [user, setUser] = useState<User | undefined>(undefined);
   const { isAuthenticated, userId, username } = useContext(AuthContext);
 
   if (isAuthenticated) {
@@ -26,36 +28,42 @@ const profile = () => {
       "users",
       `${userId != null ? userId : "7uwu0DlglTH6bxSfFZdJ"}`
     );
-    const [user, setUser] = useState({});
+
+
     useEffect(() => {
-      const getUserData = () => {
-        getDoc(docRef)
-          .then((data) => {
-            const snapDoc = data.data();
-            if (snapDoc) {
-              setUser(snapDoc);
-            } else console.log("User doesn't exist");
-          })
-          .catch((err) => console.log(err.message));
+      const fetchUser = async () => {
+        if (userId) {
+          try {
+            const userData = await getUserById(userId);
+            if (userData) {
+              setUser(userData as User);
+            } else {
+              console.log("User doesn't exist");
+            }
+          } catch (err) {
+            console.error("Error fetching user: ", (err as Error).message);
+          }
+        }
       };
-      getUserData();
-    }, [user]);
+  
+      fetchUser();
+    }, [userId]);
 
     return (
       <View style={styles.container}>
-        <SafeAreaView />
-        <Text style={styles.heading}>{user.username}</Text>
-        <Image
-          style={styles.image}
-          source={{
-            uri:
-              user.profile_picture != null
-                ? user.profile_picture
-                : "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/User-2.webp?alt=media&token=8284f3f1-d2e5-40bf-af04-6d395211d6c8"
-,
-          }}
-          contentFit="cover"
-        />
+      <SafeAreaView />
+      <Text style={styles.heading}>{user?.username}</Text>
+      <Image
+        style={styles.image}
+        source={{
+          uri:
+            user?.profile_picture != null
+              ? user.profile_picture
+              : "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/User-2.webp?alt=media&token=8284f3f1-d2e5-40bf-af04-6d395211d6c8",
+        }}
+        resizeMode="cover"
+      />
+      {user && (
         <View style={styles.card}>
           <Pressable>
             <Text>Username: {user.username}</Text>
@@ -64,9 +72,9 @@ const profile = () => {
             <Text>City: {user.city}</Text>
           </Pressable>
         </View>
-      </View>
-    );
-  } else
+      )}
+    </View>
+)} else
     return (
       <SafeAreaView>
         <Text style={styles.loginMessage}>You must login first</Text>

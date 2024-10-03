@@ -1,24 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, Image, StyleSheet, ActivityIndicator, Pressable, Button } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { getAllDjsList } from "../../firebase";
+import { getAllDjs } from "../../firebase/firestore";
 import { useRouter } from "expo-router"; 
 import { ScrollView } from "react-native-gesture-handler";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
-interface DJ {
-  id?: string;
-  username: string;
-  city: string;
-  genres: string[];
-  occasions: string[];
-  price: number;
-  profile_picture: string;
-}
+import { DJ } from "../../firebase/types";
 
 const DjList = () => {
-  const [djs, setDjs] = useState<DJ[]>([]);
-  const [filteredDjs, setFilteredDjs] = useState<DJ[]>([]); 
+  const [djs, setDjs] = useState<import("../../firebase/types").DJ[]>([]);
+  const [filteredDjs, setFilteredDjs] = useState<import("../../firebase/types").DJ[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCity, setSelectedCity] = useState<string | undefined>(); 
   const [selectedGenre, setSelectedGenre] = useState<string | undefined>(); 
@@ -32,16 +23,27 @@ const DjList = () => {
   useEffect(() => {
     const fetchDjs = async () => {
       try {
-        const djData = await getAllDjsList();
-        const validDjs = djData.filter((dj) => dj.id !== undefined) as DJ[];
+        const djData = await getAllDjs();
+
+        const validDjs = djData.filter((dj): dj is DJ => {
+        
+          return (
+            dj.username !== undefined &&
+            dj.city !== undefined &&
+            Array.isArray(dj.genres) &&
+            Array.isArray(dj.occasions) &&
+            typeof dj.price === 'number' &&
+            (typeof dj.profile_picture === 'string' || dj.profile_picture === null)
+          )
+        });
+
         setDjs(validDjs);
 
-        
         setCityOptions([...new Set(validDjs.map((dj) => dj.city))]);
         setGenreOptions([...new Set(validDjs.flatMap((dj) => dj.genres))]);
         setOccasionOptions([...new Set(validDjs.flatMap((dj) => dj.occasions))]);
 
-        setFilteredDjs(validDjs); 
+        setFilteredDjs(validDjs);
       } catch (error) {
         console.error("Error fetching DJs: ", error);
       } finally {
@@ -95,6 +97,13 @@ const DjList = () => {
     });
   };
 
+  const handleNavigateToEdit = (dj: DJ) => {
+    router.push({
+      pathname: "/(tabs)/djprofile",
+      params: { dj: JSON.stringify(dj) }, 
+    });
+  };
+
   const renderDjCard = ({ item }: { item: DJ }) => (
     <Pressable onPress={() => handleNavigateToProfile(item)}>
       <View style={styles.card}>
@@ -115,6 +124,7 @@ const DjList = () => {
           {item.price !== undefined && (
             <Text style={styles.price}>Price: £{item.price}</Text>
           )}
+          <Button title="Edit" onPress={() => handleNavigateToEdit(item)} />
         </View>
       </View>
     </Pressable>
@@ -129,7 +139,6 @@ const DjList = () => {
     <View style={styles.container}>
       <Text style={styles.header}>Filter DJs By:</Text>
 
-      {/* City Picker */}
       <Picker
         selectedValue={selectedCity}
         style={styles.picker}
@@ -141,7 +150,6 @@ const DjList = () => {
         ))}
       </Picker>
 
-      {/* Genre Picker */}
       <Picker
         selectedValue={selectedGenre}
         style={styles.picker}
@@ -154,7 +162,6 @@ const DjList = () => {
         ))}
       </Picker>
 
-      {/* Occasion Picker */}
       <Picker
         selectedValue={selectedOccasion}
         style={styles.picker}
@@ -167,14 +174,13 @@ const DjList = () => {
         ))}
       </Picker>
 
-      {/* Clear Filters Button */}
       <Button title="Clear All Filters" onPress={clearFilters} />
 
-      {/* Filtered DJ List */}
+
       <FlatList
         data={filteredDjs}
         renderItem={renderDjCard}
-        keyExtractor={(item, index) => item.id || index.toString()}
+        keyExtractor={(item, index) => item.username || index.toString()}
         contentContainerStyle={styles.listContainer}
       />
     </View>
