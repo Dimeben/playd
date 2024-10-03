@@ -61,6 +61,12 @@ export default function RootLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="editdjprofile"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }
