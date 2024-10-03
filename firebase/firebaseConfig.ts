@@ -8,7 +8,7 @@ import {
 } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform } from "react-native";
-import { firebaseConfig } from "../firebase-authkey";
+import { firebaseConfig } from "../firebase-authkey.js";
 import firebase from "firebase/compat/app";
 
 export { firebase };
