@@ -1,5 +1,5 @@
 import { query, where, getDocs, getDoc, doc } from "firebase/firestore";
-import { db } from "./firebaseConfig"
+import { db } from "./firebaseConfig";
 
 export async function isUsernameTaken(
   username: string,
@@ -10,7 +10,7 @@ export async function isUsernameTaken(
   return !querySnapshot.empty;
 }
 
-export async function isDjAccount(djId: string): Promise<boolean> {
+export async function isDjAccount(djId: string) {
   let isDj = true;
   try {
     const docRef = doc(db, "djs", djId);

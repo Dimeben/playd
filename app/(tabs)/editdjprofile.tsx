@@ -10,14 +10,20 @@ import {
   Alert,
 } from "react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { AuthContext } from "../../contexts/AuthContext";
 import { db } from "../../firebase/firebaseConfig";
 import { auth } from "../../firebase/firebaseConfig";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import firebase from "../../firebase/firebaseConfig";
+
 const EditDjProfile = () => {
   const router = useRouter();
+  const params = useLocalSearchParams();
+  {
+    console.log(params.username);
+  }
   const { userId, username } = useContext(AuthContext);
 
   const [updateUsername, setUpdateUsername] = useState("");
@@ -33,10 +39,9 @@ const EditDjProfile = () => {
   const [goBackIsVisible, setGoBackIsVisible] = useState(false);
 
   const [addGenre, setAddGenre] = useState([]);
+  const [addedOccasion, setAddedOccasion] = useState([]);
 
   const successMessage = "Sucessfully Updated ";
-
-  const inputRef = useRef();
 
   //   const usernameRef = useRef("");
   //   const passwordRef = useRef("");
@@ -80,24 +85,24 @@ const EditDjProfile = () => {
       });
   };
 
-  const addGenres = () => {
-    const data = {
-      genres: addGenre,
-    };
-    docRef
-      .add(data)
-      .then((prevData) => {
-        setAddGenre([{ ...prevData, data }]);
-        // release keyboard
-        //   Keyboard.dismiss();
-        setUpdateMessage(successMessage + "Genres");
-        setGoBackIsVisible(true);
-        console.log("clicked");
-      })
-      .catch((err) => {
-        Alert.alert(err);
-      });
-  };
+  // const addGenres = () => {
+  //   const data = {
+  //     genres: addGenre,
+  //   };
+  //   docRef
+  //     .add(data)
+  //     .then((prevData) => {
+  //       setAddGenre([{ ...prevData, data }]);
+  //       // release keyboard
+  //       //   Keyboard.dismiss();
+  //       setUpdateMessage(successMessage + "Genres");
+  //       setGoBackIsVisible(true);
+  //       console.log("clicked");
+  //     })
+  //     .catch((err) => {
+  //       Alert.alert(err);
+  //     });
+  // };
 
   {
     /*
@@ -110,13 +115,23 @@ const EditDjProfile = () => {
   */
   }
 
-  const addOccasions = () => {};
-  //   const updateDJUsername = () => {
-  //     const usernameDoc = doc(db, "djs", userId);
-  //     updateDoc(usernameDoc, { username: updateUsername }).then(() =>
-  //       setUpdateUsernameMessage(successMessage + "Username")
-  //     );
-  //   };
+  const addOccasions = async () => {
+    try {
+      const djDoc = doc(db, "djs", userId);
+      // const prevOccasions = db.collection("djs").where("occasions")
+      // const prevOccasionsSnapsho = await prevOccasions.get()
+
+      await updateDoc(djDoc, {
+        occasions: [addedOccasion, ...params?.occasions],
+      });
+      // docRef.update({
+      //   occasions: firebase.firestore.occasions.arrayUnion(addedOccasion),
+      // });
+      Alert.alert("Occasion added!");
+    } catch (err) {
+      Alert.alert("Error adding to occasions");
+    }
+  };
 
   const updateDJUsername = async () => {
     try {
@@ -198,7 +213,7 @@ const EditDjProfile = () => {
           {goBackIsVisible && (
             <TouchableOpacity
               style={styles.button}
-              onPress={() => router.back()}
+              onPress={() => router.push("/(tabs)/djprofile")}
             >
               <Text style={styles.buttonText}>Go Back</Text>
             </TouchableOpacity>
@@ -209,7 +224,6 @@ const EditDjProfile = () => {
           <View style={styles.inputContainer}>
             <TextInput
               label="Username"
-              ref={inputRef}
               placeholder={`${
                 dj.username === "" ? "Write your username..." : dj.username
               }`}
@@ -308,25 +322,30 @@ const EditDjProfile = () => {
           <TouchableOpacity style={styles.button} onPress={addGenres}>
             <Text style={styles.buttonText}>Add</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <TextInput
               label="occasions"
               placeholder={`${
-                dj.occasions === "" ? "Write your occasions..." : dj.occasions
+                dj.occasions?.length === 0
+                  ? "Add your occasion..."
+                  : dj.occasions
               }`}
               placeholderTextColor={"black"}
-              value={updateOccasions}
-              onChangeText={setUpdateOccasions}
+              value={addedOccasion}
+              onChangeText={setAddedOccasion}
               style={styles.input}
               underlineColorAndroid="transparent"
             />
           </View>
-          <TouchableOpacity style={styles.button} onPress={addOccasions}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => addOccasions(userId, addedOccasion)}
+          >
             <Text style={styles.buttonText}>Add</Text>
           </TouchableOpacity>
-        </View> */}
+        </View>
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <TextInput

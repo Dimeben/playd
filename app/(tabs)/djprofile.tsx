@@ -18,8 +18,8 @@ import { Link } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
 import { getDjById, signOut } from "../../firebase/firestore";
 import FeedbackForSingleDj from "../../components/FeedbackForSingleDj";
-import { AuthContext } from "@/contexts/AuthContext";
-import { DJ } from "@/firebase/types";
+import { AuthContext } from "../../contexts/AuthContext";
+import { DJ } from "../../firebase/types";
 import { WebView } from "react-native-webview";
 import SoundCloud from "@/components/SoundCloud";
 import { deleteDJ } from "../../firebase/firestore";
@@ -145,7 +145,14 @@ const DjProfilePage = () => {
             </Pressable>
           </View>
 
-          <Link style={styles.button} href="/(tabs)/editdjprofile">
+          <Link
+            style={styles.button}
+            href={{
+              pathname: "/(tabs)/editdjprofile",
+              // /* 1. Navigate to the details route with query params */
+              params: { dj: dj },
+            }}
+          >
             <Text style={styles.buttonText}>Edit Profile</Text>
           </Link>
 

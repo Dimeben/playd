@@ -6,13 +6,10 @@ export default function RootLayout() {
     <>
       <AuthProvider>
         <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen
-            name="index"
-            options={{ title: "Landing Page", headerShown: false }}
+            name="(tabs)/manageBooks"
+            options={{ title: "Bookings" }}
           />
-
-          <Stack.Screen name="+not-found" />
         </Stack>
       </AuthProvider>
     </>
