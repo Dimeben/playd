@@ -34,3 +34,16 @@ export interface Bookings {
   location: string;
   occasion: string;
 }
+
+export interface Booking {
+  id: string;
+  dj: string;
+  event_details: string;
+  date: {
+    seconds: number;
+    nanoseconds: number;
+  };
+  location: string;
+  status: string;
+}
+

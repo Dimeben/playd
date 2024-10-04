@@ -22,7 +22,7 @@ import {
 } from "firebase/auth";
 import { app, db, auth } from "./firebaseConfig";
 import { isUsernameTaken } from "./utils";
-import { DJ, Feedback, Bookings } from "./types";
+import { DJ, Feedback, Bookings, Booking } from "./types";
 
 export const usersRef = collection(db, "users");
 export const djRef = collection(db, "djs");
@@ -173,15 +173,17 @@ export function signIn(email: string, password: string) {
   if (!auth) {
     throw new Error("Authentication instance is undefined.");
   }
-  signInWithEmailAndPassword(auth, email, password)
+  return signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
       console.log("Signed in: ", user);
+      return user;
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
       console.error("Error: ", errorCode, errorMessage);
+      throw new Error(error);
     });
 }
 
@@ -225,29 +227,45 @@ export async function getFeedbackByDj(loggedInDj: string) {
   return feedbackArray;
 }
 
-export async function getBookingByDj(loggedInDj: string) {
-  const bookingsQuery = query(bookingsRef, where("dj", "==", loggedInDj));
-  const bookingArray: Bookings[] = [];
-  const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
-    bookingsQuery
-  );
-  querySnapshot.forEach((doc) => {
-    bookingArray.push(doc.data() as Bookings);
-  });
-  return bookingArray;
-}
+export const getBookingByDj = async (djId: string): Promise<Booking[]> => {
+  try {
+    const bookingsRef = collection(db, "bookings");
+    const djQuery = query(bookingsRef, where("djId", "==", djId));
+    const djQuerySnapshot = await getDocs(djQuery);
 
-export async function getBookingByUser(loggedInUser: string) {
-  const bookingsQuery = query(bookingsRef, where("client", "==", loggedInUser));
-  const bookingArray: Bookings[] = [];
-  const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
-    bookingsQuery
-  );
-  querySnapshot.forEach((doc) => {
-    bookingArray.push(doc.data() as Bookings);
-  });
-  return bookingArray;
-}
+    const fetchedBookings = djQuerySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Booking[];
+
+    console.log("Fetched bookings for DJ:", fetchedBookings);
+    return fetchedBookings;
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    return [];
+  }
+};
+
+
+
+export const getBookingByUser = async (userId: string): Promise<Booking[]> => {
+  try {
+    const bookingsRef = collection(db, "bookings");
+    const userQuery = query(bookingsRef, where("userId", "==", userId));
+    const userQuerySnapshot = await getDocs(userQuery);
+
+    const fetchedBookings = userQuerySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Booking[];
+
+    console.log("Fetched bookings for user:", fetchedBookings);
+    return fetchedBookings;
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    return [];
+  }
+};
 
 export async function getUserById(userId: string) {
   const singleUserRef = doc(db, "users", userId);
@@ -277,6 +295,8 @@ export async function createBooking(newBooking: {
   event_details: string;
   date: Date;
   dj: string;
+  djId: string;
+  userId: string;
   location: string;
   occasion: string;
 }) {
@@ -284,6 +304,7 @@ export async function createBooking(newBooking: {
     const bookingWithTimestamp = {
       ...newBooking,
       date: Timestamp.fromDate(newBooking.date),
+      status: "pending",
     };
     await addDoc(bookingsRef, bookingWithTimestamp);
     console.log("Booking created successfully!");
@@ -291,6 +312,16 @@ export async function createBooking(newBooking: {
     console.error("Error: Booking failed!", error);
   }
 }
+
+export const updateBookingStatus = async (bookingId: string, newStatus: string) => {
+  try {
+    const bookingRef = doc(db, "bookings", bookingId);
+    await updateDoc(bookingRef, { status: newStatus });
+    console.log(`Booking ${bookingId} updated to ${newStatus}`);
+  } catch (error) {
+    console.error("Error updating booking status: ", error);
+  }
+};
 
 export async function createFeedback(newFeedback: {
   author: string;
