@@ -66,7 +66,7 @@ const EditDjProfile = () => {
         .catch((err) => console.log(err.message));
     };
     getDjData();
-  }, [dj]);
+  }, [userId]);
 
   const updatePwd = () => {
     sendPasswordResetEmail(auth, email)
