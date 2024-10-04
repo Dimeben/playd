@@ -20,7 +20,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { isAuthenticated, userId, username } = useContext(AuthContext);
+  const [userId, setUserId] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -35,17 +35,15 @@ export default function Login() {
         Alert.alert("Error", "Please enter an email and password");
         return;
       }
-      await signIn(email, password);
+      const user = await signIn(email, password);
 
-      const checkUserId = () => {
-        if (userId) {
-          proceedWithLogin(userId);
-        } else {
-          setTimeout(checkUserId, 500);
-        }
-      };
-
-      checkUserId();
+      if (user && user.uid) {
+        const userId: string = user.uid;
+        setUserId(userId);
+        await proceedWithLogin(userId);
+      } else {
+        Alert.alert("UserId cannot be retrieved, please try again.");
+      }
     } catch (error) {
       Alert.alert("Login Error", "Invalid email or password");
     }
@@ -60,12 +58,13 @@ export default function Login() {
       const isDj = await isDjAccount(userId);
 
       if (isDj) {
+        console.log("DJ PROFILE REDIRECT");
         router.push("/(tabs)/djprofile");
-        clearForm();
       } else {
+        console.log("USER PROFILE REDIRECT");
         router.push("/(tabs)/profile");
-        clearForm();
       }
+      clearForm();
     } catch (error) {
       Alert.alert("Login Error", "Something went wrong!");
     }

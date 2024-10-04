@@ -173,15 +173,17 @@ export function signIn(email: string, password: string) {
   if (!auth) {
     throw new Error("Authentication instance is undefined.");
   }
-  signInWithEmailAndPassword(auth, email, password)
+  return signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
       console.log("Signed in: ", user);
+      return user;
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
       console.error("Error: ", errorCode, errorMessage);
+      throw new Error(error);
     });
 }
 
