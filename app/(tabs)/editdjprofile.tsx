@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
   input: {
     height: 48,
     border: 2,
-    borderRadius: 5,
+    borderRadius: 10,
     overflow: "hidden",
     backgroundColor: "white",
     paddingLeft: 16,
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
   inputMultiline: {
     height: "auto",
     border: 2,
-    borderRadius: 5,
+    borderRadius: 10,
     overflow: "hidden",
     backgroundColor: "white",
     paddingLeft: 16,
@@ -420,6 +420,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderBottomWidth: 1,
     width: 50,
+    marginBottom: 5,
+    borderRadius: 10,
   },
   button: {
     height: 47,
