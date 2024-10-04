@@ -55,16 +55,20 @@ const EditDjProfile = () => {
   );
   const [dj, setDj] = useState({});
   useEffect(() => {
+    console.log("editdjprofile useEffect - Line 58")
     const getDjData = () => {
       getDoc(docRef)
         .then((data) => {
+          console.log("editdjprofile useEffect - Line 62")
           const snapDoc = data.data();
           if (snapDoc) {
+            console.log("editdjprofile useEffect - Line 65")
             setDj(snapDoc);
           } else console.log("Dj doesn't exist");
         })
         .catch((err) => console.log(err.message));
     };
+    console.log("editdjprofile useEffect - Line 71")
     getDjData();
   }, [userId]);
 

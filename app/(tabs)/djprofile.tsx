@@ -38,29 +38,36 @@ const DjProfilePage = () => {
   ></iframe>`}`;
 
   useEffect(() => {
+    console.log("djprofile useEffect - Line 41")
     const fetchDjData = async () => {
       setIsLoading(true);
       if (!userId) {
+        console.log("djprofile useEffect - Line 45")
         console.log("User ID is null");
         setIsLoading(false);
         return;
       }
 
       try {
+        console.log("djprofile useEffect - Line 52")
         const djData = await getDjById(userId);
         if (djData) {
+          console.log("djprofile useEffect - Line 55")
           setDj(djData as DJ);
         } else {
+          console.log("djprofile useEffect - Line 58")
           console.log("DJ not found");
         }
       } catch (error) {
+        console.log("djprofile useEffect - Line 62")
         console.error("Error fetching DJ data:", (error as Error).message);
         Alert.alert("Error", "Unable to fetch DJ data. Please try again.");
       } finally {
+        console.log("djprofile useEffect - Line 66")
         setIsLoading(false);
       }
     };
-
+    console.log("djprofile useEffect - Line 70")
     fetchDjData();
   }, [userId]);
 
