@@ -14,7 +14,7 @@ import { getAllDjs } from "../../firebase/firestore";
 import { useRouter } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { DJ } from "../../firebase/types";
- 
+
 const DjList = () => {
   const [djs, setDjs] = useState<import("../../firebase/types").DJ[]>([]);
   const [filteredDjs, setFilteredDjs] = useState<
@@ -30,7 +30,7 @@ const DjList = () => {
   const [cityOptions, setCityOptions] = useState<string[]>([]);
   const [genreOptions, setGenreOptions] = useState<string[]>([]);
   const [occasionOptions, setOccasionOptions] = useState<string[]>([]);
- 
+
   useEffect(() => {
     const fetchDjs = async () => {
       try {
@@ -49,15 +49,15 @@ const DjList = () => {
               dj.profile_picture === null)
           );
         });
- 
+
         setDjs(validDjs);
- 
+
         setCityOptions([...new Set(validDjs.map((dj) => dj.city))]);
         setGenreOptions([...new Set(validDjs.flatMap((dj) => dj.genres))]);
         setOccasionOptions([
           ...new Set(validDjs.flatMap((dj) => dj.occasions)),
         ]);
- 
+
         setFilteredDjs(validDjs);
       } catch (error) {
         console.error("Error fetching DJs: ", error);
@@ -65,53 +65,53 @@ const DjList = () => {
         setLoading(false);
       }
     };
- 
+
     fetchDjs();
   }, []);
- 
+
   const handleCityChange = (city: string | undefined) => {
     setSelectedCity(city);
     setSelectedGenre(undefined);
     setSelectedOccasion(undefined);
   };
- 
+
   const clearFilters = () => {
     setSelectedCity(undefined);
     setSelectedGenre(undefined);
     setSelectedOccasion(undefined);
     setFilteredDjs(djs);
   };
- 
+
   useEffect(() => {
     let filtered = [...djs];
- 
+
     if (selectedCity) {
       filtered = filtered.filter((dj) => dj.city === selectedCity);
     }
- 
+
     if (selectedGenre) {
       filtered = filtered.filter(
         (dj) => Array.isArray(dj.genres) && dj.genres.includes(selectedGenre)
       );
     }
- 
+
     if (selectedOccasion) {
       filtered = filtered.filter(
         (dj) =>
           Array.isArray(dj.occasions) && dj.occasions.includes(selectedOccasion)
       );
     }
- 
+
     setFilteredDjs(filtered);
   }, [selectedCity, selectedGenre, selectedOccasion, djs]);
- 
+
   const handleNavigateToProfile = (dj: DJ) => {
     router.push({
       pathname: "/(tabs)/bookdj",
       params: { dj: JSON.stringify(dj) },
     });
   };
- 
+
   const renderDjCard = ({ item }: { item: DJ }) => (
     <TouchableOpacity
       style={styles.card}
@@ -136,16 +136,16 @@ const DjList = () => {
       <Text style={styles.rating}>Rating: {item.rating}</Text>
     </TouchableOpacity>
   );
- 
+
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
- 
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Text style={styles.header}>Filter DJs By:</Text>
- 
+
         <Picker
           selectedValue={selectedCity}
           style={styles.picker}
@@ -156,7 +156,7 @@ const DjList = () => {
             <Picker.Item key={index} label={city} value={city} />
           ))}
         </Picker>
- 
+
         <Picker
           selectedValue={selectedGenre}
           style={styles.picker}
@@ -168,7 +168,7 @@ const DjList = () => {
             <Picker.Item key={index} label={genre} value={genre} />
           ))}
         </Picker>
- 
+
         <Picker
           selectedValue={selectedOccasion}
           style={styles.picker}
@@ -180,9 +180,9 @@ const DjList = () => {
             <Picker.Item key={index} label={occasion} value={occasion} />
           ))}
         </Picker>
- 
+
         <Button title="Clear All Filters" onPress={clearFilters} />
- 
+
         <FlatList
           data={filteredDjs}
           renderItem={renderDjCard}
@@ -193,9 +193,9 @@ const DjList = () => {
     </GestureHandlerRootView>
   );
 };
- 
+
 export default DjList;
- 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -266,4 +266,3 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 });
- 

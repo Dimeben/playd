@@ -223,10 +223,10 @@ export async function getFeedbackByDj(loggedInDj: string) {
   );
   querySnapshot.forEach((doc) => {
     const feedbackData = doc.data() as Feedback;
-    if (feedbackData.date instanceof firebase.firestore.Timestamp) {
+    if (feedbackData.date instanceof Timestamp) {
       feedbackData.date = feedbackData.date.toDate();
     }
- 
+
     feedbackArray.push(feedbackData);
   });
   return feedbackArray;
@@ -250,8 +250,6 @@ export const getBookingByDj = async (djId: string): Promise<Booking[]> => {
     return [];
   }
 };
-
-
 
 export const getBookingByUser = async (userId: string): Promise<Booking[]> => {
   try {
@@ -318,7 +316,10 @@ export async function createBooking(newBooking: {
   }
 }
 
-export const updateBookingStatus = async (bookingId: string, newStatus: string) => {
+export const updateBookingStatus = async (
+  bookingId: string,
+  newStatus: string
+) => {
   try {
     const bookingRef = doc(db, "bookings", bookingId);
     await updateDoc(bookingRef, { status: newStatus });
