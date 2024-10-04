@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
-  TextInput
+  TextInput,
 } from "react-native";
 import { Link } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
@@ -63,7 +63,6 @@ const DjProfilePage = () => {
 
     fetchDjData();
   }, [userId]);
-
 
   const handleLogout = () => {
     signOut()
@@ -132,8 +131,8 @@ const DjProfilePage = () => {
               <Text>First Name: {dj.first_name}</Text>
               <Text>Surname: {dj.surname}</Text>
               <Text>City: {dj.city}</Text>
-              <Text>Genres: {dj.genres?.join(", ")}</Text>
-              <Text>Occasions: {dj.occasions?.join(", ")}</Text>
+              <Text>Genres: {dj.genres}</Text>
+              <Text>Occasions: {dj.occasions}</Text>
               <Text>Price: {dj.price}</Text>
               <Text>Rating: {dj.rating}</Text>
               <Text>Description: {dj.description}</Text>
