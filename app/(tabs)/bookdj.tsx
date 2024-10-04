@@ -11,8 +11,6 @@ const BookDj = () => {
   const selectedDj = Array.isArray(dj)
     ? JSON.parse(dj[0])
     : dj
-    ? JSON.parse(dj[0])
-    : dj
     ? JSON.parse(dj)
     : null;
 
