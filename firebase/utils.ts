@@ -10,7 +10,7 @@ export async function isUsernameTaken(
   return !querySnapshot.empty;
 }
 
-export async function isDjAccount(djId: string): Promise<boolean> {
+export async function isDjAccount(djId: string) {
   let isDj = true;
   try {
     const docRef = doc(db, "djs", djId);

@@ -222,7 +222,12 @@ export async function getFeedbackByDj(loggedInDj: string) {
     feedbackQuery
   );
   querySnapshot.forEach((doc) => {
-    feedbackArray.push(doc.data() as Feedback);
+    const feedbackData = doc.data() as Feedback;
+    if (feedbackData.date instanceof firebase.firestore.Timestamp) {
+      feedbackData.date = feedbackData.date.toDate();
+    }
+ 
+    feedbackArray.push(feedbackData);
   });
   return feedbackArray;
 }
