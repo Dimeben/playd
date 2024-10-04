@@ -61,8 +61,8 @@ export default function Login() {
         console.log("DJ PROFILE REDIRECT");
         router.push("/(tabs)/djprofile");
       } else {
-        console.log("USER PROFILE REDIRECT");
-        router.push("/(tabs)/profile");
+        console.log("USER HOME REDIRECT");
+        router.push("/(tabs)/listedDjs");
       }
       clearForm();
     } catch (error) {

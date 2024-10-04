@@ -1,8 +1,6 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { useContext, useState } from "react";
-import { isDjAccount } from "@/firebase/utils";
-import { AuthContext } from "@/contexts/AuthContext";
+import { useState } from "react";
 export default function RootLayout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   return (
@@ -41,7 +39,6 @@ export default function RootLayout() {
           ),
         }}
       />
-      //Ternary for if logged in, hide this tab
       <Tabs.Screen
         name={isLoggedIn ? "djprofile" : "login"}
         options={{
@@ -55,7 +52,6 @@ export default function RootLayout() {
           ),
         }}
       />
-      //Ternary for isDJ - If dj, send to djprofile, else profile
       <Tabs.Screen
         name="profile"
         options={{
@@ -65,12 +61,7 @@ export default function RootLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="editdjprofile"
-        options={{
-          href: null,
-        }}
-      />
+      <Tabs.Screen name="editdjprofile" />
     </Tabs>
   );
 }

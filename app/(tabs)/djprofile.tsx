@@ -30,32 +30,32 @@ const DjProfilePage = () => {
   const [soundcloudName, setSoundcloudName] = useState("multunes");
 
   useEffect(() => {
-    if (isAuthenticated) {
-      const fetchDjData = async () => {
-        setIsLoading(true);
-        if (!userId) {
-          console.log("User ID is null");
-          setIsLoading(false);
-          return;
-        }
+    console.log("djprofile useEffect - Line 41");
+    const fetchDjData = async () => {
+      setIsLoading(true);
+      if (!userId) {
+        console.log("djprofile useEffect - Line 45");
+        console.log("User ID is null");
+        setIsLoading(false);
+        return;
+      }
 
-        try {
-          const djData = await getDjById(userId);
-          if (djData) {
-            setDj(djData as DJ);
-          } else {
-            console.log("DJ not found");
-          }
-        } catch (error) {
-          console.error("Error fetching DJ data:", (error as Error).message);
-          Alert.alert("Error", "Unable to fetch DJ data. Please try again.");
-        } finally {
-          setIsLoading(false);
+      try {
+        const djData = await getDjById(userId);
+        if (djData) {
+          setDj(djData as DJ);
+        } else {
+          console.log("DJ not found");
         }
-      };
+      } catch (error) {
+        console.error("Error fetching DJ data:", (error as Error).message);
+        Alert.alert("Error", "Unable to fetch DJ data. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-      fetchDjData();
-    }
+    fetchDjData();
   }, [userId]);
 
   const handleLogout = () => {

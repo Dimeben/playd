@@ -23,6 +23,7 @@ export interface Feedback {
   dj: string;
   stars: number;
   title: string;
+  id?: string;
 }
 
 export interface Bookings {

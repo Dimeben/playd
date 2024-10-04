@@ -8,46 +8,52 @@ import {
   SafeAreaView,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
-import { getUserById, updateUser } from "../../firebase/firestore";
-import { User } from "../../firebase/types";
+// import { AuthContext } from "../../contexts/AuthContext";
+// import { getUserById, patchUser } from "@/firebase/firestore";
+import { User } from "@/firebase/types";
 import { Link } from "expo-router";
 
 const EditUserProfile = () => {
-  const { userId } = useContext(AuthContext);
+  // const { userId } = useContext(AuthContext);
   const [user, setUser] = useState<User | null>(null);
   const [username, setUsername] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
   const [surname, setSurname] = useState<string>("");
   const [city, setCity] = useState<string>("");
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      if (userId) {
-        try {
-          const userData = await getUserById(userId);
-          if (userData) {
-            setUser(userData as User);
-            setUsername(userData.username);
-            setFirstName(userData.first_name);
-            setSurname(userData.surname);
-            setCity(userData.city);
-          } else {
-            console.log("User doesn't exist");
-          }
-        } catch (err) {
-          console.error("Error fetching user: ", (err as Error).message);
-        }
-      }
-    };
-
-    fetchUser();
-  }, [userId]);
+  // useEffect(() => {
+  //   console.log("EditUserProfile useEffect - Line 25");
+  //   const fetchUser = async () => {
+  //     if (userId) {
+  //       console.log("EditUserProfile useEffect - Line 28");
+  //       try {
+  //         const userData = await getUserById(userId);
+  //         console.log("EditUserProfile useEffect - Line 31");
+  //         if (userData) {
+  //           setUser(userData as User);
+  //           setUsername(userData.username);
+  //           setFirstName(userData.first_name);
+  //           setSurname(userData.surname);
+  //           setCity(userData.city);
+  //           console.log("EditUserProfile useEffect - Line 38");
+  //         } else {
+  //           console.log("EditUserProfile useEffect - Line 40");
+  //           console.log("User doesn't exist");
+  //         }
+  //       } catch (err) {
+  //         console.log("EditUserProfile useEffect - Line 44");
+  //         console.error("Error fetching user: ", (err as Error).message);
+  //       }
+  //     }
+  //   };
+  //   console.log("EditUserProfile useEffect - Line 49");
+  //   fetchUser();
+  // }, [userId]);
 
   const handleUpdateProfile = async () => {
     if (userId) {
       try {
-        await updateUser(userId, {
+        await patchUser(userId, {
           username,
           first_name: firstName,
           surname,
@@ -98,7 +104,10 @@ const EditUserProfile = () => {
           style={styles.input}
         />
       </View>
-      <Pressable style={styles.button} onPress={handleUpdateProfile}>
+      <Pressable
+        style={styles.button}
+        // onPress={handleUpdateProfile}
+      >
         <Text style={styles.buttonText}>Save Changes</Text>
       </Pressable>
       <Link style={styles.link} href="/(tabs)/profile">

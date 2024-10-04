@@ -37,16 +37,20 @@ const BookDj = () => {
   const [feedbackData, setFeedbackData] = useState<any[]>([]);
  
   useEffect(() => {
+    console.log("bookdj useEffect - Line 40")
     const fetchFeedback = async () => {
       if (selectedDj) {
         try {
           const feedbackArray = await getFeedbackByDj(selectedDj.username);
           setFeedbackData(feedbackArray);
+          console.log("bookdj useEffect - Line 46")
         } catch (error) {
+          console.log("bookdj useEffect - Line 48")
           console.log("Error fetching feedback: ", error);
         }
       }
     };
+    console.log("bookdj useEffect - Line 53")
     fetchFeedback();
   }, [selectedDj]);
  
