@@ -12,19 +12,24 @@ const UserManageBooking = () => {
   const currentUser = auth.currentUser;
 
   useEffect(() => {
+    console.log("profile useEffect - Line 15") 
     const fetchBookings = async () => {
+      console.log("profile useEffect - Line 17") 
       if (currentUser) {
         try {
+          console.log("profile useEffect - Line 20") 
           const fetchedBookings = await getBookingByUser(currentUser.uid);
           setBookings(fetchedBookings);
         } catch (error) {
+          console.log("profile useEffect - Line 24") 
           console.error("Error fetching bookings:", error);
         } finally {
+          console.log("profile useEffect - Line 27") 
           setLoading(false);
         }
       }
     };
-
+    console.log("profile useEffect - Line 32") 
     fetchBookings();
   }, [currentUser]);
 

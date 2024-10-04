@@ -12,18 +12,24 @@ const DjManageBooking = () => {
   const currentUser = auth.currentUser;
 
   useEffect(() => {
+    console.log("djManageBooking useEffect - Line 15")
     const getDjBookings = async () => {
       if (currentUser) {
+        console.log("djManageBooking useEffect - Line 18")
         try {
+          console.log("djManageBooking useEffect - Line 20")
           const fetchedBookings = await getBookingByDj(currentUser.uid);
           setBookings(fetchedBookings);
         } catch (error) {
+          console.log("djManageBooking useEffect - Line 24")
           console.error("Error fetching bookings:", error);
         } finally {
+          console.log("djManageBooking useEffect - Line 27")
           setLoading(false);
         }
       }
     };
+    console.log("djManageBooking useEffect - Line 32")
 
     getDjBookings();
   }, [currentUser]);
