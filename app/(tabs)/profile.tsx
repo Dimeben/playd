@@ -68,6 +68,9 @@ const Profile = () => {
             <Text>Surname: {user.surname}</Text>
             <Text>City: {user.city}</Text>
           </Pressable>
+          <Link style={styles.button} href="/(tabs)/EditUserProfile">
+            <Text style={styles.buttonText}>Edit Profile</Text>
+          </Link>
         </View>
       )}
     </View>

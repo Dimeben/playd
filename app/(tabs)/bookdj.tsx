@@ -1,19 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Image,
+  ScrollView,
+} from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { createBooking, getFeedbackByDj } from "../../firebase/firestore";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import moment from "moment";
-
+ 
 const BookDj = () => {
   const router = useRouter();
   const { dj } = useLocalSearchParams();
-
+ 
   const selectedDj = Array.isArray(dj)
     ? JSON.parse(dj[0])
     : dj
     ? JSON.parse(dj)
     : null;
-
+ 
   const [newBooking, setNewBooking] = useState({
     client: "",
     comments: "",
@@ -24,14 +33,14 @@ const BookDj = () => {
     occasion: "",
     dj: selectedDj?.username || "",
   });
-
+ 
   const [feedbackData, setFeedbackData] = useState<any[]>([]);
-
+ 
   useEffect(() => {
     const fetchFeedback = async () => {
       if (selectedDj) {
         try {
-          const feedbackArray = await getFeedbackByDj(selectedDj.id);
+          const feedbackArray = await getFeedbackByDj(selectedDj.username);
           setFeedbackData(feedbackArray);
         } catch (error) {
           console.log("Error fetching feedback: ", error);
@@ -40,12 +49,11 @@ const BookDj = () => {
     };
     fetchFeedback();
   }, [selectedDj]);
-
+ 
   const handleDateInput = (text: string) => {
     const cleanedText = text.replace(/\D/g, "");
     let formattedText = cleanedText;
-
-
+ 
     if (cleanedText.length >= 3) {
       formattedText = cleanedText.slice(0, 2) + "/" + cleanedText.slice(2);
     }
@@ -56,67 +64,59 @@ const BookDj = () => {
         cleanedText.slice(2, 4) +
         "/" +
         cleanedText.slice(4, 8);
-      formattedText =
-        cleanedText.slice(0, 2) +
-        "/" +
-        cleanedText.slice(2, 4) +
-        "/" +
-        cleanedText.slice(4, 8);
     }
-
+ 
     setNewBooking({ ...newBooking, date: formattedText });
   };
-
+ 
   const handleTimeInput = (text: string) => {
     const cleanedText = text.replace(/\D/g, "");
     let formattedText = cleanedText;
-
+ 
     if (cleanedText.length >= 3) {
       formattedText = cleanedText.slice(0, 2) + ":" + cleanedText.slice(2);
     }
-
+ 
     setNewBooking({ ...newBooking, time: formattedText });
   };
-
+ 
   const handleBookingSubmit = () => {
     try {
       const [day, month, year] = newBooking.date.split("/");
       const formattedDate = moment(`${year}-${month}-${day}`, "YYYY-MM-DD");
-
+ 
       if (!formattedDate.isValid()) {
         alert("Invalid date format. Please use dd/mm/yyyy format.");
         return;
       }
-
+ 
       const formattedTime = moment(newBooking.time, "HH:mm", true);
       if (!formattedTime.isValid()) {
         alert("Invalid time format. Please use HH:mm format.");
         return;
       }
-
+ 
       const combinedDateTime = moment(
         `${newBooking.date} ${newBooking.time}`,
         "DD/MM/YYYY HH:mm"
       ).toDate();
-
+ 
       const bookingWithDateTime = {
         ...newBooking,
         date: combinedDateTime,
       };
-
+ 
       createBooking(bookingWithDateTime);
       alert("Booking created successfully!");
-      router.back();
       router.back();
     } catch (error) {
       console.error("Error creating booking: ", error);
       alert("There was an error creating your booking. Please try again.");
     }
   };
-
+ 
   return (
     <View style={styles.container}>
-
       {selectedDj && (
         <View style={styles.djCard}>
           <Image
@@ -130,18 +130,21 @@ const BookDj = () => {
             <Text style={styles.name}>
               {selectedDj.first_name} {selectedDj.surname}
             </Text>
-            <Text style={styles.genre}>{selectedDj.genres.join(", ")}</Text>
-            <Text style={styles.city}>{selectedDj.city}</Text>
+            <Text style={styles.genre}>
+              Genre: {selectedDj.genres.join(", ")}
+            </Text>
+            <Text style={styles.city}>Location: {selectedDj.city}</Text>
             <Text style={styles.price}>Price: £{selectedDj.price}</Text>
             <Text style={styles.description}>
               Description: {selectedDj.description}
             </Text>
+            <Text style={styles.rating}>Rating: {selectedDj.rating}</Text>
           </View>
         </View>
       )}
-
+ 
       <Text style={styles.header}>Create a New Booking</Text>
-
+ 
       <TextInput
         style={styles.input}
         placeholder="Your Name"
@@ -196,29 +199,38 @@ const BookDj = () => {
           setNewBooking({ ...newBooking, comments: text })
         }
       />
-
+ 
       <Button title="Submit Booking" onPress={handleBookingSubmit} />
+ 
+      <Text style={styles.header}>Reviews</Text>
+      <GestureHandlerRootView style={styles.scrollContainer}>
+        <ScrollView contentContainerStyle={styles.feedbackContainer}>
+          {feedbackData.length === 0 ? (
+            <Text>No Feedback Available</Text>
+          ) : (
+            feedbackData.map((feedback) => (
+              <View key={feedback.id} style={styles.feedbackItem}>
+                <Text style={styles.feedbackTitle}>{feedback.title}</Text>
+                <Text style={styles.feedbackText}>By: {feedback.author}</Text>
+                <Text style={styles.feedbackText}>
+                  Comment: {feedback.body}
+                </Text>
+                <Text style={styles.feedbackText}>
+                  Rating: {feedback.stars}
+                </Text>
+                <Text style={styles.feedbackText}>
+                  Date:{" "}
+                  {moment(feedback.date).format("DD MMMM YYYY [at] HH:mm:ss")}
+                </Text>
+              </View>
+            ))
+          )}
+        </ScrollView>
+      </GestureHandlerRootView>
     </View>
   );
 };
-
-{
-  /* <Text style={styles.header}>Reviews</Text>;
-<ScrollView contentContainerStyle={{ padding: 10}}>
-{feedbackData.length === 0 ? (
-  <Text>No Feedback Available</Text>
-) : (
-  feedbackData.map(feedback =>(
-    <View key={feedback.id} style={styles.feedbackContainer}>
-      <Text style={styles.}>Text:{feedback.}</Text>
-      <Text style={styles.}>Text:{feedback.}</Text>
-      <Text style={styles.}>Text:{feedback.}</Text>
-    </View>
-  ))
-)}
-</ScrollView> */
-}
-
+ 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -278,6 +290,43 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#555",
   },
+  rating: {
+    fontSize: 14,
+    color: "#333",
+  },
+  scrollContainer: {
+    flex: 1,
+  },
+  feedbackContainer: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: "black",
+    marginVertical: 5,
+  },
+  feedbackUser: {
+    fontWeight: "bold",
+  },
+  feedbackComment: {
+    fontStyle: "normal",
+  },
+  feedbackItem: {
+    marginBottom: 15,
+    padding: 12,
+    borderRadius: 5,
+    backgroundColor: "white",
+    borderWidth: 1,
+  },
+  feedbackText: {
+    fontSize: 12,
+    color: "black",
+    marginBottom: 4,
+  },
+  feedbackTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 4,
+    color: "Black",
+  },
 });
-
+ 
 export default BookDj;

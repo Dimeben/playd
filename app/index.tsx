@@ -34,12 +34,12 @@ export default function Index() {
             Go to User profile
           </Link> */}
 
-          {/* <Link href={`/(tabs)/login`} style={styles.button}>
+          <Link href={`/(tabs)/login`} style={styles.button}>
             <Text style={styles.buttonText}>Login</Text>
-          </Link> */}
+          </Link>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => router.push(`/(tabs)/login`)}
+            onPress={() => router.push("/(tabs)/login")}
           >
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
@@ -60,10 +60,13 @@ const styles = StyleSheet.create({
   text: {
     color: "white",
     fontSize: 30,
+    fontFamily: "Menlo-Bold",
   },
   heading: {
     color: "white",
     fontSize: 30,
+    // fontFamily: "MarkerFelt-Wide",
+    fontFamily: "Menlo-Bold",
     marginTop: 30,
     alignSelf: "center",
   },
@@ -79,5 +82,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontSize: 20,
+    fontFamily: "Menlo-Bold",
   },
 });
