@@ -17,7 +17,7 @@ import { createDJ } from "../../firebase/firestore";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { storage } from "../../firebase/storage";
-import { ref, uploadBytes, getDownloadURL } from "../../firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function DjSignUp() {
   const [firstName, setFirstName] = useState("");

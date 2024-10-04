@@ -52,15 +52,7 @@ export default function RootLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="djprofile"
-        options={{
-          tabBarLabel: "Dj Profile",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-outline" color={color} size={size} />
-          ),
-        }}
-      />
+
       <Tabs.Screen
         name="profile"
         options={{

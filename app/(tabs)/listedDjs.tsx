@@ -10,37 +10,16 @@ import {
   Button,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { getAllDjsList } from "../../firebase/firestore";
-import { useRouter } from "expo-router";
+import { getAllDjs } from "../../firebase/firestore";
+import { useRouter } from "expo-router"; 
 import { ScrollView } from "react-native-gesture-handler";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-
-interface DJ {
-  description: string;
-  rating: number;
-  surname: any;
-  first_name: any;
-  id?: string;
-  username: string;
-  city: string;
-  genres: string[];
-  occasions: string[];
-  price: number;
-  profile_picture: string;
-}
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { DJ } from "../../firebase/types";
 
 const DjList = () => {
-  const [djs, setDjs] = useState<DJ[]>([]);
-  const [filteredDjs, setFilteredDjs] = useState<DJ[]>([]);
-  const [filteredDjs, setFilteredDjs] = useState<DJ[]>([]);
+  const [djs, setDjs] = useState<import("../../firebase/types").DJ[]>([]);
+  const [filteredDjs, setFilteredDjs] = useState<import("../../firebase/types").DJ[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCity, setSelectedCity] = useState<string | undefined>();
-  const [selectedGenre, setSelectedGenre] = useState<string | undefined>();
-  const [selectedOccasion, setSelectedOccasion] = useState<
-    string | undefined
-  >();
-  const router = useRouter();
   const [selectedCity, setSelectedCity] = useState<string | undefined>();
   const [selectedGenre, setSelectedGenre] = useState<string | undefined>();
   const [selectedOccasion, setSelectedOccasion] = useState<
@@ -56,9 +35,20 @@ const DjList = () => {
     const fetchDjs = async () => {
       try {
         const djData = await getAllDjs();
-        const validDjs = djData.filter((dj) => dj.id !== undefined) as DJ[];
-        setDjs(validDjs);
 
+        const validDjs = djData.filter((dj): dj is DJ => {
+        
+          return (
+            dj.username !== undefined &&
+            dj.city !== undefined &&
+            Array.isArray(dj.genres) &&
+            Array.isArray(dj.occasions) &&
+            typeof dj.price === 'number' &&
+            (typeof dj.profile_picture === 'string' || dj.profile_picture === null)
+          )
+        });
+
+        setDjs(validDjs);
 
         setCityOptions([...new Set(validDjs.map((dj) => dj.city))]);
         setGenreOptions([...new Set(validDjs.flatMap((dj) => dj.genres))]);
@@ -69,7 +59,6 @@ const DjList = () => {
           ...new Set(validDjs.flatMap((dj) => dj.occasions)),
         ]);
 
-        setFilteredDjs(validDjs);
         setFilteredDjs(validDjs);
       } catch (error) {
         console.error("Error fetching DJs: ", error);
@@ -134,10 +123,15 @@ const DjList = () => {
 
   const handleNavigateToProfile = (dj: DJ) => {
     router.push({
-      pathname: "/(tabs)/bookdj",
-      params: { dj: JSON.stringify(dj) },
-      pathname: "/(tabs)/bookdj",
-      params: { dj: JSON.stringify(dj) },
+      pathname: "/(tabs)/bookdj", 
+      params: { dj: JSON.stringify(dj) }, 
+    });
+  };
+
+  const handleNavigateToEdit = (dj: DJ) => {
+    router.push({
+      pathname: "/(tabs)/djprofile",
+      params: { dj: JSON.stringify(dj) }, 
     });
   };
 
@@ -152,7 +146,7 @@ const DjList = () => {
             style={styles.profilePicture}
           />
         )}
-        <View style={styles.cardContent}>
+        <View style={styles.card}>
           {item.username && <Text style={styles.name}>{item.username}</Text>}
           {Array.isArray(item.genres) && item.genres.length > 0 && (
             <Text style={styles.genre}>{item.genres.join(", ")}</Text>
@@ -161,6 +155,7 @@ const DjList = () => {
           {item.price !== undefined && (
             <Text style={styles.price}>Price: £{item.price}</Text>
           )}
+          <Button title="Edit" onPress={() => handleNavigateToEdit(item)} />
         </View>
       </View>
     </Pressable>
@@ -172,105 +167,54 @@ const DjList = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <Text style={styles.header}>Filter DJs By:</Text>
-      <View style={styles.container}>
-        <Text style={styles.header}>Filter DJs By:</Text>
+    <View style={styles.container}>
+      <Text style={styles.header}>Filter DJs By:</Text>
 
-        {/* City Picker */}
-        <Picker
-          selectedValue={selectedCity}
-          style={styles.picker}
-          onValueChange={(itemValue) => handleCityChange(itemValue)}
-        >
-          <Picker.Item label="Select City" value={undefined} />
-          {cityOptions.map((city, index) => (
-            <Picker.Item key={index} label={city} value={city} />
-          ))}
-        </Picker>
-        {/* City Picker */}
-        <Picker
-          selectedValue={selectedCity}
-          style={styles.picker}
-          onValueChange={(itemValue) => handleCityChange(itemValue)}
-        >
-          <Picker.Item label="Select City" value={undefined} />
-          {cityOptions.map((city, index) => (
-            <Picker.Item key={index} label={city} value={city} />
-          ))}
-        </Picker>
+      <Picker
+        selectedValue={selectedCity}
+        style={styles.picker}
+        onValueChange={(itemValue) => handleCityChange(itemValue)}
+      >
+        <Picker.Item label="Select City" value={undefined} />
+        {cityOptions.map((city, index) => (
+          <Picker.Item key={index} label={city} value={city} />
+        ))}
+      </Picker>
 
-        {/* Genre Picker */}
-        <Picker
-          selectedValue={selectedGenre}
-          style={styles.picker}
-          onValueChange={(itemValue) => setSelectedGenre(itemValue)}
-          enabled={!!selectedCity}
-        >
-          <Picker.Item label="Select Genre" value={undefined} />
-          {genreOptions.map((genre, index) => (
-            <Picker.Item key={index} label={genre} value={genre} />
-          ))}
-        </Picker>
-        {/* Genre Picker */}
-        <Picker
-          selectedValue={selectedGenre}
-          style={styles.picker}
-          onValueChange={(itemValue) => setSelectedGenre(itemValue)}
-          enabled={!!selectedCity}
-        >
-          <Picker.Item label="Select Genre" value={undefined} />
-          {genreOptions.map((genre, index) => (
-            <Picker.Item key={index} label={genre} value={genre} />
-          ))}
-        </Picker>
+      <Picker
+        selectedValue={selectedGenre}
+        style={styles.picker}
+        onValueChange={(itemValue) => setSelectedGenre(itemValue)}
+        enabled={!!selectedCity}
+      >
+        <Picker.Item label="Select Genre" value={undefined} />
+        {genreOptions.map((genre, index) => (
+          <Picker.Item key={index} label={genre} value={genre} />
+        ))}
+      </Picker>
 
-        {/* Occasion Picker */}
-        <Picker
-          selectedValue={selectedOccasion}
-          style={styles.picker}
-          onValueChange={(itemValue) => setSelectedOccasion(itemValue)}
-          enabled={!!selectedCity}
-        >
-          <Picker.Item label="Select Occasion" value={undefined} />
-          {occasionOptions.map((occasion, index) => (
-            <Picker.Item key={index} label={occasion} value={occasion} />
-          ))}
-        </Picker>
-        {/* Occasion Picker */}
-        <Picker
-          selectedValue={selectedOccasion}
-          style={styles.picker}
-          onValueChange={(itemValue) => setSelectedOccasion(itemValue)}
-          enabled={!!selectedCity}
-        >
-          <Picker.Item label="Select Occasion" value={undefined} />
-          {occasionOptions.map((occasion, index) => (
-            <Picker.Item key={index} label={occasion} value={occasion} />
-          ))}
-        </Picker>
+      <Picker
+        selectedValue={selectedOccasion}
+        style={styles.picker}
+        onValueChange={(itemValue) => setSelectedOccasion(itemValue)}
+        enabled={!!selectedCity} 
+      >
+        <Picker.Item label="Select Occasion" value={undefined} />
+        {occasionOptions.map((occasion, index) => (
+          <Picker.Item key={index} label={occasion} value={occasion} />
+        ))}
+      </Picker>
 
-        {/* Clear Filters Button */}
-        <Button title="Clear All Filters" onPress={clearFilters} />
-        {/* Clear Filters Button */}
-        <Button title="Clear All Filters" onPress={clearFilters} />
+      <Button title="Clear All Filters" onPress={clearFilters} />
 
-        {/* Filtered DJ List */}
-        <FlatList
-          data={filteredDjs}
-          renderItem={renderDjCard}
-          keyExtractor={(item, index) => item.id || index.toString()}
-          contentContainerStyle={styles.listContainer}
-        />
-      </View>
-        {/* Filtered DJ List */}
-        <FlatList
-          data={filteredDjs}
-          renderItem={renderDjCard}
-          keyExtractor={(item, index) => item.id || index.toString()}
-          contentContainerStyle={styles.listContainer}
-        />
-      </View>
+
+      <FlatList
+        data={filteredDjs}
+        renderItem={renderDjCard}
+        keyExtractor={(item, index) => item.username || index.toString()}
+        contentContainerStyle={styles.listContainer}
+      />
+    </View>
     </GestureHandlerRootView>
   );
 };
@@ -315,6 +259,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginTop: 10,
+  },
+  city: {
+    fontSize: 14,
+    color: "gray",
+    marginTop: 5,
   },
   genre: {
     fontSize: 14,
