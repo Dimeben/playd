@@ -436,3 +436,19 @@ export async function patchUser(userId: string, newDetails: Partial<User>): Prom
     throw error;
   }
 }
+
+export async function patchDJ(djId: string, newDetails: Partial<DJ>): Promise<void> {
+  try {
+    console.log("patchDJ - Line 1 - Attempting to update DJ ID:", djId);
+
+    const djDocRef = doc(djRef, djId);
+
+    await updateDoc(djDocRef, newDetails);
+
+    console.log("patchDJ - Line 5 - DJ updated successfully.");
+  } catch (error) {
+    console.log("patchDJ - Line 8 - Error occurred");
+    console.error("Error updating DJ: ", error);
+    throw error; 
+  }
+}
