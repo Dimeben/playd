@@ -7,11 +7,14 @@ import {
   Text,
   View,
 } from "react-native";
+
 export default function Index() {
   const router = useRouter();
+
   const image = {
     uri: "https://img.freepik.com/free-photo/cyberpunk-dj-illustration_23-2151656032.jpg?t=st=1728052685~exp=1728056285~hmac=bbac23adf299ba2724537eedf8a8d2986e6f3d0c5dacf73c564e6767609c5762&w=826",
   };
+
   return (
     <View style={styles.container}>
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
@@ -31,6 +34,10 @@ export default function Index() {
             Go to User profile
           </Link> */}
 
+          {/* <Link href={`/(tabs)/login`} style={styles.button}>
+            <Text style={styles.buttonText}>Login</Text>
+          </Link> */}
+
           <TouchableOpacity
             style={styles.button}
             onPress={() => router.push("/(tabs)/login")}
@@ -42,6 +49,8 @@ export default function Index() {
     </View>
   );
 }
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

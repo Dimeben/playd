@@ -23,6 +23,7 @@ const EditUserProfile = () => {
   const [firstName, setFirstName] = useState<string>("");
   const [surname, setSurname] = useState<string>("");
   const [city, setCity] = useState<string>("");
+
   const [updateUsername, setUpdateUsername] = useState("");
   const [updateFirstName, setUpdateFirstName] = useState("");
   const [updateSurname, setUpdateSurname] = useState("");
@@ -129,6 +130,46 @@ const EditUserProfile = () => {
   }
 
   return (
+
+<!--     <SafeAreaView style={styles.container}>
+      <Text style={styles.heading}>Edit Profile</Text>
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="Username"
+          value={username}
+          onChangeText={setUsername}
+          style={styles.input}
+        />
+        <TextInput
+          placeholder="First Name"
+          value={firstName}
+          onChangeText={setFirstName}
+          style={styles.input}
+        />
+        <TextInput
+          placeholder="Surname"
+          value={surname}
+          onChangeText={setSurname}
+          style={styles.input}
+        />
+        <TextInput
+          placeholder="City"
+          value={city}
+          onChangeText={setCity}
+          style={styles.input}
+        />
+      </View>
+      <Pressable
+        style={styles.button}
+        // onPress={handleUpdateProfile}
+      >
+        <Text style={styles.buttonText}>Save Changes</Text>
+      </Pressable>
+      <Link style={styles.link} href="/(tabs)/profile">
+        <Text style={styles.linkText}>Go Back to Profile</Text>
+      </Link>
+    </SafeAreaView> -->
+
     <ScrollView>
       <View style={styles.container}>
         <SafeAreaView />
@@ -262,7 +303,6 @@ const styles = StyleSheet.create({
   },
   linkText: {
     color: "#007AFF",
-  },
   messageText: {
     marginBottom: 10,
   },
