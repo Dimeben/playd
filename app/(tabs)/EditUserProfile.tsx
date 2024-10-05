@@ -9,7 +9,7 @@ import {
   } from "react-native";
   import React, { useContext, useEffect, useState } from "react";
   import { AuthContext } from "../../contexts/AuthContext";
-  import { getUserById, patchUser } from "@/firebase/firestore";
+  import { getUserById, patchUser } from "../../firebase/firestore";
   import { User } from "@/firebase/types";
   import { Link } from "expo-router";
   

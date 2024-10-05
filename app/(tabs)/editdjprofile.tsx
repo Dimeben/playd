@@ -72,36 +72,36 @@ const EditDjProfile = () => {
     getDjData();
   }, [userId]);
 
-  const updatePwd = () => {
-    sendPasswordResetEmail(auth, email)
-      .then(() => {
-        setUpdateMessage("Password reset sent to your email!");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ..
-      });
-  };
+  // const updatePwd = () => {
+  //   sendPasswordResetEmail(auth, email)
+  //     .then(() => {
+  //       setUpdateMessage("Password reset sent to your email!");
+  //     })
+  //     .catch((error) => {
+  //       const errorCode = error.code;
+  //       const errorMessage = error.message;
+  //       // ..
+  //     });
+  // };
 
-  const addGenres = () => {
-    const data = {
-      genres: addGenre,
-    };
-    docRef
-      .add(data)
-      .then((prevData) => {
-        setAddGenre([{ ...prevData, data }]);
-        // release keyboard
-        //   Keyboard.dismiss();
-        setUpdateMessage(successMessage + "Genres");
-        setGoBackIsVisible(true);
-        console.log("clicked");
-      })
-      .catch((err) => {
-        Alert.alert(err);
-      });
-  };
+  // const addGenres = () => {
+  //   const data = {
+  //     genres: addGenre,
+  //   };
+  //   docRef
+  //     .add(data)
+  //     .then((prevData) => {
+  //       setAddGenre([{ ...prevData, data }]);
+  //       // release keyboard
+  //       //   Keyboard.dismiss();
+  //       setUpdateMessage(successMessage + "Genres");
+  //       setGoBackIsVisible(true);
+  //       console.log("clicked");
+  //     })
+  //     .catch((err) => {
+  //       Alert.alert(err);
+  //     });
+  // };
 
   {
     /*
@@ -122,64 +122,64 @@ const EditDjProfile = () => {
   //     );
   //   };
 
-  const updateDJUsername = async () => {
-    try {
-      const djDoc = doc(db, "djs", userId);
-      await updateDoc(djDoc, { username: updateUsername });
-      setUpdateMessage(successMessage + "Username");
-      setGoBackIsVisible(true);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
+  // const updateDJUsername = async () => {
+  //   try {
+  //     const djDoc = doc(db, "djs", userId);
+  //     await updateDoc(djDoc, { username: updateUsername });
+  //     setUpdateMessage(successMessage + "Username");
+  //     setGoBackIsVisible(true);
+  //   } catch (err) {
+  //     console.log(err.message);
+  //   }
+  // };
 
-  const updateDJFirstName = async () => {
-    try {
-      const djDoc = doc(db, "djs", userId);
+  // const updateDJFirstName = async () => {
+  //   try {
+  //     const djDoc = doc(db, "djs", userId);
 
-      await updateDoc(djDoc, { first_name: updateFirstName });
-      setUpdateMessage(successMessage + "First Name");
-      setGoBackIsVisible(true);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
+  //     await updateDoc(djDoc, { first_name: updateFirstName });
+  //     setUpdateMessage(successMessage + "First Name");
+  //     setGoBackIsVisible(true);
+  //   } catch (err) {
+  //     console.log(err.message);
+  //   }
+  // };
 
-  const updateDJSurname = async () => {
-    try {
-      const djDoc = doc(db, "djs", userId);
+  // const updateDJSurname = async () => {
+  //   try {
+  //     const djDoc = doc(db, "djs", userId);
 
-      await updateDoc(djDoc, { surname: updateSurname });
-      setUpdateMessage(successMessage + "Surname");
-      setGoBackIsVisible(true);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
+  //     await updateDoc(djDoc, { surname: updateSurname });
+  //     setUpdateMessage(successMessage + "Surname");
+  //     setGoBackIsVisible(true);
+  //   } catch (err) {
+  //     console.log(err.message);
+  //   }
+  // };
 
-  const updateDJCity = async () => {
-    try {
-      const djDoc = doc(db, "djs", userId);
+  // const updateDJCity = async () => {
+  //   try {
+  //     const djDoc = doc(db, "djs", userId);
 
-      await updateDoc(djDoc, { city: updateCity });
-      setUpdateMessage(successMessage + "City");
-      setGoBackIsVisible(true);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
+  //     await updateDoc(djDoc, { city: updateCity });
+  //     setUpdateMessage(successMessage + "City");
+  //     setGoBackIsVisible(true);
+  //   } catch (err) {
+  //     console.log(err.message);
+  //   }
+  // };
 
-  const updateDJPrice = async () => {
-    try {
-      const djDoc = doc(db, "djs", userId);
+  // const updateDJPrice = async () => {
+  //   try {
+  //     const djDoc = doc(db, "djs", userId);
 
-      await updateDoc(djDoc, { price: updatePrice });
-      setUpdateMessage(successMessage + "Price");
-      setGoBackIsVisible(true);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
+  //     await updateDoc(djDoc, { price: updatePrice });
+  //     setUpdateMessage(successMessage + "Price");
+  //     setGoBackIsVisible(true);
+  //   } catch (err) {
+  //     console.log(err.message);
+  //   }
+  // };
 
   const updateDJDescription = async () => {
     try {

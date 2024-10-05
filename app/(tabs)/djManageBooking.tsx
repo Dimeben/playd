@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, Button, StyleSheet } from "react-native";
 import { getAuth } from "firebase/auth";
-import { getBookingByDj, updateBookingStatus } from "../../firebase/firestore";
+import { getBookingsByDj, updateBooking } from "../../firebase/firestore";
 import { Booking } from "../../firebase/types";
 
 const DjManageBooking = () => {
@@ -18,7 +18,7 @@ const DjManageBooking = () => {
         console.log("djManageBooking useEffect - Line 18")
         try {
           console.log("djManageBooking useEffect - Line 20")
-          const fetchedBookings = await getBookingByDj(currentUser.uid);
+          const fetchedBookings = await getBookingsByDj(currentUser.uid);
           setBookings(fetchedBookings);
         } catch (error) {
           console.log("djManageBooking useEffect - Line 24")
@@ -36,7 +36,9 @@ const DjManageBooking = () => {
 
   const handleStatusUpdate = async (bookingId: string, newStatus: string) => {
     try {
-      await updateBookingStatus(bookingId, newStatus);
+  
+      await updateBooking(bookingId, { status: newStatus });
+      
       setBookings((prev) =>
         prev.map((booking) =>
           booking.id === bookingId ? { ...booking, status: newStatus } : booking
