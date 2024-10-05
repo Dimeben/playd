@@ -37,7 +37,7 @@ export interface Bookings {
 }
 
 export interface Booking {
-  id: string;
+  // id: string;
   dj: string;
   event_details: string;
   date: {

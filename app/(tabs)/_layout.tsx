@@ -39,6 +39,7 @@ export default function RootLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
         name={isLoggedIn ? "djprofile" : "login"}
         options={{
@@ -52,6 +53,7 @@ export default function RootLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
         name="profile"
         options={{

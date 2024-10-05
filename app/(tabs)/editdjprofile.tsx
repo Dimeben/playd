@@ -15,6 +15,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { db } from "../../firebase/firebaseConfig";
 import { auth } from "../../firebase/firebaseConfig";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { patchDJ, getDJById } from "@/firebase/firestore";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import firebase from "../../firebase/firebaseConfig";
 
@@ -30,15 +31,18 @@ const EditDjProfile = () => {
   const [updateFirstName, setUpdateFirstName] = useState("");
   const [updateSurname, setUpdateSurname] = useState("");
   const [updateCity, setUpdateCity] = useState("");
-  const [updateGenre, setUpdateGenre] = useState([]);
-  const [updateOccasions, setUpdateOccasions] = useState([]);
-  const [updatePrice, setUpdatePrice] = useState();
+  const [genres, setGenres] = useState<string[]>([]);
+  const [occasions, setOccasions] = useState<string[]>([]);
+  const [newGenre, setNewGenre] = useState("");
+  const [occasion, setOccasion] = useState("");
+  const [updatePrice, setUpdatePrice] = useState(0);
   const [updateDescription, setUpdateDescription] = useState("");
-
+  const [dj, setDj] = useState({});
   const [updateMessage, setUpdateMessage] = useState("");
   const [goBackIsVisible, setGoBackIsVisible] = useState(false);
+  const successMessage = "Successfully Updated ";
 
-  const [addGenre, setAddGenre] = useState([]);
+<!--   const [addGenre, setAddGenre] = useState([]);
   const [addedOccasion, setAddedOccasion] = useState([]);
 
   const successMessage = "Sucessfully Updated ";
@@ -135,77 +139,184 @@ const EditDjProfile = () => {
     } catch (err) {
       Alert.alert("Error adding to occasions");
     }
-  };
+  }; -->
+
+  const inputRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    const fetchDjData = async () => {
+      if (userId) {
+        try {
+          console.log("editdjprofile useEffect - Fetching DJ data");
+          const djData = await getDJById(userId);
+          if (djData) {
+            console.log(
+              "editdjprofile useEffect - DJ data fetched successfully"
+            );
+            setDj(djData);
+          } else {
+            console.log(
+              "editdjprofile useEffect - No DJ found for user ID:",
+              userId
+            );
+          }
+        } catch (err) {
+          console.error(
+            "editdjprofile useEffect - Error fetching DJ data:",
+            (err as Error).message
+          );
+        }
+      }
+    };
+    if (userId) {
+      fetchDjData();
+    } else {
+      console.log("editdjprofile useEffect - userId is not available.");
+    }
+  }, [userId]);
 
   const updateDJUsername = async () => {
     try {
-      const djDoc = doc(db, "djs", userId);
-      await updateDoc(djDoc, { username: updateUsername });
-      setUpdateMessage(successMessage + "Username");
-      setGoBackIsVisible(true);
+      if (userId) {
+        await patchDJ(userId, { username: updateUsername });
+        setGoBackIsVisible(true);
+        setUpdateMessage(successMessage + "Username");
+      } else {
+        console.error("userId is null or undefined");
+        Alert.alert("Error", "User ID is not available.");
+      }
     } catch (err) {
-      console.log(err.message);
+      console.log((err as Error).message);
     }
   };
 
   const updateDJFirstName = async () => {
     try {
-      const djDoc = doc(db, "djs", userId);
-
-      await updateDoc(djDoc, { first_name: updateFirstName });
-      setUpdateMessage(successMessage + "First Name");
-      setGoBackIsVisible(true);
+      if (userId) {
+        await patchDJ(userId, { first_name: updateFirstName });
+        setGoBackIsVisible(true);
+        setUpdateMessage(successMessage + "First Name");
+      } else {
+        console.error("userId is null or undefined");
+        Alert.alert("Error", "User ID is not available.");
+      }
     } catch (err) {
-      console.log(err.message);
+      console.log((err as Error).message);
     }
   };
 
   const updateDJSurname = async () => {
     try {
-      const djDoc = doc(db, "djs", userId);
-
-      await updateDoc(djDoc, { surname: updateSurname });
-      setUpdateMessage(successMessage + "Surname");
-      setGoBackIsVisible(true);
+      if (userId) {
+        await patchDJ(userId, { surname: updateSurname });
+        setGoBackIsVisible(true);
+        setUpdateMessage(successMessage + "Surname");
+      } else {
+        console.error("userId is null or undefined");
+        Alert.alert("Error", "User ID is not available.");
+      }
     } catch (err) {
-      console.log(err.message);
+      console.log((err as Error).message);
     }
   };
 
   const updateDJCity = async () => {
     try {
-      const djDoc = doc(db, "djs", userId);
-
-      await updateDoc(djDoc, { city: updateCity });
-      setUpdateMessage(successMessage + "City");
-      setGoBackIsVisible(true);
+      if (userId) {
+        await patchDJ(userId, { city: updateCity });
+        setGoBackIsVisible(true);
+        setUpdateMessage(successMessage + "City");
+      } else {
+        console.error("userId is null or undefined");
+        Alert.alert("Error", "User ID is not available.");
+      }
     } catch (err) {
-      console.log(err.message);
+      console.log((err as Error).message);
     }
   };
 
   const updateDJPrice = async () => {
     try {
-      const djDoc = doc(db, "djs", userId);
-
-      await updateDoc(djDoc, { price: updatePrice });
-      setUpdateMessage(successMessage + "Price");
-      setGoBackIsVisible(true);
+      if (userId) {
+        await patchDJ(userId, { price: updatePrice });
+        setGoBackIsVisible(true);
+        setUpdateMessage(successMessage + "Price");
+      } else {
+        console.error("userId is null or undefined");
+        Alert.alert("Error", "User ID is not available.");
+      }
     } catch (err) {
-      console.log(err.message);
+      console.log((err as Error).message);
     }
   };
 
   const updateDJDescription = async () => {
     try {
-      const djDoc = doc(db, "djs", userId);
-
-      await updateDoc(djDoc, { description: updateDescription });
-      setUpdateMessage(successMessage + "Description");
-      setGoBackIsVisible(true);
+      if (userId) {
+        await patchDJ(userId, { description: updateDescription });
+        setGoBackIsVisible(true);
+        setUpdateMessage(successMessage + "Description");
+      } else {
+        console.error("userId is null or undefined");
+        Alert.alert("Error", "User ID is not available.");
+      }
     } catch (err) {
-      console.log(err.message);
+      console.log((err as Error).message);
     }
+  };
+
+  const updateOccasions = async () => {
+    try {
+      if (userId) {
+        await patchDJ(userId, { occasions: occasions });
+        setGoBackIsVisible(true);
+        setUpdateMessage(successMessage + "Occasions");
+      } else {
+        console.error("userId is null or undefined");
+        Alert.alert("Error", "User ID is not available.");
+      }
+    } catch (err) {
+      console.log((err as Error).message);
+    }
+  };
+
+  const updateGenres = async () => {
+    try {
+      if (userId) {
+        await patchDJ(userId, { genres: genres });
+        setGoBackIsVisible(true);
+        setUpdateMessage(successMessage + "Genres");
+      } else {
+        console.error("userId is null or undefined");
+        Alert.alert("Error", "User ID is not available.");
+      }
+    } catch (err) {
+      console.log((err as Error).message);
+    }
+  };
+
+  const addGenre = () => {
+    if (newGenre.trim() !== "") {
+      setGenres((prevGenres) => [...prevGenres, newGenre]);
+      setNewGenre(""); // Clear input after adding
+    }
+  };
+
+  const deleteGenre = (index: number) => {
+    setGenres((prevGenres) => prevGenres.filter((_, i) => i !== index));
+  };
+
+  const addOccasion = () => {
+    if (occasion.trim() !== "") {
+      setOccasions((prevOccasions) => [...prevOccasions, occasion]);
+      setOccasion(""); // Clear input after adding
+    }
+  };
+
+  const deleteOccasion = (index: number) => {
+    setOccasions((prevOccasions) =>
+      prevOccasions.filter((_, i) => i !== index)
+    );
   };
 
   return (
@@ -225,7 +336,7 @@ const EditDjProfile = () => {
         </View>
         <Text></Text>
         <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
+<!--           <View style={styles.inputContainer}>
             <TextInput
               label="Username"
               placeholder={`${
@@ -242,74 +353,90 @@ const EditDjProfile = () => {
 
           <TouchableOpacity style={styles.button} onPress={updateDJUsername}>
             <Text style={styles.buttonText}>Submit</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> -->
+          <Text style={styles.inputContainer}>Username</Text>
+          <TextInput
+            ref={inputRef}
+            placeholder={`${
+              dj.username === "" ? "Write your username..." : dj.username
+            }`}
+            placeholderTextColor={"black"}
+            value={updateUsername}
+            onChangeText={setUpdateUsername}
+            style={styles.input}
+            underlineColorAndroid="transparent"
+            autoCapitalize="none"
+          />
         </View>
-        <View style={styles.formContainer}>
+
+        <TouchableOpacity style={styles.button} onPress={updateDJUsername}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableOpacity>
+      </View>
+      {/* <View style={styles.formContainer}>
           <TouchableOpacity style={styles.buttonPassword} onPress={updatePwd}>
             <Text style={styles.passwordText}>Password Reset Button</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
 
-        {updateMessage != "" && (
-          <Text style={styles.messageText}>
-            <SafeAreaView />
-            {updateMessage}
-          </Text>
-        )}
-        <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              label="First Name"
-              placeholder={`${
-                dj.first_name === "" ? "Write first name..." : dj.first_name
-              }`}
-              placeholderTextColor={"black"}
-              value={updateFirstName}
-              onChangeText={setUpdateFirstName}
-              style={styles.input}
-              underlineColorAndroid="transparent"
-            />
-          </View>
-          <TouchableOpacity style={styles.button} onPress={updateDJFirstName}>
-            <Text style={styles.buttonText}>Submit</Text>
-          </TouchableOpacity>
+      {updateMessage != "" && (
+        <Text style={styles.messageText}>
+          <SafeAreaView />
+          {updateMessage}
+        </Text>
+      )}
+      <View style={styles.formContainer}>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder={`${
+              dj.first_name === "" ? "Write first name..." : dj.first_name
+            }`}
+            placeholderTextColor={"black"}
+            value={updateFirstName}
+            onChangeText={setUpdateFirstName}
+            style={styles.input}
+            underlineColorAndroid="transparent"
+          />
         </View>
-        <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              label="Surname"
-              placeholder={`${
-                dj.surname === "" ? "Write your surname..." : dj.surname
-              }`}
-              placeholderTextColor={"black"}
-              value={updateSurname}
-              onChangeText={(surname) => setUpdateSurname(surname)}
-              style={styles.input}
-              underlineColorAndroid="transparent"
-            />
-          </View>
-          <TouchableOpacity style={styles.button} onPress={updateDJSurname}>
-            <Text style={styles.buttonText}>Submit</Text>
-          </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={updateDJFirstName}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.formContainer}>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder={`${
+              dj.surname === "" ? "Write your surname..." : dj.surname
+            }`}
+            placeholderTextColor={"black"}
+            value={updateSurname}
+            onChangeText={(surname) => setUpdateSurname(surname)}
+            style={styles.input}
+            underlineColorAndroid="transparent"
+          />
         </View>
-        <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              label="city"
-              placeholder={`${dj.city === "" ? "Write your city..." : dj.city}`}
-              placeholderTextColor={"black"}
-              value={updateCity}
-              onChangeText={(city) => setUpdateCity(city)}
-              style={styles.input}
-              underlineColorAndroid="transparent"
-            />
-          </View>
-          <TouchableOpacity style={styles.button} onPress={updateDJCity}>
-            <Text style={styles.buttonText}>Submit</Text>
-          </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={updateDJSurname}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.formContainer}>
+        <View style={styles.inputContainer}>
+          <TextInput
+            label="city"
+            placeholder={`${dj.city === "" ? "Write your city..." : dj.city}`}
+            placeholderTextColor={"black"}
+            value={updateCity}
+            onChangeText={(city) => setUpdateCity(city)}
+            style={styles.input}
+            underlineColorAndroid="transparent"
+          />
         </View>
-        {/* NEED A FUNCTION TO PATCH THE ARRAYS */}
-        {/* <View style={styles.formContainer}>
+        <TouchableOpacity style={styles.button} onPress={updateDJCity}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableOpacity>
+      </View>
+      {/* NEED A FUNCTION TO PATCH THE ARRAYS */}
+      {/* <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <TextInput
               label="genre"
@@ -349,7 +476,7 @@ const EditDjProfile = () => {
           >
             <Text style={styles.buttonText}>Add</Text>
           </TouchableOpacity>
-        </View>
+<!--         </View>
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <TextInput
@@ -363,33 +490,92 @@ const EditDjProfile = () => {
               style={styles.input}
               underlineColorAndroid="transparent"
               keyboardType="decimal"
-            />
+            /> -->
+        </View> */}
+      <View style={styles.container}>
+        <Text>Genres:</Text>
+        {genres.map((g, index) => (
+          <View key={index} style={styles.container}>
+            <Text>{g}</Text>
+            <TouchableOpacity onPress={() => deleteGenre(index)}>
+              <Text style={styles.messageText}>Delete</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.button} onPress={updateDJPrice}>
-            <Text style={styles.buttonText}>Submit</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              label="description"
-              placeholder={`${
-                dj.description === ""
-                  ? "Write your description..."
-                  : dj.description
-              }`}
-              placeholderTextColor={"black"}
-              value={updateDescription}
-              onChangeText={setUpdateDescription}
-              style={[styles.inputMultiline, styles.multilineText]}
-              underlineColorAndroid="transparent"
-              multiline={true}
-            />
+        ))}
+        <TextInput
+          style={styles.input}
+          placeholder="New Genre"
+          value={newGenre}
+          onChangeText={setNewGenre}
+        />
+        <Button title="Add Genre" onPress={addGenre} />
+        <TouchableOpacity style={styles.button} onPress={updateGenres}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableOpacity>
+        <Text>Occasions:</Text>
+        {occasions.map((o, index) => (
+          <View key={index} style={styles.container}>
+            <Text>{o}</Text>
+            <TouchableOpacity onPress={() => deleteOccasion(index)}>
+              <Text style={styles.messageText}>Delete</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.button} onPress={updateDJDescription}>
-            <Text style={styles.buttonText}>Submit</Text>
-          </TouchableOpacity>
+        ))}
+        <TextInput
+          style={styles.input}
+          placeholder="Occasion"
+          value={occasion}
+          onChangeText={setOccasion}
+        />
+        <Button title="Add Occasion" onPress={addOccasion} />
+      </View>
+      <TouchableOpacity style={styles.button} onPress={updateOccasions}>
+        <Text style={styles.buttonText}>Submit</Text>
+      </TouchableOpacity>
+      <View style={styles.formContainer}>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder={`${
+              dj.price === 0 ? "Write your price..." : `£${dj.price}`
+            }`}
+            placeholderTextColor={"black"}
+            value={updatePrice?.toString() || ""}
+            onChangeText={(text) => {
+              const numericValue = parseFloat(text);
+              if (!isNaN(numericValue)) {
+                setUpdatePrice(numericValue);
+              } else {
+                setUpdatePrice(dj.price);
+              }
+            }}
+            style={styles.input}
+            underlineColorAndroid="transparent"
+            keyboardType="numeric"
+          />
         </View>
+        <TouchableOpacity style={styles.button} onPress={updateDJPrice}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.formContainer}>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder={`${
+              dj.description === ""
+                ? "Write your description..."
+                : dj.description
+            }`}
+            placeholderTextColor={"black"}
+            value={updateDescription}
+            onChangeText={setUpdateDescription}
+            style={[styles.inputMultiline, styles.multilineText]}
+            underlineColorAndroid="transparent"
+            multiline={true}
+          />
+        </View>
+        <TouchableOpacity style={styles.button} onPress={updateDJDescription}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );

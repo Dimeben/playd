@@ -9,7 +9,7 @@ import {
   ScrollView,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { createBooking, getFeedbackByDj } from "../../firebase/firestore";
+import { createBooking, getFeedback } from "../../firebase/firestore";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import moment from "moment";
  
@@ -41,7 +41,7 @@ const BookDj = () => {
     const fetchFeedback = async () => {
       if (selectedDj) {
         try {
-          const feedbackArray = await getFeedbackByDj(selectedDj.username);
+          const feedbackArray = await getFeedback(selectedDj.username);
           setFeedbackData(feedbackArray);
           console.log("bookdj useEffect - Line 46")
         } catch (error) {

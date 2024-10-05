@@ -22,7 +22,7 @@ import {
 } from "firebase/auth";
 import { app, db, auth } from "./firebaseConfig";
 import { isUsernameTaken } from "./utils";
-import { DJ, Feedback, Bookings, Booking } from "./types";
+import { User, DJ, Feedback, Bookings, Booking } from "./types";
 
 export const usersRef = collection(db, "users");
 export const djRef = collection(db, "djs");
@@ -259,6 +259,27 @@ export async function getAllDjs(): Promise<DJ[]> {
   return djsArray;
 }
 
+export async function getUserById(userId: string): Promise<User | null> {
+  console.log("getUserById - Line 1 - Fetching User by ID:", userId);
+
+  try {
+    const userDocRef = doc(usersRef, userId); 
+
+    const userDocSnapshot = await getDoc(userDocRef);
+
+    if (userDocSnapshot.exists()) {
+      console.log("getUserById - Line 6 - User found:", userDocSnapshot.data());
+      return userDocSnapshot.data() as User
+    } else {
+      console.log("getUserById - Line 11 - No user found for ID:", userId);
+      return null;
+    }
+  } catch (error) {
+    console.error("getUserById - Error fetching user by ID:", error);
+    throw error; 
+  }
+}
+
 export async function getDJById(id: string): Promise<DJ | null> {
   console.log("getDJById - Line 1 - Fetching DJ by ID:", id);
   const djDocRef = doc(djRef, id);
@@ -276,20 +297,87 @@ export async function getDJById(id: string): Promise<DJ | null> {
   }
 }
 
-export async function getFeedback(): Promise<Feedback[]> {
-  console.log("getFeedback - Line 1 - Fetching feedback.");
-  const feedbackArray: Feedback[] = [];
-  const feedbackSnapshot: QuerySnapshot<DocumentData> = await getDocs(feedbackRef);
+export async function getFeedback(djUsername: string): Promise<Feedback[]> {
+  console.log("getFeedback - Line 1 - Fetching feedback for DJ:", djUsername);
 
-  feedbackSnapshot.forEach((doc) => {
-    const feedbackData = doc.data() as Omit<Feedback, "id">;
-    feedbackArray.push({
-      id: doc.id,
-      ...feedbackData,
+  const feedbackArray: Feedback[] = [];
+
+  const feedbackRef = collection(db, 'feedback');
+  const feedbackQuery = query(feedbackRef, where('dj', '==', djUsername));
+
+  try {
+    const feedbackSnapshot: QuerySnapshot<DocumentData> = await getDocs(feedbackQuery);
+
+    feedbackSnapshot.forEach((doc) => {
+      const feedbackData = doc.data() as Omit<Feedback, 'id'>;
+      feedbackArray.push({
+        id: doc.id,
+        ...feedbackData,
+      });
     });
-  });
-  console.log("getFeedback - Line 12 - Retrieved feedback:", feedbackArray);
+
+    console.log("getFeedback - Line 12 - Retrieved feedback:", feedbackArray);
+  } catch (error) {
+    console.error("getFeedback - Error fetching feedback:", error);
+    throw error; 
+  }
+
   return feedbackArray;
+}
+
+export async function getBookingsByDj(djUsername: string): Promise<Booking[]> {
+  console.log("getBookingsByDj - Line 1 - Fetching bookings for DJ:", djUsername);
+
+  const bookingsArray: Booking[] = [];
+
+  const bookingsRef = collection(db, 'bookings'); 
+  const bookingsQuery = query(bookingsRef, where('dj', '==', djUsername));
+
+  try {
+    const bookingsSnapshot: QuerySnapshot<DocumentData> = await getDocs(bookingsQuery);
+
+    bookingsSnapshot.forEach((doc) => {
+      const bookingData = doc.data() as Omit<Booking, 'id'>;
+      bookingsArray.push(...bookingData, id)
+    });
+    console.log("getBookingsByDj - Line 12 - Retrieved bookings:", bookingsArray);
+    }
+
+  catch (error) {
+    console.error("getBookingsByDj - Error fetching bookings:", error);
+    throw error; 
+  }
+
+  return bookingsArray;
+}
+
+export async function getBookingByUser(userUsername: string): Promise<Booking[]> {
+  console.log("getBookingByUser - Line 1 - Fetching bookings for User:", userUsername);
+
+  const bookingsArray: Booking[] = [];
+
+  const bookingsRef = collection(db, 'bookings'); 
+  const bookingsQuery = query(bookingsRef, where('client', '==', userUsername));
+
+  try {
+    const bookingsSnapshot: QuerySnapshot<DocumentData> = await getDocs(bookingsQuery);
+
+    
+    bookingsSnapshot.forEach((doc) => {
+      const bookingData = doc.data() as Omit<Booking, 'date'>;
+      bookingsArray.push({
+        date: doc.date, 
+        ...bookingData,
+      });
+    });
+
+    console.log("getBookingByUser - Line 12 - Retrieved bookings:", bookingsArray);
+  } catch (error) {
+    console.error("getBookingByUser - Error fetching bookings:", error);
+    throw error; 
+  }
+
+  return bookingsArray;
 }
 
 export async function createBooking(booking: Booking): Promise<void> {
@@ -307,8 +395,11 @@ export async function createBooking(booking: Booking): Promise<void> {
 export async function updateBooking(bookingId: string, updatedData: Partial<Booking>): Promise<void> {
   try {
     console.log("updateBooking - Line 1 - Attempting to update booking ID:", bookingId);
+
     const bookingDocRef = doc(bookingsRef, bookingId);
+
     await updateDoc(bookingDocRef, updatedData);
+
     console.log("updateBooking - Line 5 - Booking updated successfully.");
   } catch (error) {
     console.log("updateBooking - Line 8 - Error occurred");
@@ -327,5 +418,37 @@ export async function deleteBooking(bookingId: string): Promise<void> {
     console.log("deleteBooking - Line 8 - Error occurred");
     console.error("Error deleting booking: ", error);
     throw error;
+  }
+}
+
+export async function patchUser(userId: string, newDetails: Partial<User>): Promise<void> {
+  try {
+    console.log("patchUser - Line 1 - Attempting to update user ID:", userId);
+
+    const userDocRef = doc(usersRef, userId);
+
+    await updateDoc(userDocRef, newDetails);
+
+    console.log("patchUser - Line 5 - User updated successfully.");
+  } catch (error) {
+    console.log("patchUser - Line 8 - Error occurred");
+    console.error("Error updating user: ", error);
+    throw error;
+  }
+}
+
+export async function patchDJ(djId: string, newDetails: Partial<DJ>): Promise<void> {
+  try {
+    console.log("patchDJ - Line 1 - Attempting to update DJ ID:", djId);
+
+    const djDocRef = doc(djRef, djId);
+
+    await updateDoc(djDocRef, newDetails);
+
+    console.log("patchDJ - Line 5 - DJ updated successfully.");
+  } catch (error) {
+    console.log("patchDJ - Line 8 - Error occurred");
+    console.error("Error updating DJ: ", error);
+    throw error; 
   }
 }

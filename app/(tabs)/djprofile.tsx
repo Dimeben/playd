@@ -16,7 +16,7 @@ import {
 } from "react-native";
 import { Link } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
-import { getDjById, signOut } from "../../firebase/firestore";
+import { getDJById, signOut } from "../../firebase/firestore";
 import FeedbackForSingleDj from "../../components/FeedbackForSingleDj";
 import { AuthContext } from "../../contexts/AuthContext";
 import { DJ } from "../../firebase/types";
@@ -41,7 +41,9 @@ const DjProfilePage = () => {
       }
 
       try {
-        const djData = await getDjById(userId);
+        console.log("djprofile useEffect - Line 52")
+        const djData = await getDJById(userId);
+
         if (djData) {
           setDj(djData as DJ);
         } else {

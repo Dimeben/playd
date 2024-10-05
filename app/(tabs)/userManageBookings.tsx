@@ -65,7 +65,7 @@ const UserManageBooking = () => {
         <FlatList
           data={bookings}
           renderItem={renderBooking}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.date}
         />
       )}
     </View>

@@ -126,4 +126,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 30,
   },
+  button: {
+    position: "absolute",
+    top: 50,
+    left: 10,
+    padding: 10,
+    backgroundColor: "#007AFF",
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+  },
 });
