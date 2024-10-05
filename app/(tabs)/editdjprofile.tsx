@@ -17,7 +17,6 @@ import { auth } from "../../firebase/firebaseConfig";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { patchDJ, getDJById } from "@/firebase/firestore";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import firebase from "../../firebase/firebaseConfig";
 
 const EditDjProfile = () => {
   const router = useRouter();
@@ -41,11 +40,10 @@ const EditDjProfile = () => {
   const [updateMessage, setUpdateMessage] = useState("");
   const [goBackIsVisible, setGoBackIsVisible] = useState(false);
   const successMessage = "Successfully Updated ";
+  const inputRef = useRef<TextInput>(null);
 
-<!--   const [addGenre, setAddGenre] = useState([]);
-  const [addedOccasion, setAddedOccasion] = useState([]);
-
-  const successMessage = "Sucessfully Updated ";
+// <!--   const [addGenre, setAddGenre] = useState([]);
+//   const [addedOccasion, setAddedOccasion] = useState([]);
 
   //   const usernameRef = useRef("");
   //   const passwordRef = useRef("");
@@ -57,41 +55,41 @@ const EditDjProfile = () => {
   //   const priceRef = useRef("");
   //   const descriptionRef = useRef("");
 
-  const docRef = doc(
-    db,
-    "djs",
-    `${userId != null ? userId : "30ooJWJYBoNFJkCugnOE"}`
-  );
-  const [dj, setDj] = useState({});
-  useEffect(() => {
-    console.log("editdjprofile useEffect - Line 58")
-    const getDjData = () => {
-      getDoc(docRef)
-        .then((data) => {
-          console.log("editdjprofile useEffect - Line 62")
-          const snapDoc = data.data();
-          if (snapDoc) {
-            console.log("editdjprofile useEffect - Line 65")
-            setDj(snapDoc);
-          } else console.log("Dj doesn't exist");
-        })
-        .catch((err) => console.log(err.message));
-    };
-    console.log("editdjprofile useEffect - Line 71")
-    getDjData();
-  }, [userId]);
+  // const docRef = doc(
+  //   db,
+  //   "djs",
+  //   `${userId != null ? userId : "30ooJWJYBoNFJkCugnOE"}`
+  // );
+  // const [dj, setDj] = useState({});
+  // useEffect(() => {
+  //   console.log("editdjprofile useEffect - Line 58")
+  //   const getDjData = () => {
+  //     getDoc(docRef)
+  //       .then((data) => {
+  //         console.log("editdjprofile useEffect - Line 62")
+  //         const snapDoc = data.data();
+  //         if (snapDoc) {
+  //           console.log("editdjprofile useEffect - Line 65")
+  //           setDj(snapDoc);
+  //         } else console.log("Dj doesn't exist");
+  //       })
+  //       .catch((err) => console.log(err.message));
+  //   };
+  //   console.log("editdjprofile useEffect - Line 71")
+  //   getDjData();
+  // }, [userId]);
 
-  const updatePwd = () => {
-    sendPasswordResetEmail(auth, email)
-      .then(() => {
-        setUpdateMessage("Password reset sent to your email!");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ..
-      });
-  };
+  // const updatePwd = () => {
+  //   sendPasswordResetEmail(auth, email)
+  //     .then(() => {
+  //       setUpdateMessage("Password reset sent to your email!");
+  //     })
+  //     .catch((error) => {
+  //       const errorCode = error.code;
+  //       const errorMessage = error.message;
+  //       // ..
+  //     });
+  // };
 
   // const addGenres = () => {
   //   const data = {
@@ -123,25 +121,25 @@ const EditDjProfile = () => {
   */
   }
 
-  const addOccasions = async () => {
-    try {
-      const djDoc = doc(db, "djs", userId);
-      // const prevOccasions = db.collection("djs").where("occasions")
-      // const prevOccasionsSnapsho = await prevOccasions.get()
+  // const addOccasions = async () => {
+  //   try {
+  //     const djDoc = doc(db, "djs", userId);
+  //     // const prevOccasions = db.collection("djs").where("occasions")
+  //     // const prevOccasionsSnapsho = await prevOccasions.get()
 
-      await updateDoc(djDoc, {
-        occasions: [addedOccasion, ...params?.occasions],
-      });
-      // docRef.update({
-      //   occasions: firebase.firestore.occasions.arrayUnion(addedOccasion),
-      // });
-      Alert.alert("Occasion added!");
-    } catch (err) {
-      Alert.alert("Error adding to occasions");
-    }
-  }; -->
+  //     await updateDoc(djDoc, {
+  //       occasions: [addedOccasion, ...params?.occasions],
+  //     });
+  //     // docRef.update({
+  //     //   occasions: firebase.firestore.occasions.arrayUnion(addedOccasion),
+  //     // });
+  //     Alert.alert("Occasion added!");
+  //   } catch (err) {
+  //     Alert.alert("Error adding to occasions");
+  //   }
+  // }; -->
 
-  const inputRef = useRef<TextInput>(null);
+
 
   useEffect(() => {
     const fetchDjData = async () => {
@@ -298,7 +296,7 @@ const EditDjProfile = () => {
   const addGenre = () => {
     if (newGenre.trim() !== "") {
       setGenres((prevGenres) => [...prevGenres, newGenre]);
-      setNewGenre(""); // Clear input after adding
+      setNewGenre("");
     }
   };
 
@@ -309,7 +307,7 @@ const EditDjProfile = () => {
   const addOccasion = () => {
     if (occasion.trim() !== "") {
       setOccasions((prevOccasions) => [...prevOccasions, occasion]);
-      setOccasion(""); // Clear input after adding
+      setOccasion("");
     }
   };
 
@@ -336,7 +334,7 @@ const EditDjProfile = () => {
         </View>
         <Text></Text>
         <View style={styles.formContainer}>
-<!--           <View style={styles.inputContainer}>
+{/* <!--           <View style={styles.inputContainer}>
             <TextInput
               label="Username"
               placeholder={`${
@@ -353,7 +351,7 @@ const EditDjProfile = () => {
 
           <TouchableOpacity style={styles.button} onPress={updateDJUsername}>
             <Text style={styles.buttonText}>Submit</Text>
-          </TouchableOpacity> -->
+          </TouchableOpacity> --> */}
           <Text style={styles.inputContainer}>Username</Text>
           <TextInput
             ref={inputRef}
@@ -454,7 +452,7 @@ const EditDjProfile = () => {
             <Text style={styles.buttonText}>Add</Text>
           </TouchableOpacity>
         </View> */}
-        <View style={styles.formContainer}>
+        {/* <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <TextInput
               label="occasions"
@@ -475,8 +473,8 @@ const EditDjProfile = () => {
             onPress={() => addOccasions(userId, addedOccasion)}
           >
             <Text style={styles.buttonText}>Add</Text>
-          </TouchableOpacity>
-<!--         </View>
+          </TouchableOpacity> */}
+{/* <!--         </View>
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <TextInput
@@ -490,8 +488,8 @@ const EditDjProfile = () => {
               style={styles.input}
               underlineColorAndroid="transparent"
               keyboardType="decimal"
-            /> -->
-        </View> */}
+            /> --> */}
+        {/* </View> */}
       <View style={styles.container}>
         <Text>Genres:</Text>
         {genres.map((g, index) => (

@@ -18,12 +18,10 @@ export interface DJ extends User {
 export interface Feedback {
   author: string;
   body: string;
-  booking_id: string;
   date: Date;
   dj: string;
   stars: number;
   title: string;
-  id?: string;
 }
 
 export interface Bookings {

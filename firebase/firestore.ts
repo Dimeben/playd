@@ -287,10 +287,7 @@ export async function getDJById(id: string): Promise<DJ | null> {
 
   if (djDocSnapshot.exists()) {
     console.log("getDJById - Line 6 - DJ found:", djDocSnapshot.data());
-    return {
-      id: djDocSnapshot.id,
-      ...djDocSnapshot.data(),
-    } as DJ;
+    return djDocSnapshot.data() as DJ
   } else {
     console.log("getDJById - Line 11 - No DJ found for ID:", id);
     return null;
@@ -324,6 +321,42 @@ export async function getFeedback(djUsername: string): Promise<Feedback[]> {
 
   return feedbackArray;
 }
+
+export async function postFeedback(feedback: Feedback): Promise<void> {
+  try {
+    console.log("Attempting to post feedback:", feedback);
+
+    if (
+      !feedback.author || 
+      !feedback.body || 
+      !feedback.dj || 
+      !feedback.stars || 
+      !feedback.title || 
+      feedback.stars < 1 || 
+      feedback.stars > 5
+    ) {
+      throw new Error("Missing or invalid required fields in feedback object.");
+    }
+
+    const feedbackData = {
+      author: feedback.author,
+      body: feedback.body,
+      dj: feedback.dj,
+      stars: feedback.stars,
+      title: feedback.title,
+      date: Timestamp.fromDate(feedback.date),
+    };
+    console.log(feedbackData)
+    await addDoc(feedbackRef, feedbackData);
+
+    console.log("Feedback posted successfully.");
+  } catch (error) {
+    console.error("Error posting feedback: ", error);
+    throw error;
+  }
+}
+
+
 
 export async function getBookingsByDj(djUsername: string): Promise<Booking[]> {
   console.log("getBookingsByDj - Line 1 - Fetching bookings for DJ:", djUsername);

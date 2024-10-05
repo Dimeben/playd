@@ -130,45 +130,44 @@ const EditUserProfile = () => {
   }
 
   return (
-
-<!--     <SafeAreaView style={styles.container}>
-      <Text style={styles.heading}>Edit Profile</Text>
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Username"
-          value={username}
-          onChangeText={setUsername}
-          style={styles.input}
-        />
-        <TextInput
-          placeholder="First Name"
-          value={firstName}
-          onChangeText={setFirstName}
-          style={styles.input}
-        />
-        <TextInput
-          placeholder="Surname"
-          value={surname}
-          onChangeText={setSurname}
-          style={styles.input}
-        />
-        <TextInput
-          placeholder="City"
-          value={city}
-          onChangeText={setCity}
-          style={styles.input}
-        />
-      </View>
-      <Pressable
-        style={styles.button}
-        // onPress={handleUpdateProfile}
-      >
-        <Text style={styles.buttonText}>Save Changes</Text>
-      </Pressable>
-      <Link style={styles.link} href="/(tabs)/profile">
-        <Text style={styles.linkText}>Go Back to Profile</Text>
-      </Link>
-    </SafeAreaView> -->
+    // <!--     <SafeAreaView style={styles.container}>
+    //       <Text style={styles.heading}>Edit Profile</Text>
+    //       <View style={styles.inputContainer}>
+    //         <TextInput
+    //           placeholder="Username"
+    //           value={username}
+    //           onChangeText={setUsername}
+    //           style={styles.input}
+    //         />
+    //         <TextInput
+    //           placeholder="First Name"
+    //           value={firstName}
+    //           onChangeText={setFirstName}
+    //           style={styles.input}
+    //         />
+    //         <TextInput
+    //           placeholder="Surname"
+    //           value={surname}
+    //           onChangeText={setSurname}
+    //           style={styles.input}
+    //         />
+    //         <TextInput
+    //           placeholder="City"
+    //           value={city}
+    //           onChangeText={setCity}
+    //           style={styles.input}
+    //         />
+    //       </View>
+    //       <Pressable
+    //         style={styles.button}
+    //         // onPress={handleUpdateProfile}
+    //       >
+    //         <Text style={styles.buttonText}>Save Changes</Text>
+    //       </Pressable>
+    //       <Link style={styles.link} href="/(tabs)/profile">
+    //         <Text style={styles.linkText}>Go Back to Profile</Text>
+    //       </Link>
+    //     </SafeAreaView> -->
 
     <ScrollView>
       <View style={styles.container}>
@@ -225,7 +224,6 @@ const EditUserProfile = () => {
             <Text style={styles.buttonText}>Submit</Text>
           </TouchableOpacity>
         </View>
-
 
         <View style={styles.container}>
           <TextInput
@@ -303,6 +301,7 @@ const styles = StyleSheet.create({
   },
   linkText: {
     color: "#007AFF",
+  },
   messageText: {
     marginBottom: 10,
   },
