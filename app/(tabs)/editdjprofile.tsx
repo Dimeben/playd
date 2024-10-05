@@ -34,7 +34,7 @@ const EditDjProfile = () => {
   const [dj, setDj] = useState({});
   const [updateMessage, setUpdateMessage] = useState("");
   const [goBackIsVisible, setGoBackIsVisible] = useState(false);
-  const successMessage = "Sucessfully Updated ";
+  const successMessage = "Successfully Updated ";
 
   const inputRef = useRef<TextInput>(null);
 
