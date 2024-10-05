@@ -15,7 +15,6 @@
     "preset": "jest-expo"
   },
   "expo": {
-    "jsEngine": "jsc",
     "plugins": [
       [
         "expo-image-picker",
