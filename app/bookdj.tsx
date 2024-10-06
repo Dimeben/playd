@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useContext } from "react";
 import {
   View,
   Text,
@@ -12,16 +12,15 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { createBooking, getFeedback } from "../firebase/firestore";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import moment from "moment";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const BookDj = () => {
   const router = useRouter();
   const { dj } = useLocalSearchParams();
-
-  const selectedDj = Array.isArray(dj)
-    ? JSON.parse(dj[0])
-    : dj
-    ? JSON.parse(dj)
-    : null;
+  const { username } = useContext(AuthContext);
+  const selectedDj = useMemo(() => {
+    return Array.isArray(dj) ? JSON.parse(dj[0]) : dj ? JSON.parse(dj) : null;
+  }, [dj]);
 
   const [newBooking, setNewBooking] = useState({
     client: "",
@@ -39,19 +38,24 @@ const BookDj = () => {
   useEffect(() => {
     console.log("bookdj useEffect - Line 40");
     const fetchFeedback = async () => {
-      if (selectedDj) {
+      if (selectedDj?.username) {
         try {
           const feedbackArray = await getFeedback(selectedDj.username);
           setFeedbackData(feedbackArray);
-          console.log("bookdj useEffect - Line 46");
         } catch (error) {
-          console.log("bookdj useEffect - Line 48");
-          console.log("Error fetching feedback: ", error);
+          console.error("Error fetching feedback: ", error);
         }
       }
     };
-    console.log("bookdj useEffect - Line 53");
-    fetchFeedback();
+
+    if (selectedDj) {
+      fetchFeedback();
+      setNewBooking({
+        ...newBooking,
+        client: username,
+        dj: selectedDj.username,
+      });
+    }
   }, [selectedDj]);
 
   const handleDateInput = (text: string) => {
@@ -157,9 +161,19 @@ const BookDj = () => {
 
       <TextInput
         style={styles.input}
-        placeholder="Your Name"
-        value={newBooking.client}
-        onChangeText={(text) => setNewBooking({ ...newBooking, client: text })}
+        placeholder="Event Location"
+        value={newBooking.location}
+        onChangeText={(text) =>
+          setNewBooking({ ...newBooking, location: text })
+        }
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Occasion"
+        value={newBooking.occasion}
+        onChangeText={(text) =>
+          setNewBooking({ ...newBooking, occasion: text })
+        }
       />
       <TextInput
         style={styles.input}
@@ -185,22 +199,7 @@ const BookDj = () => {
         maxLength={5}
         keyboardType="numeric"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Event Location"
-        value={newBooking.location}
-        onChangeText={(text) =>
-          setNewBooking({ ...newBooking, location: text })
-        }
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Occasion"
-        value={newBooking.occasion}
-        onChangeText={(text) =>
-          setNewBooking({ ...newBooking, occasion: text })
-        }
-      />
+
       <TextInput
         style={styles.input}
         placeholder="Additional Comments"

@@ -6,12 +6,13 @@ import {
   SafeAreaView,
   StyleSheet,
   Platform,
+  Alert,
+  TouchableOpacity,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { doc } from "firebase/firestore";
 import { AuthContext } from "../../contexts/AuthContext";
-import { getUserById } from "@/firebase/firestore";
-import { db } from "../../firebase/firebaseConfig";
+import { getUserById, signOut } from "../../firebase/firestore";
 import { Link } from "expo-router";
 import { User } from "@/firebase/types";
 
@@ -42,6 +43,14 @@ const Profile = () => {
     console.log("profile useEffect - Line 42");
     fetchUser();
   }, [userId]);
+
+  const handleLogout = () => {
+    signOut()
+      .then(() => {
+        Alert.alert("You have signed out!");
+      })
+      .catch((err) => console.log("User didn't sign out"));
+  };
 
   if (!isAuthenticated) {
     return (
@@ -76,6 +85,9 @@ const Profile = () => {
           <Link style={styles.button} href="/EditUserProfile">
             <Text style={styles.buttonText}>Edit Profile</Text>
           </Link>
+          <TouchableOpacity style={styles.buttonTouch} onPress={handleLogout}>
+            <Text style={styles.buttonText}>Logout</Text>
+          </TouchableOpacity>
         </View>
       )}
     </View>
@@ -137,5 +149,15 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 16,
+  },
+  buttonTouch: {
+    height: 47,
+    borderRadius: 5,
+    backgroundColor: "#007AFF",
+    width: "80%",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 5,
+    margin: 5,
   },
 });
