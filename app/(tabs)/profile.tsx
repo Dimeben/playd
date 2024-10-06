@@ -6,42 +6,51 @@ import {
   SafeAreaView,
   StyleSheet,
   Platform,
+  Alert,
+  TouchableOpacity,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { doc } from "firebase/firestore";
 import { AuthContext } from "../../contexts/AuthContext";
-import { getUserById } from "@/firebase/firestore";
-import { db } from "../../firebase/firebaseConfig";
+import { getUserById, signOut } from "../../firebase/firestore";
 import { Link } from "expo-router";
 import { User } from "@/firebase/types";
 
 const Profile = () => {
   const [user, setUser] = useState<User | undefined>(undefined);
   const { isAuthenticated, userId } = useContext(AuthContext);
-  
+
   useEffect(() => {
-    console.log("profile useEffect - Line 23") 
+    console.log("profile useEffect - Line 23");
     const fetchUser = async () => {
       if (userId) {
         try {
-          console.log("profile useEffect - Line 27") 
+          console.log("profile useEffect - Line 27");
           const userData = await getUserById(userId);
           if (userData) {
-            console.log("profile useEffect - Line 30") 
+            console.log("profile useEffect - Line 30");
             setUser(userData as User);
           } else {
-            console.log("profile useEffect - Line 33") 
+            console.log("profile useEffect - Line 33");
             console.log("User doesn't exist");
           }
         } catch (err) {
-          console.log("profile useEffect - Line 37") 
+          console.log("profile useEffect - Line 37");
           console.error("Error fetching user: ", (err as Error).message);
         }
       }
     };
-    console.log("profile useEffect - Line 42") 
+    console.log("profile useEffect - Line 42");
     fetchUser();
   }, [userId]);
+
+  const handleLogout = () => {
+    signOut()
+      .then(() => {
+        Alert.alert("You have signed out!");
+      })
+      .catch((err) => console.log("User didn't sign out"));
+  };
 
   if (!isAuthenticated) {
     return (
@@ -73,9 +82,12 @@ const Profile = () => {
             <Text>Surname: {user.surname}</Text>
             <Text>City: {user.city}</Text>
           </Pressable>
-          <Link style={styles.button} href="/(tabs)/EditUserProfile">
+          <Link style={styles.buttonTouch} href="/(tabs)/EditUserProfile">
             <Text style={styles.buttonText}>Edit Profile</Text>
           </Link>
+          <TouchableOpacity style={styles.buttonTouch} onPress={handleLogout}>
+            <Text style={styles.buttonText}>Logout</Text>
+          </TouchableOpacity>
         </View>
       )}
     </View>
@@ -137,5 +149,15 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 16,
+  },
+  buttonTouch: {
+    height: 47,
+    borderRadius: 5,
+    backgroundColor: "#007AFF",
+    width: "80%",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 5,
+    margin: 5,
   },
 });
