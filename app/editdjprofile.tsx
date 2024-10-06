@@ -11,9 +11,9 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { AuthContext } from "../../contexts/AuthContext";
-import { db } from "../../firebase/firebaseConfig";
-import { auth } from "../../firebase/firebaseConfig";
+import { AuthContext } from "../contexts/AuthContext";
+import { db } from "../firebase/firebaseConfig";
+import { auth } from "../firebase/firebaseConfig";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { patchDJ, getDJById } from "@/firebase/firestore";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
@@ -42,8 +42,8 @@ const EditDjProfile = () => {
   const successMessage = "Successfully Updated ";
   const inputRef = useRef<TextInput>(null);
 
-// <!--   const [addGenre, setAddGenre] = useState([]);
-//   const [addedOccasion, setAddedOccasion] = useState([]);
+  // <!--   const [addGenre, setAddGenre] = useState([]);
+  //   const [addedOccasion, setAddedOccasion] = useState([]);
 
   //   const usernameRef = useRef("");
   //   const passwordRef = useRef("");
@@ -138,8 +138,6 @@ const EditDjProfile = () => {
   //     Alert.alert("Error adding to occasions");
   //   }
   // }; -->
-
-
 
   useEffect(() => {
     const fetchDjData = async () => {
@@ -334,7 +332,7 @@ const EditDjProfile = () => {
         </View>
         <Text></Text>
         <View style={styles.formContainer}>
-{/* <!--           <View style={styles.inputContainer}>
+          {/* <!--           <View style={styles.inputContainer}>
             <TextInput
               label="Username"
               placeholder={`${
@@ -452,7 +450,7 @@ const EditDjProfile = () => {
             <Text style={styles.buttonText}>Add</Text>
           </TouchableOpacity>
         </View> */}
-        {/* <View style={styles.formContainer}>
+      {/* <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <TextInput
               label="occasions"
@@ -474,7 +472,7 @@ const EditDjProfile = () => {
           >
             <Text style={styles.buttonText}>Add</Text>
           </TouchableOpacity> */}
-{/* <!--         </View>
+      {/* <!--         </View>
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <TextInput
@@ -489,7 +487,7 @@ const EditDjProfile = () => {
               underlineColorAndroid="transparent"
               keyboardType="decimal"
             /> --> */}
-        {/* </View> */}
+      {/* </View> */}
       <View style={styles.container}>
         <Text>Genres:</Text>
         {genres.map((g, index) => (

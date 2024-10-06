@@ -11,8 +11,8 @@ import {
   SafeAreaView,
 } from "react-native";
 import React, { useContext, useEffect, useState, useRef } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
-import { getUserById, patchUser } from "../../firebase/firestore";
+import { AuthContext } from "../contexts/AuthContext";
+import { getUserById, patchUser } from "../firebase/firestore";
 import { useRouter } from "expo-router";
 import { User } from "@/firebase/types";
 const EditUserProfile = () => {

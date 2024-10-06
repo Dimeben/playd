@@ -74,10 +74,10 @@ export default function Login() {
     <View style={styles.container}>
       <Text style={styles.header}>Login</Text>
       <View style={styles.buttonContainer}>
-        <Link href="/(tabs)/userSignUp" style={styles.linkButton}>
+        <Link href="/userSignUp" style={styles.linkButton}>
           <Text style={styles.linkText}>User Sign Up</Text>
         </Link>
-        <Link href="/(tabs)/djSignUp" style={styles.linkButton}>
+        <Link href="/djSignUp" style={styles.linkButton}>
           <Text style={styles.linkText}>DJ Sign Up</Text>
         </Link>
       </View>

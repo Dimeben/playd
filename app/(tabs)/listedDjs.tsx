@@ -32,13 +32,13 @@ const DjList = () => {
   const [occasionOptions, setOccasionOptions] = useState<string[]>([]);
 
   useEffect(() => {
-    console.log("listedDjs useEffect - Line 35")
+    console.log("listedDjs useEffect - Line 35");
     const fetchDjs = async () => {
       try {
-        console.log("listedDjs useEffect - Line 38")
+        console.log("listedDjs useEffect - Line 38");
         const djData = await getAllDjs();
         const validDjs = djData.filter((dj): dj is DJ => {
-          console.log("listedDjs useEffect - Line 41")
+          console.log("listedDjs useEffect - Line 41");
           return (
             dj.id !== undefined &&
             dj.first_name !== undefined &&
@@ -52,7 +52,7 @@ const DjList = () => {
               dj.profile_picture === null)
           );
         });
-        console.log("listedDjs useEffect - Line 55")
+        console.log("listedDjs useEffect - Line 55");
         setDjs(validDjs);
 
         setCityOptions([...new Set(validDjs.map((dj) => dj.city))]);
@@ -60,17 +60,17 @@ const DjList = () => {
         setOccasionOptions([
           ...new Set(validDjs.flatMap((dj) => dj.occasions)),
         ]);
-        console.log("listedDjs useEffect - Line 63")
+        console.log("listedDjs useEffect - Line 63");
         setFilteredDjs(validDjs);
       } catch (error) {
-        console.log("listedDjs useEffect - Line 66")
+        console.log("listedDjs useEffect - Line 66");
         console.error("Error fetching DJs: ", error);
       } finally {
-        console.log("listedDjs useEffect - Line 69")
+        console.log("listedDjs useEffect - Line 69");
         setLoading(false);
       }
     };
-    console.log("listedDjs useEffect - Line 73")
+    console.log("listedDjs useEffect - Line 73");
     fetchDjs();
   }, []);
 
@@ -112,7 +112,7 @@ const DjList = () => {
 
   const handleNavigateToProfile = (dj: DJ) => {
     router.push({
-      pathname: "/(tabs)/bookdj",
+      pathname: "/bookdj",
       params: { dj: JSON.stringify(dj) },
     });
   };
@@ -135,7 +135,9 @@ const DjList = () => {
       {Array.isArray(item.genres) && item.genres.length > 0 && (
         <Text style={styles.genre}>Genre: {item.genres.join(", ")}</Text>
       )}
-      <Text style={styles.occasions}>Occasions: {item.occasions}</Text>
+      <Text style={styles.occasions}>
+        Occasions: {item.occasions.join(", ")}
+      </Text>
       <Text style={styles.price}>Price: £{item.price}</Text>
       <Text style={styles.description}>{item.description}</Text>
       <Text style={styles.rating}>Rating: {item.rating}</Text>

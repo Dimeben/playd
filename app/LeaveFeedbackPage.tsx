@@ -8,9 +8,9 @@ import {
   Button,
 } from "react-native";
 import { getAuth } from "firebase/auth";
-import { AuthContext } from "../../contexts/AuthContext";
-import { postFeedback, getBookingByUser } from "../../firebase/firestore";
-import { Booking, Feedback } from "../../firebase/types";
+import { AuthContext } from "../contexts/AuthContext";
+import { postFeedback, getBookingByUser } from "../firebase/firestore";
+import { Booking, Feedback } from "../firebase/types";
 
 const UserManageBooking = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -59,14 +59,13 @@ const UserManageBooking = () => {
           dj: selectedBooking.dj,
           date: new Date(),
         };
-  
+
         console.log("Submitting feedback: ", feedbackData);
-  
-       
+
         await postFeedback(feedbackData);
-  
+
         alert("Feedback posted successfully!");
-  
+
         setFeedback({
           title: "",
           body: "",
@@ -82,7 +81,6 @@ const UserManageBooking = () => {
       alert("Please select a booking to leave feedback.");
     }
   };
-  
 
   if (loading) {
     return <Text>Loading bookings...</Text>;

@@ -4,7 +4,7 @@ import { Link, Redirect } from "expo-router";
 
 const Index = () => {
   return (
-    <Redirect href="/(tabs)/login" />
+    <Redirect href="/login" />
 
     // <View>
     //   <Text>Index Screen</Text>

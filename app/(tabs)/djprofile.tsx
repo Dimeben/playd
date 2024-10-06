@@ -41,7 +41,7 @@ const DjProfilePage = () => {
       }
 
       try {
-        console.log("djprofile useEffect - Line 52")
+        console.log("djprofile useEffect - Line 52");
         const djData = await getDJById(userId);
 
         if (djData) {
@@ -89,7 +89,7 @@ const DjProfilePage = () => {
       <SafeAreaView>
         <Text style={styles.loginMessage}>You must login first!</Text>
         <Text></Text>
-        <Link style={styles.button} href="/(tabs)/login">
+        <Link style={styles.button} href="/login">
           <Text style={styles.buttonText}>Login Screen</Text>
         </Link>
       </SafeAreaView>
@@ -150,7 +150,7 @@ const DjProfilePage = () => {
           <Link
             style={styles.button}
             href={{
-              pathname: "/(tabs)/editdjprofile",
+              pathname: "/editdjprofile",
               // /* 1. Navigate to the details route with query params */
               params: { dj: dj },
             }}

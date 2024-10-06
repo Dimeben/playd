@@ -40,7 +40,7 @@ export default function Index() {
 
           <TouchableOpacity
             style={styles.button}
-            onPress={() => router.push("/(tabs)/login")}
+            onPress={() => router.push("/login")}
           >
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
@@ -49,7 +49,6 @@ export default function Index() {
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {

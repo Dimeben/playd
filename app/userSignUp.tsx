@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, SafeAreaView, Image } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { createUser } from '../../firebase/firestore'; 
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+  SafeAreaView,
+  Image,
+} from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { createUser } from "../firebase/firestore";
 import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from 'expo-file-system';
-import { storage } from '../../firebase/storage';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import * as FileSystem from "expo-file-system";
+import { storage } from "../firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function UserSignUp() {
   const [username, setUsername] = useState("");
@@ -115,7 +125,8 @@ export default function UserSignUp() {
         setShowSuccessMessage(false);
       }, 2000);
     } catch (error) {
-      const errorMessage = (error as Error).message || "An error occurred during registration.";
+      const errorMessage =
+        (error as Error).message || "An error occurred during registration.";
       Alert.alert("Error", errorMessage);
     }
   };
@@ -135,7 +146,9 @@ export default function UserSignUp() {
         <Text>Select an Image</Text>
       </TouchableOpacity>
       <View>
-        {image && <Image source={{ uri: image }} style={{ width: 300, height: 300 }} />}
+        {image && (
+          <Image source={{ uri: image }} style={{ width: 300, height: 300 }} />
+        )}
         <TouchableOpacity onPress={uploadMedia}>
           <Text>Upload Image</Text>
         </TouchableOpacity>
@@ -199,7 +212,9 @@ export default function UserSignUp() {
           secureTextEntry={!showConfirmPassword}
           onChangeText={setConfirmPassword}
         />
-        <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+        <TouchableOpacity
+          onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+        >
           <Ionicons
             name={showConfirmPassword ? "eye-off" : "eye"}
             size={24}

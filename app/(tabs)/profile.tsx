@@ -18,28 +18,28 @@ import { User } from "@/firebase/types";
 const Profile = () => {
   const [user, setUser] = useState<User | undefined>(undefined);
   const { isAuthenticated, userId } = useContext(AuthContext);
-  
+
   useEffect(() => {
-    console.log("profile useEffect - Line 23") 
+    console.log("profile useEffect - Line 23");
     const fetchUser = async () => {
       if (userId) {
         try {
-          console.log("profile useEffect - Line 27") 
+          console.log("profile useEffect - Line 27");
           const userData = await getUserById(userId);
           if (userData) {
-            console.log("profile useEffect - Line 30") 
+            console.log("profile useEffect - Line 30");
             setUser(userData as User);
           } else {
-            console.log("profile useEffect - Line 33") 
+            console.log("profile useEffect - Line 33");
             console.log("User doesn't exist");
           }
         } catch (err) {
-          console.log("profile useEffect - Line 37") 
+          console.log("profile useEffect - Line 37");
           console.error("Error fetching user: ", (err as Error).message);
         }
       }
     };
-    console.log("profile useEffect - Line 42") 
+    console.log("profile useEffect - Line 42");
     fetchUser();
   }, [userId]);
 
@@ -47,7 +47,7 @@ const Profile = () => {
     return (
       <SafeAreaView>
         <Text style={styles.loginMessage}>You must login first</Text>
-        <Link href="/(tabs)/login">Login Screen</Link>
+        <Link href="/login">Login Screen</Link>
       </SafeAreaView>
     );
   }
@@ -73,7 +73,7 @@ const Profile = () => {
             <Text>Surname: {user.surname}</Text>
             <Text>City: {user.city}</Text>
           </Pressable>
-          <Link style={styles.button} href="/(tabs)/EditUserProfile">
+          <Link style={styles.button} href="/EditUserProfile">
             <Text style={styles.buttonText}>Edit Profile</Text>
           </Link>
         </View>
