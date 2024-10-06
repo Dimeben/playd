@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useContext } from "react";
 import {
   View,
   Text,
@@ -12,17 +12,16 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { createBooking, getFeedback } from "../../firebase/firestore";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import moment from "moment";
- 
+import { AuthContext } from "../../contexts/AuthContext";
+
 const BookDj = () => {
   const router = useRouter();
   const { dj } = useLocalSearchParams();
- 
-  const selectedDj = Array.isArray(dj)
-    ? JSON.parse(dj[0])
-    : dj
-    ? JSON.parse(dj)
-    : null;
- 
+  const { username } = useContext(AuthContext);
+  const selectedDj = useMemo(() => {
+    return Array.isArray(dj) ? JSON.parse(dj[0]) : dj ? JSON.parse(dj) : null;
+  }, [dj]);
+
   const [newBooking, setNewBooking] = useState({
     client: "",
     comments: "",
@@ -33,31 +32,35 @@ const BookDj = () => {
     occasion: "",
     dj: selectedDj?.username || "",
   });
- 
+
   const [feedbackData, setFeedbackData] = useState<any[]>([]);
- 
+
   useEffect(() => {
-    console.log("bookdj useEffect - Line 40")
     const fetchFeedback = async () => {
-      if (selectedDj) {
+      if (selectedDj?.username) {
         try {
           const feedbackArray = await getFeedback(selectedDj.username);
           setFeedbackData(feedbackArray);
-          console.log("bookdj useEffect - Line 46")
         } catch (error) {
-          console.log("bookdj useEffect - Line 48")
-          console.log("Error fetching feedback: ", error);
+          console.error("Error fetching feedback: ", error);
         }
       }
     };
-    console.log("bookdj useEffect - Line 53")
-    fetchFeedback();
+
+    if (selectedDj) {
+      fetchFeedback();
+      setNewBooking({
+        ...newBooking,
+        client: username,
+        dj: selectedDj.username,
+      });
+    }
   }, [selectedDj]);
- 
+
   const handleDateInput = (text: string) => {
     const cleanedText = text.replace(/\D/g, "");
     let formattedText = cleanedText;
- 
+
     if (cleanedText.length >= 3) {
       formattedText = cleanedText.slice(0, 2) + "/" + cleanedText.slice(2);
     }
@@ -69,47 +72,47 @@ const BookDj = () => {
         "/" +
         cleanedText.slice(4, 8);
     }
- 
+
     setNewBooking({ ...newBooking, date: formattedText });
   };
- 
+
   const handleTimeInput = (text: string) => {
     const cleanedText = text.replace(/\D/g, "");
     let formattedText = cleanedText;
- 
+
     if (cleanedText.length >= 3) {
       formattedText = cleanedText.slice(0, 2) + ":" + cleanedText.slice(2);
     }
- 
+
     setNewBooking({ ...newBooking, time: formattedText });
   };
- 
+
   const handleBookingSubmit = () => {
     try {
       const [day, month, year] = newBooking.date.split("/");
       const formattedDate = moment(`${year}-${month}-${day}`, "YYYY-MM-DD");
- 
+
       if (!formattedDate.isValid()) {
         alert("Invalid date format. Please use dd/mm/yyyy format.");
         return;
       }
- 
+
       const formattedTime = moment(newBooking.time, "HH:mm", true);
       if (!formattedTime.isValid()) {
         alert("Invalid time format. Please use HH:mm format.");
         return;
       }
- 
+
       const combinedDateTime = moment(
         `${newBooking.date} ${newBooking.time}`,
         "DD/MM/YYYY HH:mm"
       ).toDate();
- 
+
       const bookingWithDateTime = {
         ...newBooking,
         date: combinedDateTime,
       };
- 
+
       createBooking(bookingWithDateTime);
       alert("Booking created successfully!");
       router.back();
@@ -118,7 +121,7 @@ const BookDj = () => {
       alert("There was an error creating your booking. Please try again.");
     }
   };
- 
+
   return (
     <View style={styles.container}>
       {selectedDj && (
@@ -146,14 +149,24 @@ const BookDj = () => {
           </View>
         </View>
       )}
- 
+
       <Text style={styles.header}>Create a New Booking</Text>
- 
+
       <TextInput
         style={styles.input}
-        placeholder="Your Name"
-        value={newBooking.client}
-        onChangeText={(text) => setNewBooking({ ...newBooking, client: text })}
+        placeholder="Event Location"
+        value={newBooking.location}
+        onChangeText={(text) =>
+          setNewBooking({ ...newBooking, location: text })
+        }
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Occasion"
+        value={newBooking.occasion}
+        onChangeText={(text) =>
+          setNewBooking({ ...newBooking, occasion: text })
+        }
       />
       <TextInput
         style={styles.input}
@@ -179,22 +192,7 @@ const BookDj = () => {
         maxLength={5}
         keyboardType="numeric"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Event Location"
-        value={newBooking.location}
-        onChangeText={(text) =>
-          setNewBooking({ ...newBooking, location: text })
-        }
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Occasion"
-        value={newBooking.occasion}
-        onChangeText={(text) =>
-          setNewBooking({ ...newBooking, occasion: text })
-        }
-      />
+
       <TextInput
         style={styles.input}
         placeholder="Additional Comments"
@@ -203,9 +201,9 @@ const BookDj = () => {
           setNewBooking({ ...newBooking, comments: text })
         }
       />
- 
+
       <Button title="Submit Booking" onPress={handleBookingSubmit} />
- 
+
       <Text style={styles.header}>Reviews</Text>
       <GestureHandlerRootView style={styles.scrollContainer}>
         <ScrollView contentContainerStyle={styles.feedbackContainer}>
@@ -234,7 +232,7 @@ const BookDj = () => {
     </View>
   );
 };
- 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -332,5 +330,5 @@ const styles = StyleSheet.create({
     color: "Black",
   },
 });
- 
+
 export default BookDj;
