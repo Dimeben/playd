@@ -58,10 +58,10 @@ export default function Login() {
       const isDj = await isDjAccount(userId);
 
       if (isDj) {
-        console.log("DJ PROFILE REDIRECT");
+        Alert.alert("DJ Logged In Successfully");
         router.push("/(tabs)/profile");
       } else {
-        console.log("USER HOME REDIRECT");
+        Alert.alert("USER Logged In Successfully");
         router.push("/(tabs)/listedDjs");
       }
       clearForm();
