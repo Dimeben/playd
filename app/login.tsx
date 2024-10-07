@@ -79,8 +79,6 @@ export default function Login() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
     >
-      <SafeAreaView />
-
       <LinearGradient
         colors={["#93C6F9", "#97B4FA", "#400691"]}
         style={styles.background}
