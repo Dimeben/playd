@@ -135,7 +135,6 @@ export default function UserSignUp() {
     }
   };
 
-
   if (showSuccessMessage) {
     return (
       <View style={styles.container}>
@@ -151,108 +150,113 @@ export default function UserSignUp() {
         keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
         style={{ flex: 1 }}
       >
-    <View style={styles.container}>
-      <LinearGradient
-        colors={["#93C6F9", "#97B4FA", "#400691"]}
-        style={styles.background}
-      >
-        <ScrollView>
-          <Text style={styles.header}>User Signup</Text>
-          <TouchableOpacity onPress={pickImage}>
-            <Text style={styles.paddingLeft}>Select an Image</Text>
-          </TouchableOpacity>
-          <View>
-            {image && (
-              <Image
-                source={{ uri: image }}
-                style={{ width: 300, height: 300 }}
-              />
-            )}
-            <TouchableOpacity onPress={uploadMedia} style={styles.signupButton}>
-              <Text style={styles.linkText}>Upload Image</Text>
-            </TouchableOpacity>
-          </View>
-
-          <TextInput
-            style={styles.input}
-            placeholder="First Name"
-            value={firstName}
-            onChangeText={setFirstName}
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Surname"
-            value={surname}
-            onChangeText={setSurname}
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Username"
-            value={username}
-            onChangeText={setUsername}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="City"
-            value={city}
-            onChangeText={setCity}
-          />
-
-          <View style={styles.passwordContainer}>
-            <TextInput
-              style={styles.passwordInput}
-              placeholder="Password"
-              value={password}
-              secureTextEntry={!showPassword}
-              onChangeText={setPassword}
-            />
-            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-              <Ionicons
-                name={showPassword ? "eye-off" : "eye"}
-                size={24}
-                color="gray"
-              />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.passwordContainer}>
-            <TextInput
-              style={styles.passwordInput}
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              secureTextEntry={!showConfirmPassword}
-              onChangeText={setConfirmPassword}
-            />
-            <TouchableOpacity
-              onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-            >
-              <Ionicons
-                name={showConfirmPassword ? "eye-off" : "eye"}
-                size={24}
-                color="gray"
-              />
-            </TouchableOpacity>
-          </View>
-
-          {/* <Button title="Register as User" onPress={handleUserRegister} /> */}
-          <TouchableOpacity
-            style={[styles.signupButton, styles.marginTop]}
-            onPress={handleUserRegister}
+        <View style={styles.container}>
+          <LinearGradient
+            colors={["#93C6F9", "#97B4FA", "#400691"]}
+            style={styles.background}
           >
-            <Text style={styles.linkText}>Register as User</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </LinearGradient>
-    </View>
-             </KeyboardAvoidingView>
+            <ScrollView>
+              <Text style={styles.header}>User Signup</Text>
+              <TouchableOpacity onPress={pickImage}>
+                <Text style={styles.paddingLeft}>Select an Image</Text>
+              </TouchableOpacity>
+              <View>
+                {image && (
+                  <Image
+                    source={{ uri: image }}
+                    style={{ width: 300, height: 300 }}
+                  />
+                )}
+                <TouchableOpacity
+                  onPress={uploadMedia}
+                  style={styles.signupButton}
+                >
+                  <Text style={styles.linkText}>Upload Image</Text>
+                </TouchableOpacity>
+              </View>
+
+              <TextInput
+                style={styles.input}
+                placeholder="First Name"
+                value={firstName}
+                onChangeText={setFirstName}
+              />
+
+              <TextInput
+                style={styles.input}
+                placeholder="Surname"
+                value={surname}
+                onChangeText={setSurname}
+              />
+
+              <TextInput
+                style={styles.input}
+                placeholder="Username"
+                value={username}
+                onChangeText={setUsername}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                value={email}
+                onChangeText={setEmail}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="City"
+                value={city}
+                onChangeText={setCity}
+              />
+
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={styles.passwordInput}
+                  placeholder="Password"
+                  value={password}
+                  secureTextEntry={!showPassword}
+                  onChangeText={setPassword}
+                />
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  <Ionicons
+                    name={showPassword ? "eye-off" : "eye"}
+                    size={24}
+                    color="gray"
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={styles.passwordInput}
+                  placeholder="Confirm Password"
+                  value={confirmPassword}
+                  secureTextEntry={!showConfirmPassword}
+                  onChangeText={setConfirmPassword}
+                />
+                <TouchableOpacity
+                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  <Ionicons
+                    name={showConfirmPassword ? "eye-off" : "eye"}
+                    size={24}
+                    color="gray"
+                  />
+                </TouchableOpacity>
+              </View>
+
+              {/* <Button title="Register as User" onPress={handleUserRegister} /> */}
+              <TouchableOpacity
+                style={[styles.signupButton, styles.marginTop]}
+                onPress={handleUserRegister}
+              >
+                <Text style={styles.linkText}>Register as User</Text>
+              </TouchableOpacity>
+            </ScrollView>
+          </LinearGradient>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -270,6 +274,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
+  },
   scrollViewContent: {
     flexGrow: 1,
     justifyContent: "center",
