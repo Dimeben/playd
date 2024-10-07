@@ -1,7 +1,17 @@
 import React, { useEffect, useState, useContext } from "react";
-import { View, Text, ScrollView, StyleSheet, Button, Pressable } from "react-native";
-import { getBookingsByDj, acceptBooking, denyBooking } from "../../firebase/firestore";
-import { AuthContext } from "../../contexts/AuthContext";
+import {
+  View,
+  Text,
+  FlatList,
+  Button,
+    ScrollView,
+  StyleSheet,
+  ActivityIndicator,
+    Button, Pressable,
+} from "react-native";
+import { getAuth } from "firebase/auth";
+        import { AuthContext } from "../../contexts/AuthContext";
+import { getBookingsByDj, updateBooking, acceptBooking, denyBooking } from "../../firebase/firestore";
 import { Booking } from "../../firebase/types";
 
 const DjManageBookings = () => {
@@ -9,7 +19,7 @@ const DjManageBookings = () => {
   const [djBookings, setDjBookings] = useState<Booking[]>([]);
 
   useEffect(() => {
-    const fetchBookings = async () => {
+   const fetchBookings = async () => {
       if (username) { 
         try {
           const bookings = await getBookingsByDj(username);
@@ -20,6 +30,24 @@ const DjManageBookings = () => {
         }
       }
     };
+    console.log("djManageBooking useEffect - Line 15");
+<!--     const getDjBookings = async () => {
+      if (currentUser) {
+        console.log("djManageBooking useEffect - Line 18");
+        try {
+          console.log("djManageBooking useEffect - Line 20");
+          const fetchedBookings = await getBookingsByDj(currentUser.uid);
+          setBookings(fetchedBookings);
+        } catch (error) {
+          console.log("djManageBooking useEffect - Line 24");
+          console.error("Error fetching bookings:", error);
+        } finally {
+          console.log("djManageBooking useEffect - Line 27");
+          setLoading(false);
+        }
+      }
+    };
+    console.log("djManageBooking useEffect - Line 32"); -->
 
     fetchBookings();
   }, [username]);

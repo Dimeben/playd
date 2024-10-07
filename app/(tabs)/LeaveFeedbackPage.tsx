@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TextInput,
   Button,
+  ActivityIndicator,
 } from "react-native";
 import { getAuth } from "firebase/auth";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -83,7 +84,12 @@ const UserManageBooking = () => {
   };
 
   if (loading) {
-    return <Text>Loading bookings...</Text>;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="black" />
+        <Text>Loading Profile...</Text>
+      </View>
+    );
   }
 
   const renderBooking = ({ item }: { item: Booking }) => (
@@ -199,6 +205,11 @@ const styles = StyleSheet.create({
     padding: 8,
     marginBottom: 10,
     borderRadius: 4,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

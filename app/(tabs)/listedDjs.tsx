@@ -145,7 +145,10 @@ const DjList = () => {
   );
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    <View style={styles.loadingContainer}>
+      <ActivityIndicator size="large" color="black" />
+      <Text>Loading Profile...</Text>
+    </View>;
   }
 
   return (
@@ -271,5 +274,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "blue",
     marginTop: 5,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

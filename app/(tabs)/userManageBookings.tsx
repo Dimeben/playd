@@ -1,7 +1,14 @@
 import React, { useEffect, useState, useContext } from "react";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
-import { getBookingsByUser } from "../../firebase/firestore";
-import { AuthContext } from "../../contexts/AuthContext";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
+import { getAuth } from "firebase/auth";
+        import { AuthContext } from "../../contexts/AuthContext";
+import { getBookingByUser } from "../../firebase/firestore";
 import { Booking } from "../../firebase/types";
 
 const UserManageBookings = () => {
@@ -56,6 +63,11 @@ const styles = StyleSheet.create({
   },
   details: {
     fontSize: 14,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
