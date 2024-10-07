@@ -133,7 +133,10 @@ const DjProfilePage = () => {
               <Text>First Name: {dj.first_name}</Text>
               <Text>Surname: {dj.surname}</Text>
               <Text>City: {dj.city}</Text>
-              <Text>Genres: {dj.genres}</Text>
+              <Text>
+                Genres:{" "}
+                {dj.genres.length > 1 ? dj.genres.join(", ") : dj.genres}
+              </Text>
               {/* {console.log(typeof dj.genres)} */}
               <Text>
                 Occasions:
