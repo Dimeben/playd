@@ -13,13 +13,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { doc } from "firebase/firestore";
 import { AuthContext } from "../../contexts/AuthContext";
 import { getUserById, signOut } from "../../firebase/firestore";
-import { Link, router } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { User } from "@/firebase/types";
 
 const Profile = () => {
   const [user, setUser] = useState<User | undefined>(undefined);
   const { isAuthenticated, userId } = useContext(AuthContext);
-
+  const router = useRouter();
   useEffect(() => {
     console.log("profile useEffect - Line 23");
     const fetchUser = async () => {
@@ -48,6 +48,7 @@ const Profile = () => {
     signOut()
       .then(() => {
         Alert.alert("You have signed out!");
+        router.push("../login");
       })
       .catch((err) => console.log("User didn't sign out"));
   };

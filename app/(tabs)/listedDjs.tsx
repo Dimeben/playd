@@ -14,6 +14,7 @@ import { getAllDjs } from "../../firebase/firestore";
 import { useRouter } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { DJ } from "../../firebase/types";
+import moment from "moment";
 
 const DjList = () => {
   const [djs, setDjs] = useState<import("../../firebase/types").DJ[]>([]);
@@ -30,6 +31,14 @@ const DjList = () => {
   const [cityOptions, setCityOptions] = useState<string[]>([]);
   const [genreOptions, setGenreOptions] = useState<string[]>([]);
   const [occasionOptions, setOccasionOptions] = useState<string[]>([]);
+
+  const renderStars = (rating: number) => {
+    const totalStars = 5;
+    const filledStars = "★".repeat(rating);
+    const emptyStars = "☆".repeat(totalStars - rating);
+
+    return filledStars + emptyStars;
+  };
 
   useEffect(() => {
     console.log("listedDjs useEffect - Line 35");
@@ -140,7 +149,7 @@ const DjList = () => {
       </Text>
       <Text style={styles.price}>Price: £{item.price}</Text>
       <Text style={styles.description}>{item.description}</Text>
-      <Text style={styles.rating}>Rating: {item.rating}</Text>
+      <Text style={styles.rating}>Rating: {renderStars(item.rating)}</Text>
     </TouchableOpacity>
   );
 

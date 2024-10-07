@@ -14,7 +14,7 @@ import {
   Alert,
   TextInput,
 } from "react-native";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
 import {
   getDJById,
@@ -29,6 +29,7 @@ import { WebView } from "react-native-webview";
 import SoundCloud from "@/components/SoundCloud";
 const DjProfilePage = () => {
   const { isAuthenticated, userId, username } = useContext(AuthContext);
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [dj, setDj] = useState<DJ | null>(null);
   const [soundcloudName, setSoundcloudName] = useState("multunes");
@@ -104,6 +105,7 @@ const DjProfilePage = () => {
     signOut()
       .then(() => {
         Alert.alert("You have signed out!");
+        router.push("../login");
       })
       .catch((err) => console.log("User didn't sign out"));
   };

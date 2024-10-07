@@ -62,10 +62,10 @@ const BookDj = () => {
 
   const renderStars = (rating: number) => {
     const totalStars = 5;
-    const filledStars = '★'.repeat(rating);
-    const emptyStars = '☆'.repeat(totalStars - rating);
-  
-    return filledStars + emptyStars; // Concatenate filled and empty stars
+    const filledStars = "★".repeat(rating);
+    const emptyStars = "☆".repeat(totalStars - rating);
+
+    return filledStars + emptyStars;
   };
 
   const handleDateInput = (text: string) => {
@@ -102,30 +102,30 @@ const BookDj = () => {
     try {
       const [day, month, year] = newBooking.date.split("/");
       const formattedDate = moment(`${year}-${month}-${day}`, "YYYY-MM-DD");
-  
+
       if (!formattedDate.isValid()) {
         alert("Invalid date format. Please use dd/mm/yyyy format.");
         return;
       }
-  
+
       const formattedTime = moment(newBooking.time, "HH:mm", true);
       if (!formattedTime.isValid()) {
         alert("Invalid time format. Please use HH:mm format.");
         return;
       }
-  
+
       const combinedDateTime = moment(
         `${newBooking.date} ${newBooking.time}`,
         "DD/MM/YYYY HH:mm"
       ).toDate();
-  
+
       const { time, ...bookingWithoutTime } = newBooking;
       const bookingWithDateTime = {
         ...bookingWithoutTime,
         date: combinedDateTime,
         status: "pending",
       };
-  
+
       createBooking(bookingWithDateTime);
       alert("Booking request sent!");
       router.back();
@@ -134,7 +134,7 @@ const BookDj = () => {
       alert("There was an error creating your booking. Please try again.");
     }
   };
-  
+
   const toggleForm = () => {
     setShowBookingForm(!showBookingForm);
   };
@@ -195,7 +195,9 @@ const BookDj = () => {
 
       {/* Toggle button for showing/hiding the booking form */}
       <TouchableOpacity onPress={toggleForm} style={styles.toggleButton}>
-        <Text style={styles.toggleButtonText}>{showBookingForm ? "Hide Booking Form" : "Book a DJ"}</Text>
+        <Text style={styles.toggleButtonText}>
+          {showBookingForm ? "Hide Booking Form" : "Book a DJ"}
+        </Text>
       </TouchableOpacity>
 
       {showBookingForm && (
