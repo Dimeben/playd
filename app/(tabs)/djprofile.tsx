@@ -76,7 +76,7 @@ const DjProfilePage = () => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="black" />
-        <Text>Loading...</Text>
+        <Text>Loading Profile...</Text>
       </View>
     );
   }
@@ -248,5 +248,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 5,
     margin: 5,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

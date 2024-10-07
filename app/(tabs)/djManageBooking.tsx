@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, Button, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  Button,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { getAuth } from "firebase/auth";
 import { getBookingsByDj, updateBooking } from "../../firebase/firestore";
 import { Booking } from "../../firebase/types";
@@ -12,33 +19,32 @@ const DjManageBooking = () => {
   const currentUser = auth.currentUser;
 
   useEffect(() => {
-    console.log("djManageBooking useEffect - Line 15")
+    console.log("djManageBooking useEffect - Line 15");
     const getDjBookings = async () => {
       if (currentUser) {
-        console.log("djManageBooking useEffect - Line 18")
+        console.log("djManageBooking useEffect - Line 18");
         try {
-          console.log("djManageBooking useEffect - Line 20")
+          console.log("djManageBooking useEffect - Line 20");
           const fetchedBookings = await getBookingsByDj(currentUser.uid);
           setBookings(fetchedBookings);
         } catch (error) {
-          console.log("djManageBooking useEffect - Line 24")
+          console.log("djManageBooking useEffect - Line 24");
           console.error("Error fetching bookings:", error);
         } finally {
-          console.log("djManageBooking useEffect - Line 27")
+          console.log("djManageBooking useEffect - Line 27");
           setLoading(false);
         }
       }
     };
-    console.log("djManageBooking useEffect - Line 32")
+    console.log("djManageBooking useEffect - Line 32");
 
     getDjBookings();
   }, [currentUser]);
 
   const handleStatusUpdate = async (bookingId: string, newStatus: string) => {
     try {
-  
       await updateBooking(bookingId, { status: newStatus });
-      
+
       setBookings((prev) =>
         prev.map((booking) =>
           booking.id === bookingId ? { ...booking, status: newStatus } : booking
@@ -50,13 +56,18 @@ const DjManageBooking = () => {
   };
 
   if (loading) {
-    return <Text>Loading bookings...</Text>;
+    <View style={styles.loadingContainer}>
+      <ActivityIndicator size="large" color="black" />
+      <Text>Loading Bookings...</Text>
+    </View>;
   }
 
   const renderBooking = ({ item }: { item: Booking }) => (
     <View style={styles.bookingCard}>
       <Text style={styles.bookingText}>DJ: {item.dj}</Text>
-      <Text style={styles.bookingText}>Event Details: {item.event_details}</Text>
+      <Text style={styles.bookingText}>
+        Event Details: {item.event_details}
+      </Text>
       <Text style={styles.bookingText}>
         Date: {new Date(item.date.seconds * 1000).toLocaleDateString()}
       </Text>
@@ -131,6 +142,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 10,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

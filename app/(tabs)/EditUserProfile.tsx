@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Alert,
   SafeAreaView,
+  ActivityIndicator,
 } from "react-native";
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -124,6 +125,7 @@ const EditUserProfile = () => {
   if (!user) {
     return (
       <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" color="black" />
         <Text>Loading user data...</Text>
       </SafeAreaView>
     );

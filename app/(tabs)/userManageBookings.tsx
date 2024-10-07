@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { getAuth } from "firebase/auth";
 import { getBookingByUser } from "../../firebase/firestore";
 import { Booking } from "../../firebase/types";
@@ -12,35 +18,40 @@ const UserManageBooking = () => {
   const currentUser = auth.currentUser;
 
   useEffect(() => {
-    console.log("profile useEffect - Line 15") 
+    console.log("profile useEffect - Line 15");
     const fetchBookings = async () => {
-      console.log("profile useEffect - Line 17") 
+      console.log("profile useEffect - Line 17");
       if (currentUser) {
         try {
-          console.log("profile useEffect - Line 20") 
+          console.log("profile useEffect - Line 20");
           const fetchedBookings = await getBookingByUser(currentUser.uid);
           setBookings(fetchedBookings);
         } catch (error) {
-          console.log("profile useEffect - Line 24") 
+          console.log("profile useEffect - Line 24");
           console.error("Error fetching bookings:", error);
         } finally {
-          console.log("profile useEffect - Line 27") 
+          console.log("profile useEffect - Line 27");
           setLoading(false);
         }
       }
     };
-    console.log("profile useEffect - Line 32") 
+    console.log("profile useEffect - Line 32");
     fetchBookings();
   }, [currentUser]);
 
   if (loading) {
-    return <Text>Loading bookings...</Text>;
+    <View style={styles.loadingContainer}>
+      <ActivityIndicator size="large" color="black" />
+      <Text>Loading Bookings...</Text>
+    </View>;
   }
 
   const renderBooking = ({ item }: { item: Booking }) => (
     <View style={styles.bookingCard}>
       <Text style={styles.bookingText}>DJ: {item.dj}</Text>
-      <Text style={styles.bookingText}>Event Details: {item.event_details}</Text>
+      <Text style={styles.bookingText}>
+        Event Details: {item.event_details}
+      </Text>
       <Text style={styles.bookingText}>
         Date: {new Date(item.date.seconds * 1000).toLocaleDateString()}
       </Text>
@@ -96,6 +107,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontStyle: "italic",
     marginBottom: 10,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
