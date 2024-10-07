@@ -59,7 +59,7 @@ export default function Login() {
 
       if (isDj) {
         console.log("DJ PROFILE REDIRECT");
-        router.push("/(tabs)/djprofile");
+        router.push("/(tabs)/profile");
       } else {
         console.log("USER HOME REDIRECT");
         router.push("/(tabs)/listedDjs");

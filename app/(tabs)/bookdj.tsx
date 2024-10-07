@@ -9,7 +9,7 @@ import {
   ScrollView,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { createBooking, getFeedback } from "../firebase/firestore";
+import { createBooking, getFeedback } from "../../firebase/firestore";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import moment from "moment";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
   },
   rating: {
     fontSize: 14,
-    color: "#333",
+    color: "blue",
   },
   scrollContainer: {
     flex: 1,

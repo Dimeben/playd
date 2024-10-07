@@ -8,9 +8,9 @@ import {
   Button,
 } from "react-native";
 import { getAuth } from "firebase/auth";
-import { AuthContext } from "../contexts/AuthContext";
-import { postFeedback, getBookingByUser } from "../firebase/firestore";
-import { Booking, Feedback } from "../firebase/types";
+import { AuthContext } from "../../contexts/AuthContext";
+import { postFeedback, getBookingByUser } from "../../firebase/firestore";
+import { Booking, Feedback } from "../../firebase/types";
 
 const UserManageBooking = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);

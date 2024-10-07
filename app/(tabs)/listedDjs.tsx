@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
   },
   rating: {
     fontSize: 14,
-    color: "orange",
+    color: "blue",
     marginTop: 5,
   },
 });

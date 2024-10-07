@@ -11,9 +11,9 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { AuthContext } from "../contexts/AuthContext";
-import { db } from "../firebase/firebaseConfig";
-import { auth } from "../firebase/firebaseConfig";
+import { AuthContext } from "../../contexts/AuthContext";
+import { db } from "../../firebase/firebaseConfig";
+import { auth } from "../../firebase/firebaseConfig";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { patchDJ, getDJById } from "@/firebase/firestore";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";

@@ -1,19 +1,23 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 export default function RootLayout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const auth = getAuth();
+
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "green",
+        tabBarActiveTintColor: "blue",
         tabBarInactiveTintColor: "gray",
         tabBarShowLabel: true,
         headerShown: false,
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="listedDjs"
         options={{
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
@@ -21,35 +25,13 @@ export default function RootLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="search"
-        options={{
-          tabBarLabel: "Search",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="search-outline" color={color} size={size} />
-          ),
-        }}
-      />
+
       <Tabs.Screen
         name="manageBookings"
         options={{
           tabBarLabel: "Manage Bookings",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar-outline" color={color} size={size} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name={isLoggedIn ? "djprofile" : "login"}
-        options={{
-          tabBarLabel: isLoggedIn ? "Dj Profile" : "Login",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons
-              name={isLoggedIn ? "person-outline" : "log-in-outline"}
-              color={color}
-              size={size}
-            />
+            <Ionicons name="calendar-outline" size={24} color="black" />
           ),
         }}
       />
@@ -63,7 +45,78 @@ export default function RootLayout() {
           ),
         }}
       />
-      <Tabs.Screen name="editdjprofile" />
+
+      <Tabs.Screen
+        name="userProfile"
+        options={{
+          tabBarLabel: "User Profile",
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Tabs.Screen
+        name="index"
+        options={{
+          tabBarLabel: "Index",
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Tabs.Screen
+        name="bookdj"
+        options={{
+          tabBarLabel: "BookDj",
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Tabs.Screen
+        name="djprofile"
+        options={{
+          tabBarLabel: "DJ Profile",
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Tabs.Screen
+        name="editdjprofile"
+        options={{
+          tabBarLabel: "Edit DJ Profile",
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Tabs.Screen
+        name="EditUserProfile"
+        options={{
+          tabBarLabel: "Edit User Profile",
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Tabs.Screen
+        name="LeaveFeedbackPage"
+        options={{
+          tabBarLabel: "Leave Feedback",
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Tabs.Screen
+        name="djManageBooking"
+        options={{
+          tabBarLabel: "DJ Manage Booking",
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Tabs.Screen
+        name="userManageBookings"
+        options={{
+          tabBarLabel: "User Manage Booking",
+          tabBarButton: () => null,
+        }}
+      />
     </Tabs>
   );
 }
