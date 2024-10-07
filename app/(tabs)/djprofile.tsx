@@ -14,6 +14,7 @@ import {
   Alert,
   TextInput,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import { Link, useRouter } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
 import {
@@ -45,37 +46,43 @@ const DjProfilePage = () => {
       }
     }
   };
+  const fetchDjData = async () => {
+    setIsLoading(true);
+    if (!userId) {
+      console.log("djprofile useEffect - Line 45");
+      console.log("User ID is null");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      console.log("djprofile useEffect - Line 52");
+      const djData = await getDJById(userId);
+
+      if (djData) {
+        setDj(djData as DJ);
+      } else {
+        console.log("DJ not found");
+      }
+    } catch (error) {
+      console.error("Error fetching DJ data:", (error as Error).message);
+      Alert.alert("Error", "Unable to fetch DJ data. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     console.log("djprofile useEffect - Line 41");
-    const fetchDjData = async () => {
-      setIsLoading(true);
-      if (!userId) {
-        console.log("djprofile useEffect - Line 45");
-        console.log("User ID is null");
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        console.log("djprofile useEffect - Line 52");
-        const djData = await getDJById(userId);
-
-        if (djData) {
-          setDj(djData as DJ);
-        } else {
-          console.log("DJ not found");
-        }
-      } catch (error) {
-        console.error("Error fetching DJ data:", (error as Error).message);
-        Alert.alert("Error", "Unable to fetch DJ data. Please try again.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
 
     fetchDjData();
   }, [userId]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchDjData();
+    }, [userId])
+  );
 
   useEffect(() => {
     fetchFeedback();

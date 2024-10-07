@@ -9,6 +9,7 @@ import {
   Alert,
   TouchableOpacity,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import React, { useContext, useEffect, useState } from "react";
 import { doc } from "firebase/firestore";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -20,29 +21,36 @@ const Profile = () => {
   const [user, setUser] = useState<User | undefined>(undefined);
   const { isAuthenticated, userId } = useContext(AuthContext);
   const router = useRouter();
+
+  const fetchUser = async () => {
+    if (userId) {
+      try {
+        console.log("profile useEffect - Line 27");
+        const userData = await getUserById(userId);
+        if (userData) {
+          console.log("profile useEffect - Line 30");
+          setUser(userData as User);
+        } else {
+          console.log("profile useEffect - Line 33");
+          console.log("User doesn't exist");
+        }
+      } catch (err) {
+        console.log("profile useEffect - Line 37");
+        console.error("Error fetching user: ", (err as Error).message);
+      }
+    }
+  };
+  console.log("profile useEffect - Line 42");
   useEffect(() => {
     console.log("profile useEffect - Line 23");
-    const fetchUser = async () => {
-      if (userId) {
-        try {
-          console.log("profile useEffect - Line 27");
-          const userData = await getUserById(userId);
-          if (userData) {
-            console.log("profile useEffect - Line 30");
-            setUser(userData as User);
-          } else {
-            console.log("profile useEffect - Line 33");
-            console.log("User doesn't exist");
-          }
-        } catch (err) {
-          console.log("profile useEffect - Line 37");
-          console.error("Error fetching user: ", (err as Error).message);
-        }
-      }
-    };
-    console.log("profile useEffect - Line 42");
     fetchUser();
   }, [userId]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchUser();
+    }, [userId])
+  );
 
   const handleLogout = () => {
     signOut()

@@ -8,19 +8,19 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Button,
+  Modal,
+  SafeAreaView,
 } from "react-native";
-import { Picker } from "@react-native-picker/picker";
 import { getAllDjs } from "../../firebase/firestore";
 import { useRouter } from "expo-router";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { DJ } from "../../firebase/types";
-import moment from "moment";
 
 const DjList = () => {
-  const [djs, setDjs] = useState<import("../../firebase/types").DJ[]>([]);
-  const [filteredDjs, setFilteredDjs] = useState<
-    import("../../firebase/types").DJ[]
-  >([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [genreModalVisible, setGenreModalVisible] = useState(false);
+  const [occasionModalVisible, setOccasionModalVisible] = useState(false);
+  const [djs, setDjs] = useState<DJ[]>([]);
+  const [filteredDjs, setFilteredDjs] = useState<DJ[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCity, setSelectedCity] = useState<string | undefined>();
   const [selectedGenre, setSelectedGenre] = useState<string | undefined>();
@@ -41,13 +41,10 @@ const DjList = () => {
   };
 
   useEffect(() => {
-    console.log("listedDjs useEffect - Line 35");
     const fetchDjs = async () => {
       try {
-        console.log("listedDjs useEffect - Line 38");
         const djData = await getAllDjs();
         const validDjs = djData.filter((dj): dj is DJ => {
-          console.log("listedDjs useEffect - Line 41");
           return (
             dj.id !== undefined &&
             dj.first_name !== undefined &&
@@ -61,32 +58,35 @@ const DjList = () => {
               dj.profile_picture === null)
           );
         });
-        console.log("listedDjs useEffect - Line 55");
         setDjs(validDjs);
-
         setCityOptions([...new Set(validDjs.map((dj) => dj.city))]);
         setGenreOptions([...new Set(validDjs.flatMap((dj) => dj.genres))]);
         setOccasionOptions([
           ...new Set(validDjs.flatMap((dj) => dj.occasions)),
         ]);
-        console.log("listedDjs useEffect - Line 63");
         setFilteredDjs(validDjs);
       } catch (error) {
-        console.log("listedDjs useEffect - Line 66");
         console.error("Error fetching DJs: ", error);
       } finally {
-        console.log("listedDjs useEffect - Line 69");
         setLoading(false);
       }
     };
-    console.log("listedDjs useEffect - Line 73");
     fetchDjs();
   }, []);
 
   const handleCityChange = (city: string | undefined) => {
     setSelectedCity(city);
-    setSelectedGenre(undefined);
-    setSelectedOccasion(undefined);
+    setModalVisible(false);
+  };
+
+  const handleGenreChange = (genre: string | undefined) => {
+    setSelectedGenre(genre);
+    setGenreModalVisible(false);
+  };
+
+  const handleOccasionChange = (occasion: string | undefined) => {
+    setSelectedOccasion(occasion);
+    setOccasionModalVisible(false);
   };
 
   const clearFilters = () => {
@@ -154,51 +154,135 @@ const DjList = () => {
   );
 
   if (loading) {
-    <View style={styles.loadingContainer}>
-      <ActivityIndicator size="large" color="black" />
-      <Text>Loading Profile...</Text>
-    </View>;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="black" />
+        <Text>Loading Profile...</Text>
+      </View>
+    );
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.container}>
         <Text style={styles.header}>Filter DJs By:</Text>
 
-        <Picker
-          selectedValue={selectedCity}
+        {/* City Picker */}
+        <TouchableOpacity
           style={styles.picker}
-          onValueChange={(itemValue) => handleCityChange(itemValue)}
+          onPress={() => setModalVisible(true)}
         >
-          <Picker.Item label="Select City" value={undefined} />
-          {cityOptions.map((city, index) => (
-            <Picker.Item key={index} label={city} value={city} />
-          ))}
-        </Picker>
+          <Text>{selectedCity || "Select City"}</Text>
+        </TouchableOpacity>
 
-        <Picker
-          selectedValue={selectedGenre}
+        {/* Genre Picker */}
+        <TouchableOpacity
           style={styles.picker}
-          onValueChange={(itemValue) => setSelectedGenre(itemValue)}
-          enabled={!!selectedCity}
+          onPress={() => setGenreModalVisible(true)}
         >
-          <Picker.Item label="Select Genre" value={undefined} />
-          {genreOptions.map((genre, index) => (
-            <Picker.Item key={index} label={genre} value={genre} />
-          ))}
-        </Picker>
+          <Text>{selectedGenre || "Select Genre"}</Text>
+        </TouchableOpacity>
 
-        <Picker
-          selectedValue={selectedOccasion}
+        {/* Occasion Picker */}
+        <TouchableOpacity
           style={styles.picker}
-          onValueChange={(itemValue) => setSelectedOccasion(itemValue)}
-          enabled={!!selectedCity}
+          onPress={() => setOccasionModalVisible(true)}
         >
-          <Picker.Item label="Select Occasion" value={undefined} />
-          {occasionOptions.map((occasion, index) => (
-            <Picker.Item key={index} label={occasion} value={occasion} />
-          ))}
-        </Picker>
+          <Text>{selectedOccasion || "Select Occasion"}</Text>
+        </TouchableOpacity>
+
+        {/* City Modal */}
+        <Modal
+          transparent={true}
+          visible={modalVisible}
+          animationType="slide"
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalList}>
+              <FlatList
+                data={cityOptions}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => handleCityChange(item)}
+                    style={styles.item}
+                  >
+                    <Text>{item}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+              <TouchableOpacity
+                onPress={() => setModalVisible(false)}
+                style={styles.closeButton}
+              >
+                <Text>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Genre Modal */}
+        <Modal
+          transparent={true}
+          visible={genreModalVisible}
+          animationType="slide"
+          onRequestClose={() => setGenreModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalList}>
+              <FlatList
+                data={genreOptions}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => handleGenreChange(item)}
+                    style={styles.item}
+                  >
+                    <Text>{item}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+              <TouchableOpacity
+                onPress={() => setGenreModalVisible(false)}
+                style={styles.closeButton}
+              >
+                <Text>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Occasion Modal */}
+        <Modal
+          transparent={true}
+          visible={occasionModalVisible}
+          animationType="slide"
+          onRequestClose={() => setOccasionModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalList}>
+              <FlatList
+                data={occasionOptions}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => handleOccasionChange(item)}
+                    style={styles.item}
+                  >
+                    <Text>{item}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+              <TouchableOpacity
+                onPress={() => setOccasionModalVisible(false)}
+                style={styles.closeButton}
+              >
+                <Text>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
 
         <Button title="Clear All Filters" onPress={clearFilters} />
 
@@ -209,7 +293,7 @@ const DjList = () => {
           contentContainerStyle={styles.listContainer}
         />
       </View>
-    </GestureHandlerRootView>
+    </SafeAreaView>
   );
 };
 
@@ -226,9 +310,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   picker: {
-    height: 50,
-    width: "100%",
-    marginBottom: 20,
+    padding: 10,
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
   },
   listContainer: {
     paddingBottom: 10,
@@ -253,11 +339,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginTop: 10,
-  },
-  city: {
-    fontSize: 14,
-    color: "gray",
-    marginTop: 5,
   },
   genre: {
     fontSize: 14,
@@ -288,5 +369,27 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-start",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    paddingTop: 50,
+  },
+  modalList: {
+    backgroundColor: "white",
+    maxHeight: "70%",
+  },
+  item: {
+    padding: 15,
+    backgroundColor: "white",
+    borderBottomWidth: 1,
+    borderBottomColor: "lightgray",
+  },
+  closeButton: {
+    padding: 15,
+    alignItems: "center",
+    backgroundColor: "white",
+    marginTop: 10,
   },
 });

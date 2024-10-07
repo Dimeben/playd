@@ -67,7 +67,7 @@ const EditUserProfile = () => {
       if (userId) {
         await patchUser(userId, { first_name: updateFirstName });
         setGoBackIsVisible(true);
-        setUpdateMessage(successMessage + "First Name");
+        Alert.alert("First name successfully updated!");
       } else {
         console.error("userId is null or undefined");
         Alert.alert("Error", "User ID is not available.");
@@ -82,7 +82,7 @@ const EditUserProfile = () => {
       if (userId) {
         await patchUser(userId, { surname: updateSurname });
         setGoBackIsVisible(true);
-        setUpdateMessage(successMessage + "Surname");
+        Alert.alert("Surname successfully updated!");
       } else {
         console.error("userId is null or undefined");
         Alert.alert("Error", "User ID is not available.");
@@ -97,7 +97,7 @@ const EditUserProfile = () => {
       if (userId) {
         await patchUser(userId, { city: updateCity });
         setGoBackIsVisible(true);
-        setUpdateMessage(successMessage + "City");
+        Alert.alert("City successfully updated!");
       } else {
         console.error("userId is null or undefined");
         Alert.alert("Error", "User ID is not available.");
@@ -112,7 +112,7 @@ const EditUserProfile = () => {
       if (userId) {
         await patchUser(userId, { username: updateUsername });
         setGoBackIsVisible(true);
-        setUpdateMessage(successMessage + "Username");
+        Alert.alert("Username successfully updated!");
       } else {
         console.error("userId is null or undefined");
         Alert.alert("Error", "User ID is not available.");
