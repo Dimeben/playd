@@ -150,7 +150,7 @@ export default function UserSignUp() {
         <ScrollView>
           <Text style={styles.header}>User Signup</Text>
           <TouchableOpacity onPress={pickImage}>
-            <Text style={styles.paddingLeft}>Select an Image:</Text>
+            <Text style={styles.paddingLeft}>Select an Image</Text>
           </TouchableOpacity>
           <View>
             {image && (
