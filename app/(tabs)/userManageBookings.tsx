@@ -3,35 +3,46 @@ import {
   View,
   Text,
   StyleSheet,
-  ActivityIndicator,
-  ScrollView,
   Button,
   TextInput,
   FlatList,
+  ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import { AuthContext } from "../../contexts/AuthContext";
 import { getAuth } from "firebase/auth";
-import { getBookingsByUser, postFeedback } from "../../firebase/firestore";
+import {
+  getBookingsByUser,
+  postFeedback,
+  patchDJByUsername,
+  getFeedback,
+} from "../../firebase/firestore";
 import { Booking, Feedback } from "../../firebase/types";
+import { Timestamp } from "firebase/firestore";
 
 const UserManageBookings = () => {
   const { username } = useContext(AuthContext);
   const auth = getAuth();
   const currentUser = auth.currentUser;
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [feedback, setFeedback] = useState({
+  const [feedback, setFeedback] = useState<Partial<Feedback>>({
     title: "",
     body: "",
     stars: 0,
     dj: "",
     date: new Date(),
-  } as Partial<Feedback>);
+  });
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [feedbackFormVisible, setFeedbackFormVisible] = useState<string | null>(
+    null
+  );
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchBookings = async () => {
+      setLoading(true);
       if (username) {
         try {
           const bookings = await getBookingsByUser(username);
@@ -40,13 +51,16 @@ const UserManageBookings = () => {
           console.error("Error fetching user bookings:", error);
         }
       }
+      setLoading(false);
     };
-
     fetchBookings();
   }, [username]);
 
-  const handlePostFeedback = async () => {
-    if (selectedBooking) {
+  const handlePostFeedback = async (bookingId: string) => {
+    const selected = bookings.find((booking) => booking.id === bookingId);
+    setSelectedBooking(selected || null);
+
+    if (selected) {
       try {
         const feedbackData: Feedback = {
           author:
@@ -54,15 +68,22 @@ const UserManageBookings = () => {
           title: feedback.title?.trim() || "",
           body: feedback.body?.trim() || "",
           stars: feedback.stars || 0,
-          dj: selectedBooking.dj,
+          dj: selected.dj,
           date: new Date(),
         };
 
-        console.log("Submitting feedback: ", feedbackData);
-
         await postFeedback(feedbackData);
 
-        alert("Feedback posted successfully!");
+        const djFeedbacks = await getFeedback(selected.dj);
+        const totalRatings = djFeedbacks.reduce(
+          (acc, curr) => acc + (curr.stars || 0),
+          feedbackData.stars
+        );
+        const averageRating = Math.floor(
+          totalRatings / (djFeedbacks.length + 1)
+        );
+
+        await patchDJByUsername(selected.dj, { rating: averageRating });
 
         setFeedback({
           title: "",
@@ -71,8 +92,11 @@ const UserManageBookings = () => {
           dj: "",
           date: new Date(),
         });
+        setFeedbackFormVisible(null);
+
+        alert("Feedback posted successfully! DJ's rating updated.");
       } catch (error) {
-        console.error("Error posting feedback:", error);
+        console.error("Error posting feedback or updating DJ rating:", error);
         alert("Failed to post feedback. Please try again.");
       }
     } else {
@@ -80,32 +104,91 @@ const UserManageBookings = () => {
     }
   };
 
-  const dateConvert = (seconds: number, nanoseconds: number) => {
-    const millisFromSeconds = seconds * 1000;
+  const renderBooking = ({ item }: { item: Booking }) => {
+    const bookingDate =
+      item.date instanceof Timestamp
+        ? item.date.toDate().toLocaleDateString()
+        : item.date.toLocaleDateString();
 
-    const millisFromNanos = nanoseconds / 1000000;
-
-    const totalMillis = millisFromSeconds + millisFromNanos;
-
-    const date = new Date(totalMillis);
-
-    return date.toLocaleDateString();
+    return (
+      <View style={styles.bookingCard}>
+        <Text style={styles.bookingText}>DJ: {item.dj}</Text>
+        <Text style={styles.bookingText}>
+          Event Details: {item.event_details}
+        </Text>
+        <Text style={styles.bookingText}>Date: {bookingDate}</Text>
+        <Text style={styles.bookingText}>Location: {item.location}</Text>
+        <Text style={styles.bookingText}>Status: {item.status}</Text>
+        <Button
+          title={
+            feedbackFormVisible === item.id
+              ? "Hide Feedback Form"
+              : "Leave Feedback"
+          }
+          onPress={() =>
+            setFeedbackFormVisible(
+              feedbackFormVisible === item.id ? null : item.id
+            )
+          }
+        />
+        {feedbackFormVisible === item.id && (
+          <View style={styles.feedbackForm}>
+            <Text style={styles.feedbackHeader}>
+              Leave Feedback for DJ {item.dj}
+            </Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Feedback Title"
+              value={feedback.title || ""}
+              onChangeText={(text) =>
+                setFeedback((prevFeedback) => ({
+                  ...prevFeedback,
+                  title: text,
+                }))
+              }
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Feedback Body"
+              value={feedback.body || ""}
+              onChangeText={(text) =>
+                setFeedback((prevFeedback) => ({
+                  ...prevFeedback,
+                  body: text,
+                }))
+              }
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Stars (1-5)"
+              keyboardType="numeric"
+              value={feedback.stars?.toString() || ""}
+              onChangeText={(text) => {
+                const stars = Number(text);
+                if (stars >= 1 && stars <= 5) {
+                  setFeedback((prevFeedback) => ({
+                    ...prevFeedback,
+                    stars,
+                  }));
+                } else {
+                  alert("Please enter a valid rating between 1 and 5.");
+                }
+              }}
+            />
+            <Button
+              title="Submit Feedback"
+              onPress={() => handlePostFeedback(item.id)}
+            />
+            <Button
+              title="Cancel"
+              color="red"
+              onPress={() => setFeedbackFormVisible(null)}
+            />
+          </View>
+        )}
+      </View>
+    );
   };
-
-  const renderBooking = ({ item }: { item: Booking }) => (
-    <View style={styles.bookingCard}>
-      <Text style={styles.bookingText}>DJ: {item.dj}</Text>
-      <Text style={styles.bookingText}>
-        Event Details: {item.event_details}
-      </Text>
-      <Text style={styles.bookingText}>
-        Date: {new Date(item.date.seconds * 1000).toLocaleDateString()}
-      </Text>
-      <Text style={styles.bookingText}>Location: {item.location}</Text>
-      <Text style={styles.bookingText}>Status: {item.status}</Text>
-      <Button title="Leave Feedback" onPress={() => setSelectedBooking(item)} />
-    </View>
-  );
 
   return (
     <KeyboardAvoidingView
@@ -113,58 +196,23 @@ const UserManageBookings = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 80}
     >
-      <View style={styles.container}>
-        {username && (
-          <Text style={styles.currentUser}>Logged in as: {username}</Text>
-        )}
+      {username && (
+        <Text style={styles.currentUser}>Logged in as: {username}</Text>
+      )}
 
-        <Text style={styles.header}>Your Bookings</Text>
+      <Text style={styles.header}>Your Bookings</Text>
 
-        {bookings.length === 0 ? (
-          <Text>No bookings found.</Text>
-        ) : (
-          <FlatList
-            data={bookings}
-            renderItem={renderBooking}
-            keyExtractor={(item) => item.date}
-          />
-        )}
-
-        {selectedBooking && (
-          <View style={styles.feedbackForm}>
-            <Text style={styles.feedbackHeader}>
-              Leave Feedback for DJ {selectedBooking.dj}
-            </Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Feedback Title"
-              value={feedback.title}
-              onChangeText={(text) => setFeedback({ ...feedback, title: text })}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Feedback Body"
-              value={feedback.body}
-              onChangeText={(text) => setFeedback({ ...feedback, body: text })}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Stars (1-5)"
-              keyboardType="numeric"
-              value={feedback.stars?.toString()}
-              onChangeText={(text) => {
-                const stars = Number(text);
-                if (stars >= 1 && stars <= 5) {
-                  setFeedback({ ...feedback, stars });
-                } else {
-                  alert("Please enter a valid rating between 1 and 5.");
-                }
-              }}
-            />
-            <Button title="Submit Feedback" onPress={handlePostFeedback} />
-          </View>
-        )}
-      </View>
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : bookings.length === 0 ? (
+        <Text>No bookings found.</Text>
+      ) : (
+        <FlatList
+          data={bookings}
+          renderItem={renderBooking}
+          keyExtractor={(item) => item.id.toString()}
+        />
+      )}
     </KeyboardAvoidingView>
   );
 };
@@ -172,9 +220,6 @@ const UserManageBookings = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-  },
-  scrollContainer: {
     padding: 16,
   },
   bookingCard: {
@@ -188,13 +233,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 1,
   },
-  details: {
-    fontSize: 14,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  currentUser: {
+    fontSize: 16,
+    fontStyle: "italic",
+    marginBottom: 10,
   },
   header: {
     fontSize: 18,
@@ -205,14 +247,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 5,
   },
-  currentUser: {
-    fontSize: 16,
-    fontStyle: "italic",
-    marginBottom: 10,
-  },
   feedbackForm: {
     padding: 16,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#FFFFFF",
     borderRadius: 8,
     marginTop: 20,
   },

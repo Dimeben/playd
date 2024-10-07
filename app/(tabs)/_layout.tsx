@@ -95,14 +95,6 @@ export default function RootLayout() {
       />
 
       <Tabs.Screen
-        name="LeaveFeedbackPage"
-        options={{
-          tabBarLabel: "Leave Feedback",
-          tabBarButton: () => null,
-        }}
-      />
-
-      <Tabs.Screen
         name="djManageBooking"
         options={{
           tabBarLabel: "DJ Manage Booking",

@@ -507,3 +507,30 @@ export async function patchDJ(djId: string, newDetails: Partial<DJ>): Promise<vo
     throw error; 
   }
 }
+
+export async function patchDJByUsername(username: string, newDetails: Partial<DJ>): Promise<void> {
+  try {
+    console.log("patchDJByUsername - Attempting to find DJ with username:", username);
+
+    const djQuery = query(djRef, where("username", "==", username));
+    
+    const querySnapshot = await getDocs(djQuery);
+    if (!querySnapshot.empty) {
+      const djDoc = querySnapshot.docs[0];
+      const djId = djDoc.id;
+
+      console.log("patchDJByUsername - DJ found with ID:", djId);
+
+      await patchDJ(djId, newDetails);
+
+      console.log("patchDJByUsername - DJ updated successfully.");
+    } else {
+      console.error("patchDJByUsername - No DJ found with the specified username.");
+      throw new Error("No DJ found with the specified username.");
+    }
+  } catch (error) {
+    console.log("patchDJByUsername - Error occurred while updating DJ.");
+    console.error("Error updating DJ by username: ", error);
+    throw error; 
+  }
+}

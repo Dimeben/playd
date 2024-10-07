@@ -23,12 +23,16 @@ export interface Feedback {
   stars: number;
   title: string;
 }
+export interface FirebaseTimestamp {
+  seconds: number;
+  nanoseconds: number;
+}
 
 export interface Bookings {
   client: string;
   comments: string;
   event_details: string;
-  date: Date;
+  date: Date | FirebaseTimestamp;
   dj: string;
   location: string;
   occasion: string;
