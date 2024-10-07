@@ -1,5 +1,4 @@
-// Login.tsx
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -10,12 +9,16 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Image,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { signIn } from "@/firebase/firestore";
 import { AuthContext } from "@/contexts/AuthContext";
 import { isDjAccount } from "@/firebase/utils";
 import { LinearGradient } from "expo-linear-gradient";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -71,55 +74,62 @@ export default function Login() {
   };
 
   return (
-    <View style={styles.container}>
-      <LinearGradient
-        colors={["#93C6F9", "#97B4FA", "#400691"]}
-        style={styles.background}
-      >
-        <SafeAreaView />
-        <Text style={styles.header}>Login</Text>
-        <View style={styles.buttonContainer}>
-          <Link href="/userSignUp" style={styles.linkButton}>
-            <Text style={styles.linkText}>User Sign Up</Text>
-          </Link>
-          <Link href="/djSignUp" style={styles.linkButton}>
-            <Text style={styles.linkText}>DJ Sign Up</Text>
-          </Link>
-        </View>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <LinearGradient
+          colors={["#93C6F9", "#97B4FA", "#400691"]}
+          style={styles.background}
+        >
+          <SafeAreaView />
+          <Text style={styles.header}>Login</Text>
+          <View style={styles.buttonContainer}>
+            <Link href="/userSignUp" style={styles.linkButton}>
+              <Text style={styles.linkText}>User Sign Up</Text>
+            </Link>
+            <Link href="/djSignUp" style={styles.linkButton}>
+              <Text style={styles.linkText}>DJ Sign Up</Text>
+            </Link>
+          </View>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <View style={styles.passwordContainer}>
           <TextInput
-            style={styles.passwordInput}
-            placeholder="Password"
-            value={password}
-            secureTextEntry={!showPassword}
-            onChangeText={setPassword}
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
           />
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Text>{showPassword ? "Hide" : "Show"}</Text>
-          </TouchableOpacity>
-        </View>
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Password"
+              value={password}
+              secureTextEntry={!showPassword}
+              onChangeText={setPassword}
+            />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <Text>{showPassword ? "Hide" : "Show"}</Text>
+            </TouchableOpacity>
+          </View>
 
-        {/* <Button title="Login" onPress={handleLogin} color="white" /> */}
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.linkText}>Login</Text>
-        </TouchableOpacity>
-      </LinearGradient>
-    </View>
+          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+            <Text style={styles.linkText}>Login</Text>
+          </TouchableOpacity>
+        </LinearGradient>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
     backgroundColor: "#fff",
+  },
+  scrollContainer: {
+    flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -172,9 +182,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     backgroundColor: "#007AFF",
     borderRadius: 25,
-    borderRightWidth: 1,
     overflow: "hidden",
-    // width: 200,
   },
   loginButton: {
     paddingRight: 40,
@@ -183,7 +191,6 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     backgroundColor: "#007AFF",
     borderRadius: 25,
-    borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
     alignSelf: "center",

@@ -2,13 +2,14 @@ import React, { useEffect, useState, useContext } from "react";
 import {
   View,
   Text,
-  FlatList,
   StyleSheet,
   ActivityIndicator,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
-import { getAuth } from "firebase/auth";
-        import { AuthContext } from "../../contexts/AuthContext";
-import { getBookingByUser } from "../../firebase/firestore";
+import { AuthContext } from "../../contexts/AuthContext";
+import { getBookingsByUser } from "../../firebase/firestore";
 import { Booking } from "../../firebase/types";
 
 const UserManageBookings = () => {
@@ -31,23 +32,32 @@ const UserManageBookings = () => {
   }, [username]);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {userBookings.map((booking) => (
-        <View key={booking.id} style={styles.bookingCard}>
-          <Text style={styles.details}>Event: {booking.occasion}</Text>
-          <Text style={styles.details}>Location: {booking.location}</Text>
-          <Text style={styles.details}>
-            Date: {booking.date instanceof Date ? booking.date.toDateString() : booking.date}
-          </Text>
-          <Text style={styles.details}>Status: {booking.status}</Text> {/* Show booking status */}
-        </View>
-      ))}
-    </ScrollView>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 80} // Adjust the offset as needed
+    >
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {userBookings.map((booking) => (
+          <View key={booking.id} style={styles.bookingCard}>
+            <Text style={styles.details}>Event: {booking.occasion}</Text>
+            <Text style={styles.details}>Location: {booking.location}</Text>
+            <Text style={styles.details}>
+              Date: {booking.date instanceof Date ? booking.date.toDateString() : booking.date}
+            </Text>
+            <Text style={styles.details}>Status: {booking.status}</Text> {/* Show booking status */}
+          </View>
+        ))}
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  scrollContainer: {
     padding: 16,
   },
   bookingCard: {

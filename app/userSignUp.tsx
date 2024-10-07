@@ -10,6 +10,8 @@ import {
   SafeAreaView,
   Image,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { createUser } from "../firebase/firestore";
@@ -142,6 +144,12 @@ export default function UserSignUp() {
   }
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
+        style={{ flex: 1 }}
+      >
     <View style={styles.container}>
       <LinearGradient
         colors={["#93C6F9", "#97B4FA", "#400691"]}
@@ -243,6 +251,8 @@ export default function UserSignUp() {
         </ScrollView>
       </LinearGradient>
     </View>
+             </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
@@ -259,6 +269,10 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
     fontSize: 30,
