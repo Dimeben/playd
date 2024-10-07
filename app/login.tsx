@@ -61,7 +61,7 @@ export default function Login() {
         Alert.alert("DJ Logged In Successfully");
         router.push("/(tabs)/profile");
       } else {
-        Alert.alert("USER Logged In Successfully");
+        Alert.alert("User Logged In Successfully");
         router.push("/(tabs)/listedDjs");
       }
       clearForm();

@@ -16,6 +16,7 @@ import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { storage } from "../firebase/storage";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useRouter } from "expo-router";
 
 export default function UserSignUp() {
   const [username, setUsername] = useState("");
@@ -31,6 +32,8 @@ export default function UserSignUp() {
   const [image, setImage] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
+
+  const router = useRouter();
 
   interface CreateUserParams {
     email?: string;
@@ -119,25 +122,14 @@ export default function UserSignUp() {
       });
 
       clearForm();
-      setShowSuccessMessage(true);
-
-      setTimeout(() => {
-        setShowSuccessMessage(false);
-      }, 2000);
+      Alert.alert("User Signed Up Successfully");
+      router.push("/(tabs)/listedDjs");
     } catch (error) {
       const errorMessage =
         (error as Error).message || "An error occurred during registration.";
       Alert.alert("Error", errorMessage);
     }
   };
-
-  if (showSuccessMessage) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.successMessage}>User registered successfully!</Text>
-      </View>
-    );
-  }
 
   return (
     <View style={styles.container}>
