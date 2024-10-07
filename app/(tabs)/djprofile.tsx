@@ -16,18 +16,34 @@ import {
 } from "react-native";
 import { Link } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
-import { getDJById, signOut } from "../../firebase/firestore";
-import FeedbackForSingleDj from "../../components/FeedbackForSingleDj";
+import {
+  getDJById,
+  signOut,
+  getFeedback,
+  deleteDJ,
+} from "../../firebase/firestore";
 import { AuthContext } from "../../contexts/AuthContext";
 import { DJ } from "../../firebase/types";
+import moment from "moment";
 import { WebView } from "react-native-webview";
 import SoundCloud from "@/components/SoundCloud";
-import { deleteDJ } from "../../firebase/firestore";
 const DjProfilePage = () => {
   const { isAuthenticated, userId, username } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
   const [dj, setDj] = useState<DJ | null>(null);
   const [soundcloudName, setSoundcloudName] = useState("multunes");
+  const [feedbackData, setFeedbackData] = useState<any[]>([]);
+
+  const fetchFeedback = async () => {
+    if (dj?.username) {
+      try {
+        const feedbackArray = await getFeedback(dj.username);
+        setFeedbackData(feedbackArray);
+      } catch (error) {
+        console.error("Error fetching feedback: ", error);
+      }
+    }
+  };
 
   useEffect(() => {
     console.log("djprofile useEffect - Line 41");
@@ -59,6 +75,30 @@ const DjProfilePage = () => {
 
     fetchDjData();
   }, [userId]);
+
+  useEffect(() => {
+    fetchFeedback();
+  }, [dj?.username]);
+
+  const renderStars = (rating: number) => {
+    const totalStars = 5;
+    const filledStars = "★".repeat(rating);
+    const emptyStars = "☆".repeat(totalStars - rating);
+
+    return filledStars + emptyStars;
+  };
+
+  const dateConvert = (seconds: number, nanoseconds: number) => {
+    const millisFromSeconds = seconds * 1000;
+
+    const millisFromNanos = nanoseconds / 1000000;
+
+    const totalMillis = millisFromSeconds + millisFromNanos;
+
+    const date = new Date(totalMillis);
+
+    return date.toLocaleDateString();
+  };
 
   const handleLogout = () => {
     signOut()
@@ -133,7 +173,10 @@ const DjProfilePage = () => {
               <Text>First Name: {dj.first_name}</Text>
               <Text>Surname: {dj.surname}</Text>
               <Text>City: {dj.city}</Text>
-              <Text>Genres: {dj.genres}</Text>
+              <Text>
+                Genres:{" "}
+                {dj.genres.length > 1 ? dj.genres.join(", ") : dj.genres}
+              </Text>
               {/* {console.log(typeof dj.genres)} */}
               <Text>
                 Occasions:
@@ -160,7 +203,36 @@ const DjProfilePage = () => {
 
           <View style={styles.card}>
             <Text style={styles.heading}>Feedback</Text>
-            <FeedbackForSingleDj dj={dj} />
+            <ScrollView contentContainerStyle={styles.feedbackContainer}>
+              {feedbackData.length === 0 ? (
+                <Text>No Feedback Available</Text>
+              ) : (
+                feedbackData.map((feedback) => (
+                  <View key={feedback.id} style={styles.feedbackItem}>
+                    <Text style={styles.feedbackTitle}>{feedback.title}</Text>
+                    <Text style={styles.feedbackText}>
+                      Author: {feedback.author}
+                    </Text>
+                    <Text style={styles.feedbackText}>
+                      Titles: {feedback.title}
+                    </Text>
+                    <Text style={styles.feedbackText}>
+                      Comment: {feedback.body}
+                    </Text>
+                    <Text style={styles.feedbackText}>
+                      Rating: {renderStars(feedback.stars)}
+                    </Text>
+                    <Text style={styles.feedbackText}>
+                      Date:{" "}
+                      {dateConvert(
+                        feedback.date.seconds,
+                        feedback.date.nanoseconds
+                      )}
+                    </Text>
+                  </View>
+                ))
+              )}
+            </ScrollView>
           </View>
 
           <TouchableOpacity style={styles.buttonTouch} onPress={handleLogout}>
@@ -249,9 +321,34 @@ const styles = StyleSheet.create({
     padding: 5,
     margin: 5,
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  feedbackContainer: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: "black",
+    marginVertical: 5,
+  },
+  feedbackUser: {
+    fontWeight: "bold",
+  },
+  feedbackComment: {
+    fontStyle: "normal",
+  },
+  feedbackItem: {
+    marginBottom: 15,
+    padding: 12,
+    borderRadius: 5,
+    backgroundColor: "white",
+    borderWidth: 1,
+  },
+  feedbackText: {
+    fontSize: 12,
+    color: "black",
+    marginBottom: 4,
+  },
+  feedbackTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 4,
+    color: "Black",
   },
 });

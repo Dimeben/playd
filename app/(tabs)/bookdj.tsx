@@ -58,6 +58,14 @@ const BookDj = () => {
     }
   }, [selectedDj]);
 
+  const renderStars = (rating: number) => {
+    const totalStars = 5;
+    const filledStars = '★'.repeat(rating);
+    const emptyStars = '☆'.repeat(totalStars - rating);
+  
+    return filledStars + emptyStars; // Concatenate filled and empty stars
+  };
+
   const handleDateInput = (text: string) => {
     const cleanedText = text.replace(/\D/g, "");
     let formattedText = cleanedText;
@@ -225,7 +233,7 @@ const BookDj = () => {
                   Comment: {feedback.body}
                 </Text>
                 <Text style={styles.feedbackText}>
-                  Rating: {feedback.stars}
+                  Rating: {renderStars(feedback.stars)}
                 </Text>
                 <Text style={styles.feedbackText}>
                   Date:{" "}
