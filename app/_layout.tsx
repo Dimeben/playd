@@ -11,7 +11,7 @@ export default function RootLayout() {
             name="index"
             options={{ title: "Landing Page", headerShown: false }}
           />
-
+          <Stack.Screen name="login" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
       </AuthProvider>
