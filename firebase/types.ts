@@ -35,14 +35,14 @@ export interface Bookings {
 }
 
 export interface Booking {
-  // id: string;
+  id: string;
+  client: string;
   dj: string;
+  comments: string;
   event_details: string;
-  date: {
-    seconds: number;
-    nanoseconds: number;
-  };
+  date: Date;
+  time: string;
   location: string;
-  status: string;
+  occasion: string;
+  status: 'pending' | 'accepted' | 'declined';
 }
-

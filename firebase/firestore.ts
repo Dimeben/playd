@@ -358,68 +358,90 @@ export async function postFeedback(feedback: Feedback): Promise<void> {
 
 
 
-export async function getBookingsByDj(djUsername: string): Promise<Booking[]> {
-  console.log("getBookingsByDj - Line 1 - Fetching bookings for DJ:", djUsername);
-
-  const bookingsArray: Booking[] = [];
-
-  const bookingsRef = collection(db, 'bookings'); 
-  const bookingsQuery = query(bookingsRef, where('dj', '==', djUsername));
-
+export const getBookingsByUser = async (username: string): Promise<Booking[]> => {
   try {
-    const bookingsSnapshot: QuerySnapshot<DocumentData> = await getDocs(bookingsQuery);
+    const bookingsRef = collection(db, "bookings");
+    const q = query(bookingsRef, where("client", "==", username));
+    const querySnapshot = await getDocs(q);
 
-    bookingsSnapshot.forEach((doc) => {
-      const bookingData = doc.data() as Omit<Booking, 'id'>;
-      bookingsArray.push(...bookingData, id)
-    });
-    console.log("getBookingsByDj - Line 12 - Retrieved bookings:", bookingsArray);
-    }
-
-  catch (error) {
-    console.error("getBookingsByDj - Error fetching bookings:", error);
-    throw error; 
-  }
-
-  return bookingsArray;
-}
-
-export async function getBookingByUser(userUsername: string): Promise<Booking[]> {
-  console.log("getBookingByUser - Line 1 - Fetching bookings for User:", userUsername);
-
-  const bookingsArray: Booking[] = [];
-
-  const bookingsRef = collection(db, 'bookings'); 
-  const bookingsQuery = query(bookingsRef, where('client', '==', userUsername));
-
-  try {
-    const bookingsSnapshot: QuerySnapshot<DocumentData> = await getDocs(bookingsQuery);
-
-    
-    bookingsSnapshot.forEach((doc) => {
-      const bookingData = doc.data() as Omit<Booking, 'date'>;
-      bookingsArray.push({
-        date: doc.date, 
-        ...bookingData,
+    const bookings: Booking[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      bookings.push({
+        id: doc.id,
+        client: data.client || "",         
+        dj: data.dj || "",
+        comments: data.comments || "",
+        event_details: data.event_details || "",
+        date: data.date?.toDate() || new Date(), 
+        time: data.time || "",
+        location: data.location || "",
+        occasion: data.occasion || "",
+        status: data.status || "pending",
       });
     });
 
-    console.log("getBookingByUser - Line 12 - Retrieved bookings:", bookingsArray);
+    return bookings;
   } catch (error) {
-    console.error("getBookingByUser - Error fetching bookings:", error);
-    throw error; 
+    console.error("Error fetching user bookings: ", error);
+    throw error;
   }
+};
 
-  return bookingsArray;
-}
-
-export async function createBooking(booking: Booking): Promise<void> {
+export const getBookingsByDj = async (djUsername: string): Promise<Booking[]> => {
   try {
-    console.log("createBooking - Line 1 - Attempting to create booking:", booking);
-    await addDoc(bookingsRef, booking);
-    console.log("createBooking - Line 4 - Booking created successfully.");
+    const bookingsRef = collection(db, "bookings");
+    const q = query(bookingsRef, where("dj", "==", djUsername));
+    const querySnapshot = await getDocs(q);
+
+    const bookings: Booking[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      bookings.push({
+        id: doc.id,
+        client: data.client || "",
+        dj: data.dj || "",
+        comments: data.comments || "",
+        event_details: data.event_details || "",
+        date: data.date?.toDate() || new Date(),
+        time: data.time || "",
+        location: data.location || "",
+        occasion: data.occasion || "",
+        status: data.status || "pending",
+      });
+    });
+
+    return bookings;
   } catch (error) {
-    console.log("createBooking - Line 7 - Error occurred");
+    console.error("Error fetching DJ bookings: ", error);
+    throw error;
+  }
+};
+
+export const acceptBooking = async (bookingId: string): Promise<void> => {
+  try {
+    const bookingRef = doc(db, "bookings", bookingId);
+    await updateDoc(bookingRef, { status: "accepted" });
+    console.log("Booking accepted");
+  } catch (error) {
+    console.error("Error accepting booking:", error);
+  }
+};
+
+export const denyBooking = async (bookingId: string): Promise<void> => { 
+  try {
+    const bookingRef = doc(db, "bookings", bookingId);
+    await updateDoc(bookingRef, { status: "denied" });
+    console.log("Booking denied");
+  } catch (error) {
+    console.error("Error denying booking:", error);
+  }
+};
+
+export async function createBooking(booking: Partial<Booking>): Promise<void> {
+  try {
+    await addDoc(bookingsRef, { ...booking, status: 'pending' }); 
+  } catch (error) {
     console.error("Error creating booking: ", error);
     throw error;
   }

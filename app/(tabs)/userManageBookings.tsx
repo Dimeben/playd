@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   View,
   Text,
@@ -7,106 +7,62 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { getAuth } from "firebase/auth";
+        import { AuthContext } from "../../contexts/AuthContext";
 import { getBookingByUser } from "../../firebase/firestore";
 import { Booking } from "../../firebase/types";
 
-const UserManageBooking = () => {
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const auth = getAuth();
-  const currentUser = auth.currentUser;
+const UserManageBookings = () => {
+  const { username } = useContext(AuthContext);
+  const [userBookings, setUserBookings] = useState<Booking[]>([]);
 
   useEffect(() => {
-    console.log("profile useEffect - Line 15");
     const fetchBookings = async () => {
-      console.log("profile useEffect - Line 17");
-      if (currentUser) {
+      if (username) { 
         try {
-          console.log("profile useEffect - Line 20");
-          const fetchedBookings = await getBookingByUser(currentUser.uid);
-          setBookings(fetchedBookings);
+          const bookings = await getBookingsByUser(username);
+          setUserBookings(bookings);
         } catch (error) {
-          console.log("profile useEffect - Line 24");
-          console.error("Error fetching bookings:", error);
-        } finally {
-          console.log("profile useEffect - Line 27");
-          setLoading(false);
+          console.error("Error fetching user bookings:", error);
         }
       }
     };
-    console.log("profile useEffect - Line 32");
+
     fetchBookings();
-  }, [currentUser]);
-
-  if (loading) {
-    <View style={styles.loadingContainer}>
-      <ActivityIndicator size="large" color="black" />
-      <Text>Loading Bookings...</Text>
-    </View>;
-  }
-
-  const renderBooking = ({ item }: { item: Booking }) => (
-    <View style={styles.bookingCard}>
-      <Text style={styles.bookingText}>DJ: {item.dj}</Text>
-      <Text style={styles.bookingText}>
-        Event Details: {item.event_details}
-      </Text>
-      <Text style={styles.bookingText}>
-        Date: {new Date(item.date.seconds * 1000).toLocaleDateString()}
-      </Text>
-      <Text style={styles.bookingText}>Location: {item.location}</Text>
-      <Text style={styles.bookingText}>Status: {item.status}</Text>
-    </View>
-  );
+  }, [username]);
 
   return (
-    <View style={styles.container}>
-      {currentUser && (
-        <Text style={styles.currentUser}>
-          Logged in as: {currentUser.displayName || currentUser.email}
-        </Text>
-      )}
-
-      <Text style={styles.header}>Your Bookings</Text>
-
-      {bookings.length === 0 ? (
-        <Text>No bookings found.</Text>
-      ) : (
-        <FlatList
-          data={bookings}
-          renderItem={renderBooking}
-          keyExtractor={(item) => item.date}
-        />
-      )}
-    </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      {userBookings.map((booking) => (
+        <View key={booking.id} style={styles.bookingCard}>
+          <Text style={styles.details}>Event: {booking.occasion}</Text>
+          <Text style={styles.details}>Location: {booking.location}</Text>
+          <Text style={styles.details}>
+            Date: {booking.date instanceof Date ? booking.date.toDateString() : booking.date}
+          </Text>
+          <Text style={styles.details}>Status: {booking.status}</Text> {/* Show booking status */}
+        </View>
+      ))}
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 16,
-  },
-  header: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
   },
   bookingCard: {
-    padding: 16,
-    backgroundColor: "#f8f8f8",
-    borderRadius: 8,
+    padding: 10,
     marginBottom: 10,
+    backgroundColor: "#fff",
+    borderRadius: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 1,
   },
-  bookingText: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  currentUser: {
-    fontSize: 16,
-    fontStyle: "italic",
-    marginBottom: 10,
+  details: {
+    fontSize: 14,
   },
   loadingContainer: {
     flex: 1,
@@ -115,4 +71,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserManageBooking;
+export default UserManageBookings;
