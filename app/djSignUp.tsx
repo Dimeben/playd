@@ -20,11 +20,7 @@ import { storage } from "../firebase/storage";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { Link, useRouter } from "expo-router";
-
 export default function DjSignUp() {
-  const router = useRouter();
-
   const [firstName, setFirstName] = useState("");
   const [surname, setSurname] = useState("");
   const [username, setUsername] = useState("");
@@ -38,12 +34,12 @@ export default function DjSignUp() {
   const [occasions, setOccasions] = useState<string[]>([]);
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [image, setImage] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
-
   interface CreateDJParams {
     first_name: string;
     surname: string;
@@ -56,9 +52,7 @@ export default function DjSignUp() {
     description: string;
     rating: number;
   }
-
   const rating = 0;
-
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -66,21 +60,17 @@ export default function DjSignUp() {
       aspect: [4, 3],
       quality: 1,
     });
-
     if (!result.canceled) {
       setImage(result.assets[0]?.uri);
     }
   };
-
   const uploadMedia = async () => {
     setUploading(true);
-
     try {
       if (!image) {
         console.error("No image selected");
         return;
       }
-
       const { uri } = await FileSystem.getInfoAsync(image);
       const blob = await new Promise<Blob>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -94,7 +84,6 @@ export default function DjSignUp() {
         xhr.open("GET", uri, true);
         xhr.send(null);
       });
-
       const filename = image.substring(image.lastIndexOf("/") + 1);
       const imageRef = ref(storage, filename);
       await uploadBytes(imageRef, blob);
@@ -108,7 +97,6 @@ export default function DjSignUp() {
       setUploading(false);
     }
   };
-
   const clearForm = () => {
     setFirstName("");
     setSurname("");
@@ -124,13 +112,11 @@ export default function DjSignUp() {
     setPrice("");
     setDescription("");
   };
-
   const handleDJRegister = async () => {
     if (password !== confirmPassword) {
       Alert.alert("Error", "Passwords do not match.");
       return;
     }
-
     try {
       await createDJ(email, password, {
         first_name: firstName,
@@ -144,208 +130,209 @@ export default function DjSignUp() {
         profile_picture: profilePicture,
         rating,
       });
-
       clearForm();
-      Alert.alert("DJ Signed Up Successfully");
-      router.push("/(tabs)/djprofile");
+      setShowSuccessMessage(true);
+      setTimeout(() => {
+        setShowSuccessMessage(false);
+      }, 3000);
     } catch (error) {
       const errorMessage =
         (error as Error).message || "An error occurred during registration.";
       Alert.alert("Error", errorMessage);
     }
   };
-
   const addGenre = () => {
     if (genre && !genres.includes(genre)) {
       setGenres([...genres, genre]);
       setGenre("");
     }
   };
-
   const addOccasion = () => {
     if (occasion && !occasions.includes(occasion)) {
       setOccasions([...occasions, occasion]);
       setOccasion("");
     }
   };
+  if (showSuccessMessage) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.successMessage}>DJ registered successfully!</Text>
+      </View>
+    );
+  }
 
   return (
-    <LinearGradient
-      colors={["#93C6F9", "#97B4FA", "#400691"]}
-      style={styles.background}
-    >
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+    <ScrollView>
+      <LinearGradient
+        colors={["#93C6F9", "#97B4FA", "#400691"]}
+        style={styles.background}
       >
-        <ScrollView>
-          <Text style={styles.header}>DJ Signup</Text>
-
-          <TextInput
-            style={styles.input}
-            placeholder="First Name"
-            value={firstName}
-            onChangeText={setFirstName}
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Surname"
-            value={surname}
-            onChangeText={setSurname}
-          />
-
-          <TouchableOpacity onPress={pickImage}>
-            <Text>Select an Image</Text>
-          </TouchableOpacity>
-          <View>
-            {image && (
-              <Image source={{ uri: image }} style={styles.imagePreview} />
-            )}
-            <TouchableOpacity onPress={uploadMedia} style={styles.signupButton}>
-              <Text style={styles.linkText}>Upload Image</Text>
-            </TouchableOpacity>
-          </View>
-          <TextInput
-            style={styles.input}
-            placeholder="Username"
-            value={username}
-            onChangeText={setUsername}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="City"
-            value={city}
-            onChangeText={setCity}
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Genre"
-            value={genre}
-            onChangeText={setGenre}
-          />
-          <Button title="Add Genre" onPress={addGenre} color="white" />
-
-          <View>
-            <Text style={styles.smalllabel}>Genres:</Text>
-            {genres.map((g, index) => (
-              <Text key={index}>{g}</Text>
-            ))}
-          </View>
-
-          <TextInput
-            style={styles.input}
-            placeholder="Occasion"
-            value={occasion}
-            onChangeText={setOccasion}
-          />
-          <Button title="Add Occasion" onPress={addOccasion} color="white" />
-
-          <View>
-            <Text style={styles.smalllabel}>Occasions:</Text>
-            {occasions.map((o, index) => (
-              <Text key={index}>{o}</Text>
-            ))}
-          </View>
-
-          <TextInput
-            style={styles.input}
-            placeholder="Price"
-            keyboardType="numeric"
-            value={price}
-            onChangeText={setPrice}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Description"
-            value={description}
-            onChangeText={setDescription}
-          />
-
-          <View style={styles.passwordContainer}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+        >
+          <ScrollView contentContainerStyle={styles.container}>
+            <Text style={styles.header}>DJ Signup</Text>
             <TextInput
-              style={styles.passwordInput}
-              placeholder="Password"
-              value={password}
-              secureTextEntry={!showPassword}
-              onChangeText={setPassword}
+              style={styles.input}
+              placeholder="First Name"
+              value={firstName}
+              onChangeText={setFirstName}
             />
-            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-              <Ionicons
-                name={showPassword ? "eye-off" : "eye"}
-                size={24}
-                color="gray"
-              />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.passwordContainer}>
             <TextInput
-              style={styles.passwordInput}
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              secureTextEntry={!showConfirmPassword}
-              onChangeText={setConfirmPassword}
+              style={styles.input}
+              placeholder="Surname"
+              value={surname}
+              onChangeText={setSurname}
             />
-            <TouchableOpacity
-              onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-            >
-              <Ionicons
-                name={showConfirmPassword ? "eye-off" : "eye"}
-                size={24}
-                color="gray"
-              />
+            <TouchableOpacity onPress={pickImage}>
+              <Text>Select an Image</Text>
             </TouchableOpacity>
-          </View>
+            <View>
+              {image && (
+                <Image
+                  source={{ uri: image }}
+                  style={{ width: 300, height: 300 }}
+                />
+              )}
+              <TouchableOpacity
+                onPress={uploadMedia}
+                style={styles.signupButton}
+              >
+                <Text style={styles.linkText}>Upload Image</Text>
+              </TouchableOpacity>
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Username"
+              value={username}
+              onChangeText={setUsername}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="City"
+              value={city}
+              onChangeText={setCity}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Genre"
+              value={genre}
+              onChangeText={setGenre}
+            />
+            <Button title="Add Genre" onPress={addGenre} color="white" />
+            <View>
+              <Text style={styles.smalllabel}>Genres:</Text>
+              {genres.map((g, index) => (
+                <Text key={index}>{g}</Text>
+              ))}
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Occasion"
+              value={occasion}
+              onChangeText={setOccasion}
+            />
+            <Button title="Add Occasion" onPress={addOccasion} color="white" />
+            <View>
+              <Text style={styles.smalllabel}>Occasions:</Text>
+              {occasions.map((o, index) => (
+                <Text key={index}>{o}</Text>
+              ))}
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Price"
+              keyboardType="numeric"
+              value={price}
+              onChangeText={setPrice}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Description"
+              value={description}
+              onChangeText={setDescription}
+            />
 
-          {/* <Button
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={styles.passwordInput}
+                placeholder="Password"
+                value={password}
+                secureTextEntry={!showPassword}
+                onChangeText={setPassword}
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <Ionicons
+                  name={showPassword ? "eye-off" : "eye"}
+                  size={24}
+                  color="gray"
+                />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={styles.passwordInput}
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                secureTextEntry={!showConfirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+              <TouchableOpacity
+                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                <Ionicons
+                  name={showConfirmPassword ? "eye-off" : "eye"}
+                  size={24}
+                  color="gray"
+                />
+              </TouchableOpacity>
+            </View>
+
+            {/* <Button
               title="Register as DJ"
               onPress={handleDJRegister}
               color="white"
             /> */}
-          <TouchableOpacity
-            style={styles.signupButton}
-            onPress={handleDJRegister}
-          >
-            <Text style={styles.linkText}>Register as DJ</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </LinearGradient>
+            <TouchableOpacity
+              style={styles.signupButton}
+              onPress={handleDJRegister}
+            >
+              <Text style={styles.linkText}>Register as DJ</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </LinearGradient>
+    </ScrollView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 16,
-    backgroundColor: "#fff",
-  },
-  background: {
-    flex: 1,
   },
   input: {
-    height: 50,
-    borderColor: "#ccc",
+    height: 40,
+    borderColor: "gray",
     borderWidth: 1,
     marginBottom: 12,
-    paddingHorizontal: 10,
-    borderRadius: 8, 
-    backgroundColor: "#f9f9f9",
+    paddingHorizontal: 8,
+    backgroundColor: "white",
   },
   header: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: "bold",
     alignSelf: "center",
-    color: "#fff", 
-    marginVertical: 20,
+    fontFamily: "menlo-bold",
+    marginTop: 10,
+    marginBottom: 20,
   },
   passwordContainer: {
     flexDirection: "row",
@@ -354,12 +341,11 @@ const styles = StyleSheet.create({
   },
   passwordInput: {
     flex: 1,
-    height: 50,
-    borderColor: "#ccc",
+    height: 40,
+    borderColor: "gray",
     borderWidth: 1,
-    paddingHorizontal: 10,
-    borderRadius: 8,
-    backgroundColor: "#f9f9f9",
+    paddingHorizontal: 8,
+    backgroundColor: "white",
   },
   successMessage: {
     fontSize: 18,
@@ -367,28 +353,25 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   signupButton: {
-    paddingVertical: 16,
+    paddingRight: 40,
+    paddingLeft: 40,
+    paddingTop: 16,
+    paddingBottom: 16,
     backgroundColor: "#007AFF",
     borderRadius: 25,
-    marginVertical: 10,
+    borderRightWidth: 1,
+    overflow: "hidden",
+    margin: 10,
     alignSelf: "center",
-    width: "90%", 
-    elevation: 3, 
+    width: "95%",
   },
   linkText: {
     color: "#fff",
     fontSize: 18,
-    textAlign: "center",
+    alignSelf: "center",
   },
   smalllabel: {
-    color: "#fff",
+    color: "white",
     marginBottom: 5,
-  },
-  imagePreview: {
-    width: 300,
-    height: 300,
-    borderRadius: 10, 
-    marginVertical: 10,
-    alignSelf: "center",
   },
 });
