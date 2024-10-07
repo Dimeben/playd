@@ -18,6 +18,7 @@ import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { storage } from "../firebase/storage";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function DjSignUp() {
   const [firstName, setFirstName] = useState("");
@@ -178,143 +179,161 @@ export default function DjSignUp() {
 
   return (
     <ScrollView>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      <LinearGradient
+        colors={["#93C6F9", "#97B4FA", "#400691"]}
+        style={styles.background}
       >
-        <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.header}>DJ Registration</Text>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+        >
+          <ScrollView contentContainerStyle={styles.container}>
+            <Text style={styles.header}>DJ Signup</Text>
 
-          <TextInput
-            style={styles.input}
-            placeholder="First Name"
-            value={firstName}
-            onChangeText={setFirstName}
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Surname"
-            value={surname}
-            onChangeText={setSurname}
-          />
-
-          <TouchableOpacity onPress={pickImage}>
-            <Text>Select an Image</Text>
-          </TouchableOpacity>
-          <View>
-            {image && (
-              <Image
-                source={{ uri: image }}
-                style={{ width: 300, height: 300 }}
-              />
-            )}
-            <TouchableOpacity onPress={uploadMedia}>
-              <Text>Upload Image</Text>
-            </TouchableOpacity>
-          </View>
-          <TextInput
-            style={styles.input}
-            placeholder="Username"
-            value={username}
-            onChangeText={setUsername}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="City"
-            value={city}
-            onChangeText={setCity}
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Genre"
-            value={genre}
-            onChangeText={setGenre}
-          />
-          <Button title="Add Genre" onPress={addGenre} />
-
-          <View>
-            <Text>Genres:</Text>
-            {genres.map((g, index) => (
-              <Text key={index}>{g}</Text>
-            ))}
-          </View>
-
-          <TextInput
-            style={styles.input}
-            placeholder="Occasion"
-            value={occasion}
-            onChangeText={setOccasion}
-          />
-          <Button title="Add Occasion" onPress={addOccasion} />
-
-          <View>
-            <Text>Occasions:</Text>
-            {occasions.map((o, index) => (
-              <Text key={index}>{o}</Text>
-            ))}
-          </View>
-
-          <TextInput
-            style={styles.input}
-            placeholder="Price"
-            keyboardType="numeric"
-            value={price}
-            onChangeText={setPrice}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Description"
-            value={description}
-            onChangeText={setDescription}
-          />
-
-          <View style={styles.passwordContainer}>
             <TextInput
-              style={styles.passwordInput}
-              placeholder="Password"
-              value={password}
-              secureTextEntry={!showPassword}
-              onChangeText={setPassword}
+              style={styles.input}
+              placeholder="First Name"
+              value={firstName}
+              onChangeText={setFirstName}
             />
-            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-              <Ionicons
-                name={showPassword ? "eye-off" : "eye"}
-                size={24}
-                color="gray"
-              />
-            </TouchableOpacity>
-          </View>
 
-          <View style={styles.passwordContainer}>
             <TextInput
-              style={styles.passwordInput}
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              secureTextEntry={!showConfirmPassword}
-              onChangeText={setConfirmPassword}
+              style={styles.input}
+              placeholder="Surname"
+              value={surname}
+              onChangeText={setSurname}
             />
+
+            <TouchableOpacity onPress={pickImage}>
+              <Text>Select an Image</Text>
+            </TouchableOpacity>
+            <View>
+              {image && (
+                <Image
+                  source={{ uri: image }}
+                  style={{ width: 300, height: 300 }}
+                />
+              )}
+              <TouchableOpacity
+                onPress={uploadMedia}
+                style={styles.signupButton}
+              >
+                <Text style={styles.linkText}>Upload Image</Text>
+              </TouchableOpacity>
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Username"
+              value={username}
+              onChangeText={setUsername}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="City"
+              value={city}
+              onChangeText={setCity}
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Genre"
+              value={genre}
+              onChangeText={setGenre}
+            />
+            <Button title="Add Genre" onPress={addGenre} color="white" />
+
+            <View>
+              <Text style={styles.smalllabel}>Genres:</Text>
+              {genres.map((g, index) => (
+                <Text key={index}>{g}</Text>
+              ))}
+            </View>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Occasion"
+              value={occasion}
+              onChangeText={setOccasion}
+            />
+            <Button title="Add Occasion" onPress={addOccasion} color="white" />
+
+            <View>
+              <Text style={styles.smalllabel}>Occasions:</Text>
+              {occasions.map((o, index) => (
+                <Text key={index}>{o}</Text>
+              ))}
+            </View>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Price"
+              keyboardType="numeric"
+              value={price}
+              onChangeText={setPrice}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Description"
+              value={description}
+              onChangeText={setDescription}
+            />
+
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={styles.passwordInput}
+                placeholder="Password"
+                value={password}
+                secureTextEntry={!showPassword}
+                onChangeText={setPassword}
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <Ionicons
+                  name={showPassword ? "eye-off" : "eye"}
+                  size={24}
+                  color="gray"
+                />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={styles.passwordInput}
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                secureTextEntry={!showConfirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+              <TouchableOpacity
+                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                <Ionicons
+                  name={showConfirmPassword ? "eye-off" : "eye"}
+                  size={24}
+                  color="gray"
+                />
+              </TouchableOpacity>
+            </View>
+
+            {/* <Button
+              title="Register as DJ"
+              onPress={handleDJRegister}
+              color="white"
+            /> */}
             <TouchableOpacity
-              onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+              style={styles.signupButton}
+              onPress={handleDJRegister}
             >
-              <Ionicons
-                name={showConfirmPassword ? "eye-off" : "eye"}
-                size={24}
-                color="gray"
-              />
+              <Text style={styles.linkText}>Register as DJ</Text>
             </TouchableOpacity>
-          </View>
-
-          <Button title="Register as DJ" onPress={handleDJRegister} />
-        </ScrollView>
-      </KeyboardAvoidingView>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </LinearGradient>
     </ScrollView>
   );
 }
@@ -330,10 +349,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 12,
     paddingHorizontal: 8,
+    backgroundColor: "white",
   },
   header: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: "bold",
+    alignSelf: "center",
+    fontFamily: "menlo-bold",
+    marginTop: 10,
     marginBottom: 20,
   },
   passwordContainer: {
@@ -347,10 +370,33 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderWidth: 1,
     paddingHorizontal: 8,
+    backgroundColor: "white",
   },
   successMessage: {
     fontSize: 18,
     color: "green",
     marginBottom: 20,
+  },
+  signupButton: {
+    paddingRight: 40,
+    paddingLeft: 40,
+    paddingTop: 16,
+    paddingBottom: 16,
+    backgroundColor: "#007AFF",
+    borderRadius: 25,
+    borderRightWidth: 1,
+    overflow: "hidden",
+    margin: 10,
+    alignSelf: "center",
+    width: "95%",
+  },
+  linkText: {
+    color: "#fff",
+    fontSize: 18,
+    alignSelf: "center",
+  },
+  smalllabel: {
+    color: "white",
+    marginBottom: 5,
   },
 });
