@@ -28,6 +28,7 @@ import { DJ } from "../../firebase/types";
 import moment from "moment";
 import { WebView } from "react-native-webview";
 import SoundCloud from "@/components/SoundCloud";
+import { LinearGradient } from "expo-linear-gradient";
 const DjProfilePage = () => {
   const { isAuthenticated, userId, username } = useContext(AuthContext);
   const router = useRouter();
@@ -123,7 +124,7 @@ const DjProfilePage = () => {
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={[styles.loadingContainer, styles.container]}>
         <ActivityIndicator size="large" color="black" />
         <Text>Loading Profile...</Text>
       </View>
@@ -148,16 +149,20 @@ const DjProfilePage = () => {
   return (
     <>
       <SafeAreaView />
-      <Image
-        style={styles.image}
-        source={{
-          uri:
-            dj.profile_picture ??
-            "https://www.shutterstock.com/image-photo/zhangjiajie-national-forest-park-unesco-260nw-2402891639.jpg",
-        }}
-      />
+      <LinearGradient
+        colors={["#93C6F9", "#97B4FA", "#400691"]}
+        style={styles.background}
+      >
+        <Image
+          style={styles.image}
+          source={{
+            uri:
+              dj.profile_picture ??
+              "https://www.shutterstock.com/image-photo/zhangjiajie-national-forest-park-unesco-260nw-2402891639.jpg",
+          }}
+        />
 
-      {/* <View style={styles.formContainer}>
+        {/* <View style={styles.formContainer}>
         <View style={styles.inputContainer}>
           <TextInput
             placeholder={`Input Your SoundCloud Name`}
@@ -171,90 +176,93 @@ const DjProfilePage = () => {
         </View>
       </View> */}
 
-      {/* {iframeString && <SoundCloud />} */}
+        {/* {iframeString && <SoundCloud />} */}
 
-      <ScrollView>
-        <View style={styles.container}>
-          <Text style={styles.heading}>{dj.username}</Text>
-          <View style={styles.card}>
-            <Pressable>
-              <Text>Username: {dj.username}</Text>
-              <Text>First Name: {dj.first_name}</Text>
-              <Text>Surname: {dj.surname}</Text>
-              <Text>City: {dj.city}</Text>
-              <Text>
-                Genres:{" "}
-                {dj.genres.length > 1 ? dj.genres.join(", ") : dj.genres}
-              </Text>
-              {/* {console.log(typeof dj.genres)} */}
-              <Text>
-                Occasions:
-                {dj.occasions.length > 1
-                  ? dj.occasions.join(", ")
-                  : dj.occasions}
-              </Text>
-              <Text>Price: {dj.price}</Text>
-              <Text>Rating: {dj.rating}</Text>
-              <Text>Description: {dj.description}</Text>
-            </Pressable>
+        <ScrollView>
+          <View style={styles.container}>
+            <Text style={styles.header}>{dj.username}</Text>
+            <View style={styles.card}>
+              <Pressable>
+                <Text>Username: {dj.username}</Text>
+                <Text>First Name: {dj.first_name}</Text>
+                <Text>Surname: {dj.surname}</Text>
+                <Text>City: {dj.city}</Text>
+                <Text>
+                  Genres:{" "}
+                  {dj.genres.length > 1 ? dj.genres.join(", ") : dj.genres}
+                </Text>
+                {/* {console.log(typeof dj.genres)} */}
+                <Text>
+                  Occasions:{" "}
+                  {dj.occasions.length > 1
+                    ? dj.occasions.join(", ")
+                    : dj.occasions}
+                </Text>
+                <Text>Price Per Hour: {dj.price}</Text>
+                <Text>Rating: {dj.rating}</Text>
+                <Text>Description: {dj.description}</Text>
+              </Pressable>
+              <Link
+                style={styles.signupButton}
+                href={{
+                  pathname: "/editdjprofile",
+                  // /* 1. Navigate to the details route with query params */
+                  params: { dj: dj },
+                }}
+              >
+                <Text style={styles.linkText}>Edit Profile</Text>
+              </Link>
+            </View>
+
+            <View style={styles.card}>
+              <Text style={styles.heading}>Feedback</Text>
+              <ScrollView contentContainerStyle={styles.feedbackContainer}>
+                {feedbackData.length === 0 ? (
+                  <Text>No Feedback Available</Text>
+                ) : (
+                  feedbackData.map((feedback) => (
+                    <View key={feedback.id} style={styles.feedbackItem}>
+                      <Text style={styles.feedbackTitle}>{feedback.title}</Text>
+                      <Text style={styles.feedbackText}>
+                        Author: {feedback.author}
+                      </Text>
+                      <Text style={styles.feedbackText}>
+                        Titles: {feedback.title}
+                      </Text>
+                      <Text style={styles.feedbackText}>
+                        Comment: {feedback.body}
+                      </Text>
+                      <Text style={styles.feedbackText}>
+                        Rating: {renderStars(feedback.stars)}
+                      </Text>
+                      <Text style={styles.feedbackText}>
+                        Date:{" "}
+                        {dateConvert(
+                          feedback.date.seconds,
+                          feedback.date.nanoseconds
+                        )}
+                      </Text>
+                    </View>
+                  ))
+                )}
+              </ScrollView>
+            </View>
+
+            <TouchableOpacity
+              style={styles.signupButton}
+              onPress={handleLogout}
+            >
+              <Text style={styles.linkText}>Logout</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.signupButton}
+              onPress={() => handleDelete(userId)}
+            >
+              <Text style={styles.linkText}>Delete Account</Text>
+            </TouchableOpacity>
           </View>
-
-          <Link
-            style={styles.button}
-            href={{
-              pathname: "/editdjprofile",
-              // /* 1. Navigate to the details route with query params */
-              params: { dj: dj },
-            }}
-          >
-            <Text style={styles.buttonText}>Edit Profile</Text>
-          </Link>
-
-          <View style={styles.card}>
-            <Text style={styles.heading}>Feedback</Text>
-            <ScrollView contentContainerStyle={styles.feedbackContainer}>
-              {feedbackData.length === 0 ? (
-                <Text>No Feedback Available</Text>
-              ) : (
-                feedbackData.map((feedback) => (
-                  <View key={feedback.id} style={styles.feedbackItem}>
-                    <Text style={styles.feedbackTitle}>{feedback.title}</Text>
-                    <Text style={styles.feedbackText}>
-                      Author: {feedback.author}
-                    </Text>
-                    <Text style={styles.feedbackText}>
-                      Titles: {feedback.title}
-                    </Text>
-                    <Text style={styles.feedbackText}>
-                      Comment: {feedback.body}
-                    </Text>
-                    <Text style={styles.feedbackText}>
-                      Rating: {renderStars(feedback.stars)}
-                    </Text>
-                    <Text style={styles.feedbackText}>
-                      Date:{" "}
-                      {dateConvert(
-                        feedback.date.seconds,
-                        feedback.date.nanoseconds
-                      )}
-                    </Text>
-                  </View>
-                ))
-              )}
-            </ScrollView>
-          </View>
-
-          <TouchableOpacity style={styles.buttonTouch} onPress={handleLogout}>
-            <Text style={styles.buttonText}>Logout</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.buttonTouch}
-            onPress={() => handleDelete(userId)}
-          >
-            <Text style={styles.buttonText}>Delete Account</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </LinearGradient>
     </>
   );
 };
@@ -264,9 +272,15 @@ export default DjProfilePage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+  },
+  background: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
   },
   image: {
     flex: 1,
@@ -295,9 +309,13 @@ const styles = StyleSheet.create({
       },
     }),
   },
-  heading: {
+  header: {
     fontSize: 30,
-    marginTop: 10,
+    fontWeight: "bold",
+    alignSelf: "center",
+    fontFamily: "menlo-bold",
+    marginTop: 14,
+    marginBottom: 0,
   },
   loginMessage: {
     fontSize: 30,
@@ -359,5 +377,23 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 4,
     color: "Black",
+  },
+  signupButton: {
+    paddingRight: 40,
+    paddingLeft: 40,
+    paddingTop: 16,
+    paddingBottom: 16,
+    backgroundColor: "#007AFF",
+    borderRadius: 25,
+    borderRightWidth: 1,
+    overflow: "hidden",
+    margin: 10,
+    alignSelf: "center",
+    width: "95%",
+  },
+  linkText: {
+    color: "#fff",
+    fontSize: 18,
+    alignSelf: "center",
   },
 });
