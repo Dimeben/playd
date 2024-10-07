@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Image,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { createBooking, getFeedback } from "../../firebase/firestore";
@@ -22,6 +23,7 @@ const BookDj = () => {
     return Array.isArray(dj) ? JSON.parse(dj[0]) : dj ? JSON.parse(dj) : null;
   }, [dj]);
 
+  const [showBookingForm, setShowBookingForm] = useState(false); // Toggle state for form
   const [newBooking, setNewBooking] = useState({
     client: "",
     comments: "",
@@ -92,35 +94,41 @@ const BookDj = () => {
     try {
       const [day, month, year] = newBooking.date.split("/");
       const formattedDate = moment(`${year}-${month}-${day}`, "YYYY-MM-DD");
-
+  
       if (!formattedDate.isValid()) {
         alert("Invalid date format. Please use dd/mm/yyyy format.");
         return;
       }
-
+  
       const formattedTime = moment(newBooking.time, "HH:mm", true);
       if (!formattedTime.isValid()) {
         alert("Invalid time format. Please use HH:mm format.");
         return;
       }
-
+  
       const combinedDateTime = moment(
         `${newBooking.date} ${newBooking.time}`,
         "DD/MM/YYYY HH:mm"
       ).toDate();
-
+  
+      const { time, ...bookingWithoutTime } = newBooking;
       const bookingWithDateTime = {
-        ...newBooking,
+        ...bookingWithoutTime,
         date: combinedDateTime,
+        status: "pending",
       };
-
+  
       createBooking(bookingWithDateTime);
-      alert("Booking created successfully!");
+      alert("Booking request sent!");
       router.back();
     } catch (error) {
       console.error("Error creating booking: ", error);
       alert("There was an error creating your booking. Please try again.");
     }
+  };
+  
+  const toggleForm = () => {
+    setShowBookingForm(!showBookingForm);
   };
 
   return (
@@ -141,12 +149,6 @@ const BookDj = () => {
             <Text style={styles.genre}>
               Genre: {selectedDj.genres.join(", ")}
             </Text>
-            {/* <Text style={styles.genre}>
-              Occasion:{" "}
-              {selectedDj.occasion?.length
-                ? selectedDj.occasion.join(", ")
-                : selectedDj.occasion}
-            </Text> */}
             <Text style={styles.city}>Location: {selectedDj.city}</Text>
             <Text style={styles.price}>Price: £{selectedDj.price}</Text>
             <Text style={styles.description}>
@@ -156,60 +158,6 @@ const BookDj = () => {
           </View>
         </View>
       )}
-
-      <Text style={styles.header}>Create a New Booking</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Event Location"
-        value={newBooking.location}
-        onChangeText={(text) =>
-          setNewBooking({ ...newBooking, location: text })
-        }
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Occasion"
-        value={newBooking.occasion}
-        onChangeText={(text) =>
-          setNewBooking({ ...newBooking, occasion: text })
-        }
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Event Details"
-        value={newBooking.event_details}
-        onChangeText={(text) =>
-          setNewBooking({ ...newBooking, event_details: text })
-        }
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Event Date (dd/mm/yyyy)"
-        value={newBooking.date}
-        onChangeText={handleDateInput}
-        maxLength={10}
-        keyboardType="numeric"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Event Time (HH:mm)"
-        value={newBooking.time}
-        onChangeText={handleTimeInput}
-        maxLength={5}
-        keyboardType="numeric"
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Additional Comments"
-        value={newBooking.comments}
-        onChangeText={(text) =>
-          setNewBooking({ ...newBooking, comments: text })
-        }
-      />
-
-      <Button title="Submit Booking" onPress={handleBookingSubmit} />
 
       <Text style={styles.header}>Reviews</Text>
       <GestureHandlerRootView style={styles.scrollContainer}>
@@ -236,6 +184,66 @@ const BookDj = () => {
           )}
         </ScrollView>
       </GestureHandlerRootView>
+
+      {/* Toggle button for showing/hiding the booking form */}
+      <TouchableOpacity onPress={toggleForm} style={styles.toggleButton}>
+        <Text style={styles.toggleButtonText}>{showBookingForm ? "Hide Booking Form" : "Book a DJ"}</Text>
+      </TouchableOpacity>
+
+      {showBookingForm && (
+        <>
+          <Text style={styles.header}>Create a New Booking</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Event Location"
+            value={newBooking.location}
+            onChangeText={(text) =>
+              setNewBooking({ ...newBooking, location: text })
+            }
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Occasion"
+            value={newBooking.occasion}
+            onChangeText={(text) =>
+              setNewBooking({ ...newBooking, occasion: text })
+            }
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Event Details"
+            value={newBooking.event_details}
+            onChangeText={(text) =>
+              setNewBooking({ ...newBooking, event_details: text })
+            }
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Event Date (dd/mm/yyyy)"
+            value={newBooking.date}
+            onChangeText={handleDateInput}
+            maxLength={10}
+            keyboardType="numeric"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Event Time (HH:mm)"
+            value={newBooking.time}
+            onChangeText={handleTimeInput}
+            maxLength={5}
+            keyboardType="numeric"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Additional Comments"
+            value={newBooking.comments}
+            onChangeText={(text) =>
+              setNewBooking({ ...newBooking, comments: text })
+            }
+          />
+          <Button title="Submit Booking" onPress={handleBookingSubmit} />
+        </>
+      )}
     </View>
   );
 };
@@ -335,6 +343,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 4,
     color: "Black",
+  },
+  toggleButton: {
+    padding: 10,
+    backgroundColor: "#007bff",
+    borderRadius: 5,
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  toggleButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
 

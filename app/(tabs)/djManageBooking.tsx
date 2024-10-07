@@ -1,137 +1,130 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, Button, StyleSheet } from "react-native";
-import { getAuth } from "firebase/auth";
-import { getBookingsByDj, updateBooking } from "../../firebase/firestore";
+import React, { useEffect, useState, useContext } from "react";
+import { View, Text, ScrollView, StyleSheet, Button, Pressable } from "react-native";
+import { getBookingsByDj, acceptBooking, denyBooking } from "../../firebase/firestore";
+import { AuthContext } from "../../contexts/AuthContext";
 import { Booking } from "../../firebase/types";
 
-const DjManageBooking = () => {
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const auth = getAuth();
-  const currentUser = auth.currentUser;
+const DjManageBookings = () => {
+  const { username } = useContext(AuthContext);
+  const [djBookings, setDjBookings] = useState<Booking[]>([]);
 
   useEffect(() => {
-    console.log("djManageBooking useEffect - Line 15")
-    const getDjBookings = async () => {
-      if (currentUser) {
-        console.log("djManageBooking useEffect - Line 18")
+    const fetchBookings = async () => {
+      if (username) { 
         try {
-          console.log("djManageBooking useEffect - Line 20")
-          const fetchedBookings = await getBookingsByDj(currentUser.uid);
-          setBookings(fetchedBookings);
+          const bookings = await getBookingsByDj(username);
+          setDjBookings(bookings);
+          console.log(bookings);
         } catch (error) {
-          console.log("djManageBooking useEffect - Line 24")
-          console.error("Error fetching bookings:", error);
-        } finally {
-          console.log("djManageBooking useEffect - Line 27")
-          setLoading(false);
+          console.error("Error fetching DJ bookings:", error);
         }
       }
     };
-    console.log("djManageBooking useEffect - Line 32")
 
-    getDjBookings();
-  }, [currentUser]);
+    fetchBookings();
+  }, [username]);
 
-  const handleStatusUpdate = async (bookingId: string, newStatus: string) => {
+  const handleAcceptBooking = async (bookingId: string) => {
     try {
-  
-      await updateBooking(bookingId, { status: newStatus });
-      
-      setBookings((prev) =>
-        prev.map((booking) =>
-          booking.id === bookingId ? { ...booking, status: newStatus } : booking
+      await acceptBooking(bookingId);
+      setDjBookings(prevBookings => 
+        prevBookings.map(booking => 
+          booking.id === bookingId ? { ...booking, status: "accepted" } : booking
         )
       );
     } catch (error) {
-      console.error("Error updating booking status:", error);
+      console.error("Error accepting booking:", error);
     }
   };
 
-  if (loading) {
-    return <Text>Loading bookings...</Text>;
-  }
-
-  const renderBooking = ({ item }: { item: Booking }) => (
-    <View style={styles.bookingCard}>
-      <Text style={styles.bookingText}>DJ: {item.dj}</Text>
-      <Text style={styles.bookingText}>Event Details: {item.event_details}</Text>
-      <Text style={styles.bookingText}>
-        Date: {new Date(item.date.seconds * 1000).toLocaleDateString()}
-      </Text>
-      <Text style={styles.bookingText}>Location: {item.location}</Text>
-      <Text style={styles.bookingText}>Status: {item.status}</Text>
-
-      {/* Show action buttons if the status is pending */}
-      {item.status === "pending" && (
-        <View style={styles.buttonContainer}>
-          <Button
-            title="Accept"
-            onPress={() => handleStatusUpdate(item.id, "accepted")}
-          />
-          <Button
-            title="Decline"
-            onPress={() => handleStatusUpdate(item.id, "declined")}
-          />
-        </View>
-      )}
-    </View>
-  );
+  const handleDenyBooking = async (bookingId: string) => {
+    try {
+      await denyBooking(bookingId);
+      setDjBookings(prevBookings => 
+        prevBookings.map(booking => 
+          booking.id === bookingId ? { ...booking, status: "declined" } : booking
+        )
+      );
+    } catch (error) {
+      console.error("Error denying booking:", error);
+    }
+  };
 
   return (
-    <View style={styles.container}>
-      {currentUser && (
-        <Text style={styles.currentUser}>
-          Logged in as: {currentUser.displayName || currentUser.email}
-        </Text>
-      )}
+    <ScrollView contentContainerStyle={styles.container}>
+      {djBookings.map((booking) => (
+        <View key={booking.id} style={styles.bookingCard}>
+          <Text style={styles.details}>Client: {booking.client}</Text>
+          <Text style={styles.details}>Occasion: {booking.occasion}</Text>
+          <Text style={styles.details}>Location: {booking.location}</Text>
+          <Text style={styles.details}>Date: {booking.date?.toDateString()}</Text>
 
-      <Text style={styles.header}>Your Bookings</Text>
+          <Text style={styles.statusMessage}>
+            {booking.status === "accepted"
+              ? "Booking Accepted"
+              : booking.status === "declined"
+              ? "Booking Declined"
+              : "Pending Decision"}
+          </Text>
 
-      {bookings.length === 0 ? (
-        <Text>No bookings found.</Text>
-      ) : (
-        <FlatList
-          data={bookings}
-          renderItem={renderBooking}
-          keyExtractor={(item) => item.id}
-        />
-      )}
-    </View>
+          {booking.status === "pending" && (
+            <View style={styles.buttonContainer}>
+              <Pressable style={styles.button} onPress={() => handleAcceptBooking(booking.id)}>
+                <Text style={styles.buttonText}>Accept</Text>
+              </Pressable>
+              <Pressable style={styles.button} onPress={() => handleDenyBooking(booking.id)}>
+                <Text style={styles.buttonText}>Decline</Text>
+              </Pressable>
+            </View>
+          )}
+        </View>
+      ))}
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 16,
-  },
-  header: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
   },
   bookingCard: {
-    padding: 16,
-    backgroundColor: "#f8f8f8",
-    borderRadius: 8,
+    padding: 10,
     marginBottom: 10,
+    backgroundColor: "#fff",
+    borderRadius: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  bookingText: {
-    fontSize: 16,
-    marginBottom: 5,
+  details: {
+    fontSize: 14,
   },
-  currentUser: {
+  statusMessage: {
     fontSize: 16,
-    fontStyle: "italic",
-    marginBottom: 10,
+    fontWeight: "bold",
+    marginVertical: 10,
+    color: "#333",
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
+  button: {
+    padding: 10,
+    backgroundColor: "#4CAF50",
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  }
 });
 
-export default DjManageBooking;
+
+export default DjManageBookings;
