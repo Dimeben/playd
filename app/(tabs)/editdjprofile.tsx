@@ -33,7 +33,6 @@ const EditDjProfile = () => {
   const [dj, setDj] = useState({});
   const [updateMessage, setUpdateMessage] = useState("");
   const [goBackIsVisible, setGoBackIsVisible] = useState(false);
-  const successMessage = "Successfully Updated ";
   const inputRef = useRef<TextInput>(null);
   useEffect(() => {
     const fetchDjData = async () => {
@@ -71,7 +70,7 @@ const EditDjProfile = () => {
       if (userId) {
         await patchDJ(userId, { username: updateUsername });
         setGoBackIsVisible(true);
-        setUpdateMessage(successMessage + "Username");
+        Alert.alert("Username successfully updated!");
       } else {
         console.error("userId is null or undefined");
         Alert.alert("Error", "User ID is not available.");
@@ -85,7 +84,7 @@ const EditDjProfile = () => {
       if (userId) {
         await patchDJ(userId, { first_name: updateFirstName });
         setGoBackIsVisible(true);
-        setUpdateMessage(successMessage + "First Name");
+        Alert.alert("First name successfully updated!");
       } else {
         console.error("userId is null or undefined");
         Alert.alert("Error", "User ID is not available.");
@@ -99,7 +98,7 @@ const EditDjProfile = () => {
       if (userId) {
         await patchDJ(userId, { surname: updateSurname });
         setGoBackIsVisible(true);
-        setUpdateMessage(successMessage + "Surname");
+        Alert.alert("Surname successfully updated!");
       } else {
         console.error("userId is null or undefined");
         Alert.alert("Error", "User ID is not available.");
@@ -113,7 +112,7 @@ const EditDjProfile = () => {
       if (userId) {
         await patchDJ(userId, { city: updateCity });
         setGoBackIsVisible(true);
-        setUpdateMessage(successMessage + "City");
+        Alert.alert("City successfully updated");
       } else {
         console.error("userId is null or undefined");
         Alert.alert("Error", "User ID is not available.");
@@ -127,7 +126,7 @@ const EditDjProfile = () => {
       if (userId) {
         await patchDJ(userId, { price: updatePrice });
         setGoBackIsVisible(true);
-        setUpdateMessage(successMessage + "Price");
+        Alert.alert("Price successfully updated");
       } else {
         console.error("userId is null or undefined");
         Alert.alert("Error", "User ID is not available.");
@@ -141,7 +140,7 @@ const EditDjProfile = () => {
       if (userId) {
         await patchDJ(userId, { description: updateDescription });
         setGoBackIsVisible(true);
-        setUpdateMessage(successMessage + "Description");
+        Alert.alert("Description successfully updated!");
       } else {
         console.error("userId is null or undefined");
         Alert.alert("Error", "User ID is not available.");
@@ -155,7 +154,7 @@ const EditDjProfile = () => {
       if (userId) {
         await patchDJ(userId, { occasions: occasions });
         setGoBackIsVisible(true);
-        setUpdateMessage(successMessage + "Occasions");
+        Alert.alert("Occasions successfully updated!");
       } else {
         console.error("userId is null or undefined");
         Alert.alert("Error", "User ID is not available.");
@@ -169,7 +168,7 @@ const EditDjProfile = () => {
       if (userId) {
         await patchDJ(userId, { genres: genres });
         setGoBackIsVisible(true);
-        setUpdateMessage(successMessage + "Genres");
+        Alert.alert("Genres successfully updated!");
       } else {
         console.error("userId is null or undefined");
         Alert.alert("Error", "User ID is not available.");
@@ -182,7 +181,6 @@ const EditDjProfile = () => {
     if (newGenre.trim() !== "") {
       setGenres((prevGenres) => [...prevGenres, newGenre]);
       setNewGenre("");
-      setUpdateMessage(successMessage + "Genre");
     }
   };
   const deleteGenre = (index: number) => {
@@ -192,7 +190,6 @@ const EditDjProfile = () => {
     if (occasion.trim() !== "") {
       setOccasions((prevOccasions) => [...prevOccasions, occasion]);
       setOccasion("");
-      setUpdateMessage(successMessage + "Occassion");
     }
   };
   const deleteOccasion = (index: number) => {
