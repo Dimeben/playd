@@ -79,13 +79,15 @@ export default function Login() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
     >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <LinearGradient
-          colors={["#93C6F9", "#97B4FA", "#400691"]}
-          style={styles.background}
-        >
-          <SafeAreaView />
-          <Text style={styles.header}>Login</Text>
+      <SafeAreaView />
+
+      <LinearGradient
+        colors={["#93C6F9", "#97B4FA", "#400691"]}
+        style={styles.background}
+      >
+        <Text style={styles.header}>Login</Text>
+
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.buttonContainer}>
             <Link href="/userSignUp" style={styles.linkButton}>
               <Text style={styles.linkText}>User Sign Up</Text>
@@ -117,8 +119,8 @@ export default function Login() {
           <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
             <Text style={styles.linkText}>Login</Text>
           </TouchableOpacity>
-        </LinearGradient>
-      </ScrollView>
+        </ScrollView>
+      </LinearGradient>
     </KeyboardAvoidingView>
   );
 }
@@ -136,10 +138,9 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 30,
     fontWeight: "bold",
-    marginBottom: 136,
     alignSelf: "center",
     fontFamily: "menlo-bold",
-    marginTop: 20,
+    marginTop: 50,
   },
   input: {
     borderWidth: 1,
