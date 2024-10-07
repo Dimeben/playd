@@ -5,15 +5,13 @@ import {
   FlatList,
   ScrollView,
   StyleSheet,
-  ActivityIndicator,
-  Button,
   Pressable,
+  KeyboardAvoidingView,
+  Platform
 } from "react-native";
-import { getAuth } from "firebase/auth";
 import { AuthContext } from "../../contexts/AuthContext";
 import {
   getBookingsByDj,
-  updateBooking,
   acceptBooking,
   denyBooking,
 } from "../../firebase/firestore";
@@ -35,25 +33,6 @@ const DjManageBookings = () => {
         }
       }
     };
-    console.log("djManageBooking useEffect - Line 15");
-    // <!--     const getDjBookings = async () => {
-    //       if (currentUser) {
-    //         console.log("djManageBooking useEffect - Line 18");
-    //         try {
-    //           console.log("djManageBooking useEffect - Line 20");
-    //           const fetchedBookings = await getBookingsByDj(currentUser.uid);
-    //           setBookings(fetchedBookings);
-    //         } catch (error) {
-    //           console.log("djManageBooking useEffect - Line 24");
-    //           console.error("Error fetching bookings:", error);
-    //         } finally {
-    //           console.log("djManageBooking useEffect - Line 27");
-    //           setLoading(false);
-    //         }
-    //       }
-    //     };
-    //     console.log("djManageBooking useEffect - Line 32"); -->
-
     fetchBookings();
   }, [username]);
 
@@ -88,48 +67,57 @@ const DjManageBookings = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {djBookings.map((booking) => (
-        <View key={booking.id} style={styles.bookingCard}>
-          <Text style={styles.details}>Client: {booking.client}</Text>
-          <Text style={styles.details}>Occasion: {booking.occasion}</Text>
-          <Text style={styles.details}>Location: {booking.location}</Text>
-          <Text style={styles.details}>
-            Date: {booking.date?.toDateString()}
-          </Text>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {djBookings.map((booking) => (
+          <View key={booking.id} style={styles.bookingCard}>
+            <Text style={styles.details}>Client: {booking.client}</Text>
+            <Text style={styles.details}>Occasion: {booking.occasion}</Text>
+            <Text style={styles.details}>Location: {booking.location}</Text>
+            <Text style={styles.details}>
+              Date: {booking.date?.toDateString()}
+            </Text>
 
-          <Text style={styles.statusMessage}>
-            {booking.status === "accepted"
-              ? "Booking Accepted"
-              : booking.status === "declined"
-              ? "Booking Declined"
-              : "Pending Decision"}
-          </Text>
+            <Text style={styles.statusMessage}>
+              {booking.status === "accepted"
+                ? "Booking Accepted"
+                : booking.status === "declined"
+                ? "Booking Declined"
+                : "Pending Decision"}
+            </Text>
 
-          {booking.status === "pending" && (
-            <View style={styles.buttonContainer}>
-              <Pressable
-                style={styles.button}
-                onPress={() => handleAcceptBooking(booking.id)}
-              >
-                <Text style={styles.buttonText}>Accept</Text>
-              </Pressable>
-              <Pressable
-                style={styles.button}
-                onPress={() => handleDenyBooking(booking.id)}
-              >
-                <Text style={styles.buttonText}>Decline</Text>
-              </Pressable>
-            </View>
-          )}
-        </View>
-      ))}
-    </ScrollView>
+            {booking.status === "pending" && (
+              <View style={styles.buttonContainer}>
+                <Pressable
+                  style={styles.button}
+                  onPress={() => handleAcceptBooking(booking.id)}
+                >
+                  <Text style={styles.buttonText}>Accept</Text>
+                </Pressable>
+                <Pressable
+                  style={styles.button}
+                  onPress={() => handleDenyBooking(booking.id)}
+                >
+                  <Text style={styles.buttonText}>Decline</Text>
+                </Pressable>
+              </View>
+            )}
+          </View>
+        ))}
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  scrollContainer: {
     padding: 16,
   },
   bookingCard: {
