@@ -181,7 +181,7 @@ const EditDjProfile = () => {
   const addGenre = () => {
     if (newGenre.trim() !== "") {
       setGenres((prevGenres) => [...prevGenres, newGenre]);
-      setNewGenre(""); // Clear input after adding
+      setNewGenre("");
       setUpdateMessage(successMessage + "Genre");
     }
   };
@@ -191,7 +191,7 @@ const EditDjProfile = () => {
   const addOccasion = () => {
     if (occasion.trim() !== "") {
       setOccasions((prevOccasions) => [...prevOccasions, occasion]);
-      setOccasion(""); // Clear input after adding
+      setOccasion("");
       setUpdateMessage(successMessage + "Occassion");
     }
   };
