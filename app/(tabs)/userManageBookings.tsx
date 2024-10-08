@@ -163,7 +163,7 @@ const UserManageBookings = () => {
               style={styles.input}
               placeholder="Stars (1-5)"
               keyboardType="numeric"
-              value={feedback.stars?.toString() || ""}
+              value={feedback.stars !== undefined && feedback.stars !== 0 ? feedback.stars.toString() : ""}
               onChangeText={(text) => {
                 const stars = Number(text);
                 if (stars >= 1 && stars <= 5) {
