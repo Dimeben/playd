@@ -153,7 +153,7 @@ export default function DjSignUp() {
   };
   return (
     <LinearGradient
-      colors={["#93C6F9", "#97B4FA", "#400691"]}
+      colors={["#C80055", "#A000CC", "#0040CC"]}
       style={styles.background}
     >
       <KeyboardAvoidingView
@@ -175,7 +175,7 @@ export default function DjSignUp() {
             onChangeText={setSurname}
           />
           <TouchableOpacity onPress={pickImage}>
-            <Text>Select an Image</Text>
+            <Text style={styles.white}>Select an Image</Text>
           </TouchableOpacity>
           <View>
             {image && (
@@ -319,6 +319,7 @@ const styles = StyleSheet.create({
     fontFamily: "menlo-bold",
     marginTop: 10,
     marginBottom: 20,
+    color: "white",
   },
   passwordContainer: {
     flexDirection: "row",
@@ -344,7 +345,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 16,
     backgroundColor: "#007AFF",
-    borderRadius: 25,
+    borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
@@ -366,5 +367,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginVertical: 10,
     alignSelf: "center",
+  },
+  white: {
+    color: "white",
+    fontWeight: "bold",
   },
 });
