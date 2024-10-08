@@ -255,7 +255,7 @@ const DjProfilePage = () => {
               <Text style={styles.linkText}>Logout</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.signupButton}
+              style={styles.deleteButton}
               onPress={() => handleDelete(userId)}
             >
               <Text style={styles.linkText}>Delete Account</Text>
@@ -384,6 +384,19 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 16,
     backgroundColor: "#007AFF",
+    borderRadius: 25,
+    borderRightWidth: 1,
+    overflow: "hidden",
+    margin: 10,
+    alignSelf: "center",
+    width: "95%",
+  },
+  deleteButton: {
+    paddingRight: 40,
+    paddingLeft: 40,
+    paddingTop: 16,
+    paddingBottom: 16,
+    backgroundColor: "red",
     borderRadius: 25,
     borderRightWidth: 1,
     overflow: "hidden",
