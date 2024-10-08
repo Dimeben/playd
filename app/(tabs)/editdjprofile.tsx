@@ -103,7 +103,7 @@ const EditDjProfile = () => {
 
   const deleteOccasion = (index: number) => {
     setOccasions((prevOccasions) =>
-      prevOccasions.filter((_, i) => i !== index)
+      prevOccasions.filter((_, i) => i !== index) 
     );
   };
 
