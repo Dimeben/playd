@@ -199,7 +199,7 @@ const DjProfilePage = () => {
                     : dj.occasions}
                 </Text>
                 <Text>Price Per Hour: {dj.price}</Text>
-                <Text>Rating: {dj.rating}</Text>
+                <Text>Rating: {renderStars(dj.rating)}</Text>
                 <Text>Description: {dj.description}</Text>
               </Pressable>
               <Link
