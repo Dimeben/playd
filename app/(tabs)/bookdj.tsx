@@ -25,7 +25,7 @@ const BookDj = () => {
 
   const [showBookingForm, setShowBookingForm] = useState(false); // Toggle state for form
   const [newBooking, setNewBooking] = useState({
-    client: "",
+    client: username || "",
     comments: "",
     event_details: "",
     date: "",
@@ -36,6 +36,18 @@ const BookDj = () => {
   });
 
   const [feedbackData, setFeedbackData] = useState<any[]>([]);
+  const clearForm = () => {
+    setNewBooking({
+      client: username || "",
+      comments: "",
+      event_details: "",
+      date: "",
+      time: "",
+      location: "",
+      occasion: "",
+      dj: selectedDj?.username || "",
+    });
+  };
 
   useEffect(() => {
     console.log("bookdj useEffect - Line 40");
@@ -54,7 +66,7 @@ const BookDj = () => {
       fetchFeedback();
       setNewBooking({
         ...newBooking,
-        client: username,
+        client: username ?? "",
         dj: selectedDj.username,
       });
     }
@@ -123,11 +135,13 @@ const BookDj = () => {
       const bookingWithDateTime = {
         ...bookingWithoutTime,
         date: combinedDateTime,
-        status: "pending",
+        status: "pending" as "pending",
       };
 
       createBooking(bookingWithDateTime);
       alert("Booking request sent!");
+      router.back();
+      clearForm();
       router.back();
     } catch (error) {
       console.error("Error creating booking: ", error);
