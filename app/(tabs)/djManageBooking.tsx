@@ -67,62 +67,65 @@ const DjManageBookings = () => {
     }
   };
 
-  return (
-        <SafeAreaView style={styles.container}>
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
-    >
-      <Text style={styles.header}>Your Bookings</Text>
-
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {djBookings.length === 0 ? (
-          <Text style={styles.noBookingsMessage}>No bookings requested</Text>
-        ) : (
-          djBookings.map((booking) => (
-            <View key={booking.id} style={styles.bookingCard}>
-              <Text style={styles.details}>Client: {booking.client}</Text>
-              <Text style={styles.details}>Occasion: {booking.occasion}</Text>
-              <Text style={styles.details}>Location: {booking.location}</Text>
-             <Text style={styles.details}>
-  Date: {booking.date?.toDateString()} 
-</Text>
-              <Text style={styles.statusMessage}>
-                {booking.status === "accepted"
-                  ? "Booking Accepted"
-                  : booking.status === "declined"
-                  ? "Booking Declined"
-                  : "Pending Decision"}
-              </Text>
-              
-              {booking.status === "pending" && (
-                <View style={styles.buttonContainer}>
-                  <Pressable
-                    style={styles.button}
-                    onPress={() => handleAcceptBooking(booking.id)}
-                  >
-                    <Text style={styles.buttonText}>Accept</Text>
-                  </Pressable>
-                  <Pressable
-                    style={styles.button}
-                    onPress={() => handleDenyBooking(booking.id)}
-                  >
-                    <Text style={styles.buttonText}>Decline</Text>
-                  </Pressable>
+    return (
+      <SafeAreaView style={styles.safeContainer}>
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+        >
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <Text style={styles.header}>Your Bookings</Text>
+            
+            {djBookings.length === 0 ? (
+              <Text style={styles.noBookingsMessage}>No bookings requested</Text>
+            ) : (
+              djBookings.map((booking) => (
+                <View key={booking.id} style={styles.bookingCard}>
+                  <Text style={styles.details}>Client: {booking.client}</Text>
+                  <Text style={styles.details}>Occasion: {booking.occasion}</Text>
+                  <Text style={styles.details}>Location: {booking.location}</Text>
+                  <Text style={styles.details}>
+                    Date: {booking.date?.toDateString()}
+                  </Text>
+                  <Text style={styles.statusMessage}>
+                    {booking.status === "accepted"
+                      ? "Booking Accepted"
+                      : booking.status === "declined"
+                      ? "Booking Declined"
+                      : "Pending Decision"}
+                  </Text>
+    
+                  {booking.status === "pending" && (
+                    <View style={styles.buttonContainer}>
+                      <Pressable
+                        style={styles.button}
+                        onPress={() => handleAcceptBooking(booking.id)}
+                      >
+                        <Text style={styles.buttonText}>Accept</Text>
+                      </Pressable>
+                      <Pressable
+                        style={styles.button}
+                        onPress={() => handleDenyBooking(booking.id)}
+                      >
+                        <Text style={styles.buttonText}>Decline</Text>
+                      </Pressable>
+                    </View>
+                  )}
                 </View>
-              )}
-            </View>
-          ))
-        )}
-      </ScrollView>
-    </KeyboardAvoidingView>
-        </SafeAreaView>
-  );  
-
-};
+              ))
+            )}
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    );
+  };
 
 const styles = StyleSheet.create({
+  safeContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   container: {
     flex: 1,
   },
@@ -175,9 +178,12 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-  }
+  fontWeight: "bold",
+  marginBottom: 10,
+  marginLeft: 16, 
+  textAlign: "left", 
+  color: "#333",
+  },
 });
 
 export default DjManageBookings;
