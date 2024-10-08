@@ -13,7 +13,7 @@ import { useRouter } from "expo-router";
 import { AuthContext } from "../../contexts/AuthContext";
 import { patchDJ, getDJById } from "@/firebase/firestore";
 import { DJ } from "../../firebase/types";
-
+import { LinearGradient } from "expo-linear-gradient";
 const EditDjProfile = () => {
   const router = useRouter();
   const { userId } = useContext(AuthContext);
@@ -103,7 +103,7 @@ const EditDjProfile = () => {
 
   const deleteOccasion = (index: number) => {
     setOccasions((prevOccasions) =>
-      prevOccasions.filter((_, i) => i !== index) 
+      prevOccasions.filter((_, i) => i !== index)
     );
   };
 
@@ -125,148 +125,159 @@ const EditDjProfile = () => {
 
   return (
     <ScrollView style={{ backgroundColor: "white" }}>
-      <View style={styles.container}>
-        <SafeAreaView />
-        <Text style={styles.heading}>Edit Your Profile...</Text>
-        <View>
-          {goBackIsVisible && (
-            <TouchableOpacity
-              style={styles.buttonGoBack}
-              onPress={() => router.push("/(tabs)/djprofile")}
-            >
-              <Text style={styles.buttonText}>Go Back</Text>
+      <LinearGradient
+        colors={["#93C6F9", "#97B4FA", "#400691"]}
+        style={styles.background}
+      >
+        <View style={styles.container}>
+          <SafeAreaView />
+          <Text style={styles.header}>Edit Your Profile</Text>
+          <View>
+            {goBackIsVisible && (
+              <TouchableOpacity
+                style={styles.buttonGoBack}
+                onPress={() => router.push("/(tabs)/djprofile")}
+              >
+                <Text style={styles.buttonText}>Go Back</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+
+        <View style={styles.formContainer}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>First Name</Text>
+            <TextInput
+              placeholder={dj.first_name || "Write your first name..."}
+              placeholderTextColor={"black"}
+              value={updateFirstName}
+              onChangeText={setUpdateFirstName}
+              style={styles.input}
+            />
+          </View>
+        </View>
+
+        <View style={styles.formContainer}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Surname</Text>
+            <TextInput
+              placeholder={dj.surname || "Write your surname..."}
+              placeholderTextColor={"black"}
+              value={updateSurname}
+              onChangeText={setUpdateSurname}
+              style={styles.input}
+            />
+          </View>
+        </View>
+
+        <View style={styles.formContainer}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>City</Text>
+            <TextInput
+              placeholder={dj.city || "Write your city..."}
+              placeholderTextColor={"black"}
+              value={updateCity}
+              onChangeText={setUpdateCity}
+              style={styles.input}
+            />
+          </View>
+        </View>
+
+        <View style={styles.formContainer}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Genres</Text>
+            {genres.map((g, index) => (
+              <View key={index} style={styles.row}>
+                <Text>{g} </Text>
+                <TouchableOpacity
+                  onPress={() => deleteGenre(index)}
+                  style={styles.smallButton}
+                >
+                  <Text style={styles.linkText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+            <TextInput
+              style={styles.input}
+              placeholder={`${
+                dj.genres && dj.genres.length > 0
+                  ? dj.genres.join(", ")
+                  : "Write your genres..."
+              }`}
+              value={newGenre}
+              onChangeText={setNewGenre}
+            />
+            <TouchableOpacity onPress={addGenre} style={styles.signupButton}>
+              <Text style={styles.linkText}>Add Genre</Text>
             </TouchableOpacity>
-          )}
+          </View>
         </View>
-      </View>
 
-      <View style={styles.formContainer}>
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>First Name</Text>
-          <TextInput
-            placeholder={dj.first_name || "Write your first name..."}
-            placeholderTextColor={"black"}
-            value={updateFirstName}
-            onChangeText={setUpdateFirstName}
-            style={styles.input}
-          />
+        <View style={styles.formContainer}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Occasions</Text>
+            {occasions.map((o, index) => (
+              <View key={index} style={styles.row}>
+                <Text>{o}</Text>
+                <TouchableOpacity
+                  style={styles.smallButton}
+                  onPress={() => deleteOccasion(index)}
+                >
+                  <Text style={styles.linkText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+            <TextInput
+              style={styles.input}
+              placeholder={`${
+                dj.occasions && dj.occasions.length > 0
+                  ? dj.occasions.join(", ")
+                  : "Write your occasions..."
+              }`}
+              value={occasion}
+              onChangeText={setOccasion}
+            />
+            <TouchableOpacity onPress={addOccasion} style={styles.signupButton}>
+              <Text style={styles.linkText}>Add Occasion</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
 
-      <View style={styles.formContainer}>
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Surname</Text>
-          <TextInput
-            placeholder={dj.surname || "Write your surname..."}
-            placeholderTextColor={"black"}
-            value={updateSurname}
-            onChangeText={setUpdateSurname}
-            style={styles.input}
-          />
+        <View style={styles.formContainer}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Price Per Hour</Text>
+            <TextInput
+              placeholder={`£${dj.price || "Write your price..."}`}
+              placeholderTextColor={"black"}
+              value={updatePrice?.toString() || ""}
+              onChangeText={(text) => {
+                const numericValue = parseFloat(text);
+                setUpdatePrice(isNaN(numericValue) ? dj.price : numericValue);
+              }}
+              style={styles.input}
+              keyboardType="numeric"
+            />
+          </View>
         </View>
-      </View>
 
-      <View style={styles.formContainer}>
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>City</Text>
-          <TextInput
-            placeholder={dj.city || "Write your city..."}
-            placeholderTextColor={"black"}
-            value={updateCity}
-            onChangeText={setUpdateCity}
-            style={styles.input}
-          />
+        <View style={styles.formContainer}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Description</Text>
+            <TextInput
+              placeholder={dj.description || "Write your description..."}
+              placeholderTextColor={"black"}
+              value={updateDescription}
+              onChangeText={setUpdateDescription}
+              style={[styles.inputMultiline, styles.multilineText]}
+              multiline={true}
+            />
+          </View>
         </View>
-      </View>
 
-      <View style={styles.formContainer}>
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Genres</Text>
-          {genres.map((g, index) => (
-            <View key={index} style={styles.container}>
-              <Text>{g}</Text>
-              <TouchableOpacity onPress={() => deleteGenre(index)}>
-                <Text style={styles.messageText}>Delete</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
-          <TextInput
-            style={styles.input}
-            placeholder={`${
-              dj.genres && dj.genres.length > 0
-                ? dj.genres.join(", ")
-                : "Write your genres..."
-            }`}
-            value={newGenre}
-            onChangeText={setNewGenre}
-          />
-          <TouchableOpacity onPress={addGenre}>
-            <Text>Add Genre</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.formContainer}>
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Occasions</Text>
-          {occasions.map((o, index) => (
-            <View key={index} style={styles.container}>
-              <Text>{o}</Text>
-              <TouchableOpacity onPress={() => deleteOccasion(index)}>
-                <Text style={styles.messageText}>Delete</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
-          <TextInput
-            style={styles.input}
-            placeholder={`${
-              dj.occasions && dj.occasions.length > 0
-                ? dj.occasions.join(", ")
-                : "Write your occasions..."
-            }`}
-            value={occasion}
-            onChangeText={setOccasion}
-          />
-          <TouchableOpacity onPress={addOccasion}>
-            <Text>Add Occasion</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.formContainer}>
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Price</Text>
-          <TextInput
-            placeholder={`£${dj.price || "Write your price..."}`}
-            placeholderTextColor={"black"}
-            value={updatePrice?.toString() || ""}
-            onChangeText={(text) => {
-              const numericValue = parseFloat(text);
-              setUpdatePrice(isNaN(numericValue) ? dj.price : numericValue);
-            }}
-            style={styles.input}
-            keyboardType="numeric"
-          />
-        </View>
-      </View>
-
-      <View style={styles.formContainer}>
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Description</Text>
-          <TextInput
-            placeholder={dj.description || "Write your description..."}
-            placeholderTextColor={"black"}
-            value={updateDescription}
-            onChangeText={setUpdateDescription}
-            style={[styles.inputMultiline, styles.multilineText]}
-            multiline={true}
-          />
-        </View>
-      </View>
-
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Submit All Changes</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.signupButton} onPress={handleSubmit}>
+          <Text style={styles.linkText}>Submit All Changes</Text>
+        </TouchableOpacity>
+      </LinearGradient>
     </ScrollView>
   );
 };
@@ -276,48 +287,64 @@ export default EditDjProfile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
   },
-  heading: {
+  row: {
+    flex: 2,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
+  background: {
+    // position: "absolute",
+    // left: 0,
+    // right: 0,
+    // top: 0,
+    // bottom: 0,
+  },
+  header: {
     fontSize: 30,
+    fontWeight: "bold",
+    alignSelf: "center",
+    fontFamily: "menlo-bold",
+    marginTop: 14,
+    marginBottom: 15,
   },
   formContainer: {
     flexDirection: "row",
     marginLeft: 10,
     marginRight: 10,
-    backgroundColor: "#fff",
   },
   input: {
-    height: 48,
-    overflow: "hidden",
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 12,
+    paddingHorizontal: 8,
     backgroundColor: "white",
-    paddingLeft: 16,
-    flex: 1,
-    marginRight: 5,
-    fontSize: 20,
-    borderRadius: 25,
+    borderRadius: 5,
   },
   inputMultiline: {
     height: "auto",
     overflow: "hidden",
+    borderColor: "gray",
+
     backgroundColor: "white",
     paddingLeft: 16,
     flex: 1,
     marginRight: 5,
     fontSize: 20,
-    borderRadius: 25,
+    borderRadius: 5,
   },
   inputContainer: {
     flex: 1,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
+    // borderLeftWidth: 1,
+    // borderRightWidth: 1,
+    // borderTopWidth: 1,
+    // borderBottomWidth: 1,
     width: 50,
     marginBottom: 5,
-    borderRadius: 10,
     overflow: "hidden",
   },
   buttonGoBack: {
@@ -368,5 +395,40 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: 6,
     alignSelf: "center",
+  },
+  smallButton: {
+    backgroundColor: "red",
+    borderRadius: 25,
+    borderRightWidth: 1,
+    overflow: "hidden",
+    padding: 10,
+    margin: 2,
+    marginLeft: 5,
+    alignSelf: "center",
+  },
+  signupButton: {
+    paddingRight: 40,
+    paddingLeft: 40,
+    paddingTop: 16,
+    paddingBottom: 16,
+    backgroundColor: "#007AFF",
+    borderRadius: 25,
+    borderRightWidth: 1,
+    overflow: "hidden",
+    margin: 10,
+    marginBottom: 30,
+    marginTop: 20,
+    alignSelf: "center",
+    width: "95%",
+  },
+  linkText: {
+    color: "#fff",
+    fontSize: 18,
+    alignSelf: "center",
+  },
+  label: {
+    color: "white",
+    marginBottom: 2,
+    fontWeight: "bold",
   },
 });
