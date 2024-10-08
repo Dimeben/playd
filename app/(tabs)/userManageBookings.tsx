@@ -199,13 +199,13 @@ const UserManageBookings = () => {
       {username && (
         <Text style={styles.currentUser}>Logged in as: {username}</Text>
       )}
-
+  
       <Text style={styles.header}>Your Bookings</Text>
-
+  
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : bookings.length === 0 ? (
-        <Text>No bookings found.</Text>
+        <Text style={styles.noBookingsText}>No bookings requested.</Text>
       ) : (
         <FlatList
           data={bookings}
@@ -214,7 +214,7 @@ const UserManageBookings = () => {
         />
       )}
     </KeyboardAvoidingView>
-  );
+  );  
 };
 
 const styles = StyleSheet.create({
@@ -264,6 +264,13 @@ const styles = StyleSheet.create({
     padding: 8,
     marginBottom: 10,
     borderRadius: 4,
+  },
+  noBookingsText: {
+    fontSize: 16,
+    fontStyle: "italic",
+    color: "#999",
+    textAlign: "center",
+    marginTop: 20,
   },
 });
 
