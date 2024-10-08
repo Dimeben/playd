@@ -14,6 +14,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { getUserById, patchUser } from "../../firebase/firestore";
 import { useRouter } from "expo-router";
 import { User } from "@/firebase/types";
+import { LinearGradient } from "expo-linear-gradient";
 
 const EditUserProfile = () => {
   const router = useRouter();
@@ -79,70 +80,82 @@ const EditUserProfile = () => {
   }
 
   return (
-    <ScrollView style={{ backgroundColor: "white" }}>
-      <View style={styles.container}>
-        <SafeAreaView />
-        <Text style={styles.heading}>Edit Your Profile...</Text>
+    <LinearGradient
+      colors={["#93C6F9", "#97B4FA", "#400691"]}
+      style={styles.background}
+    >
+      <ScrollView>
+        <View style={styles.container}>
+          <SafeAreaView />
+          <Text style={styles.header}>Edit Your Profile</Text>
 
-        {goBackIsVisible && (
+          {goBackIsVisible && (
+            <TouchableOpacity
+              style={styles.buttonGoBack}
+              onPress={() => router.push("/(tabs)/profile")}
+            >
+              <Text style={styles.buttonText}>Go Back</Text>
+            </TouchableOpacity>
+          )}
+
+          <View style={styles.formContainer}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>First Name</Text>
+              <TextInput
+                placeholder={
+                  user.first_name === ""
+                    ? "Write first name..."
+                    : user.first_name
+                }
+                placeholderTextColor={"black"}
+                value={updateFirstName}
+                onChangeText={setUpdateFirstName}
+                style={styles.input}
+                underlineColorAndroid="transparent"
+              />
+            </View>
+          </View>
+
+          <View style={styles.formContainer}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Surname</Text>
+              <TextInput
+                placeholder={
+                  user.surname === "" ? "Write your surname..." : user.surname
+                }
+                placeholderTextColor={"black"}
+                value={updateSurname}
+                onChangeText={setUpdateSurname}
+                style={styles.input}
+                underlineColorAndroid="transparent"
+              />
+            </View>
+          </View>
+          <View style={styles.formContainer}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>City</Text>
+              <TextInput
+                placeholder={
+                  user.city === "" ? "Write your city..." : user.city
+                }
+                placeholderTextColor={"black"}
+                value={updateCity}
+                onChangeText={setUpdateCity}
+                style={styles.input}
+                underlineColorAndroid="transparent"
+              />
+            </View>
+          </View>
+
           <TouchableOpacity
-            style={styles.buttonGoBack}
-            onPress={() => router.back()}
+            style={styles.signupButton}
+            onPress={handleUpdateProfile}
           >
-            <Text style={styles.buttonText}>Go Back</Text>
+            <Text style={styles.linkText}>Submit</Text>
           </TouchableOpacity>
-        )}
-
-        <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>First Name</Text>
-            <TextInput
-              placeholder={
-                user.first_name === "" ? "Write first name..." : user.first_name
-              }
-              placeholderTextColor={"black"}
-              value={updateFirstName}
-              onChangeText={setUpdateFirstName}
-              style={styles.input}
-              underlineColorAndroid="transparent"
-            />
-          </View>
         </View>
-
-        <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Surname</Text>
-            <TextInput
-              placeholder={
-                user.surname === "" ? "Write your surname..." : user.surname
-              }
-              placeholderTextColor={"black"}
-              value={updateSurname}
-              onChangeText={setUpdateSurname}
-              style={styles.input}
-              underlineColorAndroid="transparent"
-            />
-          </View>
-        </View>
-        <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>City</Text>
-            <TextInput
-              placeholder={user.city === "" ? "Write your city..." : user.city}
-              placeholderTextColor={"black"}
-              value={updateCity}
-              onChangeText={setUpdateCity}
-              style={styles.input}
-              underlineColorAndroid="transparent"
-            />
-          </View>
-        </View>
-
-        <TouchableOpacity style={styles.button} onPress={handleUpdateProfile}>
-          <Text style={styles.buttonText}>Submit</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </LinearGradient>
   );
 };
 
@@ -151,28 +164,38 @@ export default EditUserProfile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
   },
-  heading: {
+  header: {
     fontSize: 30,
+    fontWeight: "bold",
+    alignSelf: "center",
+    fontFamily: "menlo-bold",
+    marginTop: 14,
+    marginBottom: 15,
+  },
+  background: {
+    // position: "absolute",
+    // left: 0,
+    // right: 0,
+    // top: 0,
+    flex: 1,
+    // height: "100%",
   },
   formContainer: {
     flexDirection: "row",
     marginLeft: 10,
     marginRight: 10,
-    backgroundColor: "#fff",
   },
   input: {
-    height: 48,
-    overflow: "hidden",
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 12,
+    paddingHorizontal: 8,
     backgroundColor: "white",
-    paddingLeft: 16,
-    flex: 1,
-    marginRight: 5,
-    fontSize: 20,
-    borderRadius: 25,
+    borderRadius: 5,
   },
   inputMultiline: {
     height: "auto",
@@ -186,13 +209,9 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flex: 1,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
+
     width: 50,
     marginBottom: 5,
-    borderRadius: 10,
     overflow: "hidden",
   },
   buttonGoBack: {
@@ -243,5 +262,30 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: 6,
     alignSelf: "center",
+  },
+  signupButton: {
+    paddingRight: 40,
+    paddingLeft: 40,
+    paddingTop: 16,
+    paddingBottom: 16,
+    backgroundColor: "#007AFF",
+    borderRadius: 25,
+    borderRightWidth: 1,
+    overflow: "hidden",
+    margin: 10,
+    marginBottom: 30,
+    marginTop: 20,
+    alignSelf: "center",
+    width: "95%",
+  },
+  linkText: {
+    color: "#fff",
+    fontSize: 18,
+    alignSelf: "center",
+  },
+  label: {
+    color: "white",
+    marginBottom: 2,
+    fontWeight: "bold",
   },
 });
