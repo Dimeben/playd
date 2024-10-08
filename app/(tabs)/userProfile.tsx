@@ -73,7 +73,7 @@ const Profile = () => {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={["#93C6F9", "#97B4FA", "#400691"]}
+        colors={["#97B4FA", "#97B4FA", "#400691"]}
         style={styles.background}
       >
         <SafeAreaView />
