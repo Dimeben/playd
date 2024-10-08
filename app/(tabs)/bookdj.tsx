@@ -188,7 +188,9 @@ const BookDj = () => {
               >
                 Description: {selectedDj.description}
               </Text>
-              <Text style={styles.rating}>Rating: {selectedDj.rating}</Text>
+              <Text style={styles.rating}>
+                Rating: {renderStars(selectedDj.rating)}
+              </Text>
             </View>
           </View>
         )}
