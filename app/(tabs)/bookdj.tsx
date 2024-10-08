@@ -14,6 +14,7 @@ import { createBooking, getFeedback } from "../../firebase/firestore";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import moment from "moment";
 import { AuthContext } from "../../contexts/AuthContext";
+import { LinearGradient } from "expo-linear-gradient";
 
 const BookDj = () => {
   const router = useRouter();
@@ -154,121 +155,136 @@ const BookDj = () => {
   };
 
   return (
-    <View style={styles.container}>
-      {selectedDj && (
-        <View style={styles.djCard}>
-          <Image
-            source={{
-              uri:
-                selectedDj.profile_picture || "https://via.placeholder.com/150",
-            }}
-            style={styles.profilePicture}
-          />
-          <View style={styles.cardContent}>
-            <Text style={styles.name}>
-              {selectedDj.first_name} {selectedDj.surname}
-            </Text>
-            <Text style={styles.genre}>
-              Genre: {selectedDj.genres.join(", ")}
-            </Text>
-            <Text style={styles.city}>Location: {selectedDj.city}</Text>
-            <Text style={styles.price}>Price: £{selectedDj.price}</Text>
-            <Text style={styles.description}>
-              Description: {selectedDj.description}
-            </Text>
-            <Text style={styles.rating}>Rating: {selectedDj.rating}</Text>
+    <LinearGradient
+      colors={["#93C6F9", "#97B4FA", "#400691"]}
+      style={styles.gradientBackground}
+    >
+      <View style={styles.container}>
+        {selectedDj && (
+          <View style={styles.djCard}>
+            <Image
+              source={{
+                uri:
+                  selectedDj.profile_picture ||
+                  "https://via.placeholder.com/150",
+              }}
+              style={styles.profilePicture}
+            />
+            <View style={styles.cardContent}>
+              <Text style={styles.name}>
+                {selectedDj.first_name} {selectedDj.surname}
+              </Text>
+              <Text style={styles.genre}>
+                Genre: {selectedDj.genres.join(", ")}
+              </Text>
+              <Text style={styles.city}>Location: {selectedDj.city}</Text>
+              <Text style={styles.price}>Price: £{selectedDj.price}/hr</Text>
+              <Text
+                style={styles.description}
+                numberOfLines={4}
+                ellipsizeMode="tail"
+              >
+                Description: {selectedDj.description}
+              </Text>
+              <Text style={styles.rating}>Rating: {selectedDj.rating}</Text>
+            </View>
           </View>
-        </View>
-      )}
+        )}
 
-      <Text style={styles.header}>Reviews</Text>
-      <GestureHandlerRootView style={styles.scrollContainer}>
-        <ScrollView contentContainerStyle={styles.feedbackContainer}>
-          {feedbackData.length === 0 ? (
-            <Text>No Feedback Available</Text>
-          ) : (
-            feedbackData.map((feedback) => (
-              <View key={feedback.id} style={styles.feedbackItem}>
-                <Text style={styles.feedbackTitle}>{feedback.title}</Text>
-                <Text style={styles.feedbackText}>By: {feedback.author}</Text>
-                <Text style={styles.feedbackText}>
-                  Comment: {feedback.body}
-                </Text>
-                <Text style={styles.feedbackText}>
-                  Rating: {renderStars(feedback.stars)}
-                </Text>
-                <Text style={styles.feedbackText}>
-                  Date:{" "}
-                  {moment(feedback.date).format("DD MMMM YYYY [at] HH:mm:ss")}
-                </Text>
-              </View>
-            ))
-          )}
-        </ScrollView>
-      </GestureHandlerRootView>
+        <Text style={styles.header}>Reviews</Text>
+        <GestureHandlerRootView style={styles.scrollContainer}>
+          <ScrollView contentContainerStyle={styles.feedbackContainer}>
+            {feedbackData.length === 0 ? (
+              <Text>No Feedback Available</Text>
+            ) : (
+              feedbackData.map((feedback) => (
+                <View key={feedback.id} style={styles.feedbackItem}>
+                  <Text style={styles.feedbackTitle}>{feedback.title}</Text>
+                  <Text style={styles.feedbackText}>By: {feedback.author}</Text>
+                  <Text style={styles.feedbackText}>
+                    Comment: {feedback.body}
+                  </Text>
+                  <Text style={styles.feedbackText}>
+                    Rating: {renderStars(feedback.stars)}
+                  </Text>
+                  <Text style={styles.feedbackText}>
+                    Date:{" "}
+                    {moment(feedback.date).format("DD MMMM YYYY [at] HH:mm:ss")}
+                  </Text>
+                </View>
+              ))
+            )}
+          </ScrollView>
+        </GestureHandlerRootView>
 
-      {/* Toggle button for showing/hiding the booking form */}
-      <TouchableOpacity onPress={toggleForm} style={styles.toggleButton}>
-        <Text style={styles.toggleButtonText}>
-          {showBookingForm ? "Hide Booking Form" : "Book a DJ"}
-        </Text>
-      </TouchableOpacity>
+        {/* Toggle button for showing/hiding the booking form */}
+        <TouchableOpacity onPress={toggleForm} style={styles.toggleButton}>
+          <Text style={styles.toggleButtonText}>
+            {showBookingForm ? "Hide Booking Form" : "Book a DJ"}
+          </Text>
+        </TouchableOpacity>
 
-      {showBookingForm && (
-        <>
-          <Text style={styles.header}>Create a New Booking</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Event Location"
-            value={newBooking.location}
-            onChangeText={(text) =>
-              setNewBooking({ ...newBooking, location: text })
-            }
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Occasion"
-            value={newBooking.occasion}
-            onChangeText={(text) =>
-              setNewBooking({ ...newBooking, occasion: text })
-            }
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Event Details"
-            value={newBooking.event_details}
-            onChangeText={(text) =>
-              setNewBooking({ ...newBooking, event_details: text })
-            }
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Event Date (dd/mm/yyyy)"
-            value={newBooking.date}
-            onChangeText={handleDateInput}
-            maxLength={10}
-            keyboardType="numeric"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Event Time (HH:mm)"
-            value={newBooking.time}
-            onChangeText={handleTimeInput}
-            maxLength={5}
-            keyboardType="numeric"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Additional Comments"
-            value={newBooking.comments}
-            onChangeText={(text) =>
-              setNewBooking({ ...newBooking, comments: text })
-            }
-          />
-          <Button title="Submit Booking" onPress={handleBookingSubmit} />
-        </>
-      )}
-    </View>
+        {showBookingForm && (
+          <>
+            <Text style={styles.header}>Create a New Booking</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Event Location"
+              value={newBooking.location}
+              onChangeText={(text) =>
+                setNewBooking({ ...newBooking, location: text })
+              }
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Occasion"
+              value={newBooking.occasion}
+              onChangeText={(text) =>
+                setNewBooking({ ...newBooking, occasion: text })
+              }
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Event Details"
+              value={newBooking.event_details}
+              onChangeText={(text) =>
+                setNewBooking({ ...newBooking, event_details: text })
+              }
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Event Date (dd/mm/yyyy)"
+              value={newBooking.date}
+              onChangeText={handleDateInput}
+              maxLength={10}
+              keyboardType="numeric"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Event Time (HH:mm)"
+              value={newBooking.time}
+              onChangeText={handleTimeInput}
+              maxLength={5}
+              keyboardType="numeric"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Additional Comments"
+              value={newBooking.comments}
+              onChangeText={(text) =>
+                setNewBooking({ ...newBooking, comments: text })
+              }
+            />
+            <TouchableOpacity
+              onPress={handleBookingSubmit}
+              style={styles.toggleButton}
+            >
+              <Text style={styles.toggleButtonText}>Submit Booking</Text>
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
+    </LinearGradient>
   );
 };
 
@@ -280,56 +296,70 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 5,
+    color: "Black",
   },
   input: {
     height: 40,
     borderColor: "#ccc",
     borderWidth: 1,
-    marginBottom: 10,
+    marginBottom: 7,
     padding: 8,
+    backgroundColor: "#f2f0f7",
   },
   djCard: {
     flexDirection: "row",
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    marginVertical: 8,
+    backgroundColor: "#f2f0f7",
+    borderRadius: 12,
+    marginVertical: 12,
     padding: 16,
     shadowColor: "#000",
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
-    marginBottom: 16,
+    shadowRadius: 6,
+    elevation: 3,
+    marginBottom: 15,
   },
   profilePicture: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 100,
+    height: 100,
+    borderRadius: 45,
     marginRight: 16,
+    marginVertical: 10,
   },
   cardContent: {
+    flex: 1,
     justifyContent: "center",
+    flexWrap: "wrap",
+    maxWidth: "100%",
   },
   name: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
+    color: "Black",
   },
   genre: {
     fontSize: 14,
     color: "#555",
+    marginTop: 5,
   },
   city: {
     fontSize: 14,
     color: "#999",
+    marginVertical: 1,
   },
   price: {
-    fontSize: 14,
-    color: "#333",
+    fontSize: 15,
+    color: "Black",
+    marginVertical: 1,
+    fontWeight: "500",
   },
   description: {
     fontSize: 14,
     color: "#555",
+    paddingRight: 10,
+    flexWrap: "wrap",
+    maxWidth: "100%",
   },
   rating: {
     fontSize: 14,
@@ -351,11 +381,16 @@ const styles = StyleSheet.create({
     fontStyle: "normal",
   },
   feedbackItem: {
-    marginBottom: 15,
+    marginBottom: 10,
     padding: 12,
     borderRadius: 5,
-    backgroundColor: "white",
+    backgroundColor: "#f2f0f7",
     borderWidth: 1,
+    shadowColor: "grey",
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 2,
   },
   feedbackText: {
     fontSize: 12,
@@ -378,6 +413,9 @@ const styles = StyleSheet.create({
   toggleButtonText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  gradientBackground: {
+    flex: 1,
   },
 });
 

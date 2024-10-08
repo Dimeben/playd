@@ -19,8 +19,9 @@ import * as FileSystem from "expo-file-system";
 import { storage } from "../firebase/storage";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { LinearGradient } from "expo-linear-gradient";
-
+import { Link, useRouter } from "expo-router";
 export default function DjSignUp() {
+  const router = useRouter();
   const [firstName, setFirstName] = useState("");
   const [surname, setSurname] = useState("");
   const [username, setUsername] = useState("");
@@ -34,7 +35,6 @@ export default function DjSignUp() {
   const [occasions, setOccasions] = useState<string[]>([]);
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [image, setImage] = useState<string | null>(null);
@@ -131,10 +131,8 @@ export default function DjSignUp() {
         rating,
       });
       clearForm();
-      setShowSuccessMessage(true);
-      setTimeout(() => {
-        setShowSuccessMessage(false);
-      }, 3000);
+      Alert.alert("DJ Signed Up Successfully");
+      router.push("/(tabs)/djprofile");
     } catch (error) {
       const errorMessage =
         (error as Error).message || "An error occurred during registration.";
@@ -153,170 +151,158 @@ export default function DjSignUp() {
       setOccasion("");
     }
   };
-  if (showSuccessMessage) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.successMessage}>DJ registered successfully!</Text>
-      </View>
-    );
-  }
-
   return (
-    <ScrollView>
-      <LinearGradient
-        colors={["#93C6F9", "#97B4FA", "#400691"]}
-        style={styles.background}
+    <LinearGradient
+      colors={["#93C6F9", "#97B4FA", "#400691"]}
+      style={styles.background}
+    >
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-        >
-          <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.header}>DJ Signup</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="First Name"
-              value={firstName}
-              onChangeText={setFirstName}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Surname"
-              value={surname}
-              onChangeText={setSurname}
-            />
-            <TouchableOpacity onPress={pickImage}>
-              <Text>Select an Image</Text>
+        <ScrollView contentContainerStyle={styles.container}>
+          <Text style={styles.header}>DJ Signup</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="First Name"
+            value={firstName}
+            onChangeText={setFirstName}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Surname"
+            value={surname}
+            onChangeText={setSurname}
+          />
+          <TouchableOpacity onPress={pickImage}>
+            <Text>Select an Image</Text>
+          </TouchableOpacity>
+          <View>
+            {image && (
+              <Image source={{ uri: image }} style={styles.imagePreview} />
+            )}
+            <TouchableOpacity onPress={uploadMedia} style={styles.signupButton}>
+              <Text style={styles.linkText}>Upload Image</Text>
             </TouchableOpacity>
-            <View>
-              {image && (
-                <Image
-                  source={{ uri: image }}
-                  style={{ width: 300, height: 300 }}
-                />
-              )}
-              <TouchableOpacity
-                onPress={uploadMedia}
-                style={styles.signupButton}
-              >
-                <Text style={styles.linkText}>Upload Image</Text>
-              </TouchableOpacity>
-            </View>
+          </View>
+          <TextInput
+            style={styles.input}
+            placeholder="Username"
+            value={username}
+            onChangeText={setUsername}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="City"
+            value={city}
+            onChangeText={setCity}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Genre"
+            value={genre}
+            onChangeText={setGenre}
+          />
+          <Button title="Add Genre" onPress={addGenre} color="white" />
+          <View>
+            <Text style={styles.smalllabel}>Genres:</Text>
+            {genres.map((g, index) => (
+              <Text key={index}>{g}</Text>
+            ))}
+          </View>
+          <TextInput
+            style={styles.input}
+            placeholder="Occasion"
+            value={occasion}
+            onChangeText={setOccasion}
+          />
+          <Button title="Add Occasion" onPress={addOccasion} color="white" />
+          <View>
+            <Text style={styles.smalllabel}>Occasions:</Text>
+            {occasions.map((o, index) => (
+              <Text key={index}>{o}</Text>
+            ))}
+          </View>
+          <TextInput
+            style={styles.input}
+            placeholder="Price"
+            keyboardType="numeric"
+            value={price}
+            onChangeText={setPrice}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Description"
+            value={description}
+            onChangeText={setDescription}
+          />
+          <View style={styles.passwordContainer}>
             <TextInput
-              style={styles.input}
-              placeholder="Username"
-              value={username}
-              onChangeText={setUsername}
+              style={styles.passwordInput}
+              placeholder="Password"
+              value={password}
+              secureTextEntry={!showPassword}
+              onChangeText={setPassword}
             />
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              value={email}
-              onChangeText={setEmail}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="City"
-              value={city}
-              onChangeText={setCity}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Genre"
-              value={genre}
-              onChangeText={setGenre}
-            />
-            <Button title="Add Genre" onPress={addGenre} color="white" />
-            <View>
-              <Text style={styles.smalllabel}>Genres:</Text>
-              {genres.map((g, index) => (
-                <Text key={index}>{g}</Text>
-              ))}
-            </View>
-            <TextInput
-              style={styles.input}
-              placeholder="Occasion"
-              value={occasion}
-              onChangeText={setOccasion}
-            />
-            <Button title="Add Occasion" onPress={addOccasion} color="white" />
-            <View>
-              <Text style={styles.smalllabel}>Occasions:</Text>
-              {occasions.map((o, index) => (
-                <Text key={index}>{o}</Text>
-              ))}
-            </View>
-            <TextInput
-              style={styles.input}
-              placeholder="Price"
-              keyboardType="numeric"
-              value={price}
-              onChangeText={setPrice}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Description"
-              value={description}
-              onChangeText={setDescription}
-            />
-
-            <View style={styles.passwordContainer}>
-              <TextInput
-                style={styles.passwordInput}
-                placeholder="Password"
-                value={password}
-                secureTextEntry={!showPassword}
-                onChangeText={setPassword}
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <Ionicons
+                name={showPassword ? "eye-off" : "eye"}
+                size={24}
+                color="gray"
               />
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                <Ionicons
-                  name={showPassword ? "eye-off" : "eye"}
-                  size={24}
-                  color="gray"
-                />
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.passwordContainer}>
-              <TextInput
-                style={styles.passwordInput}
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                secureTextEntry={!showConfirmPassword}
-                onChangeText={setConfirmPassword}
-              />
-              <TouchableOpacity
-                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-              >
-                <Ionicons
-                  name={showConfirmPassword ? "eye-off" : "eye"}
-                  size={24}
-                  color="gray"
-                />
-              </TouchableOpacity>
-            </View>
-
-            {/* <Button
-              title="Register as DJ"
-              onPress={handleDJRegister}
-              color="white"
-            /> */}
+            </TouchableOpacity>
+          </View>
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              secureTextEntry={!showConfirmPassword}
+              onChangeText={setConfirmPassword}
+            />
             <TouchableOpacity
-              style={styles.signupButton}
-              onPress={handleDJRegister}
+              onPress={() => setShowConfirmPassword(!showConfirmPassword)}
             >
-              <Text style={styles.linkText}>Register as DJ</Text>
+              <Ionicons
+                name={showConfirmPassword ? "eye-off" : "eye"}
+                size={24}
+                color="gray"
+              />
             </TouchableOpacity>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </LinearGradient>
-    </ScrollView>
+          </View>
+          {/* <Button
+       title="Register as DJ"
+       onPress={handleDJRegister}
+       color="white"
+      /> */}
+          <TouchableOpacity
+            style={styles.signupButton}
+            onPress={handleDJRegister}
+          >
+            <Text style={styles.linkText}>Register as DJ</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 16,
+  },
+  background: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
   },
   input: {
     height: 40,
@@ -373,5 +359,12 @@ const styles = StyleSheet.create({
   smalllabel: {
     color: "white",
     marginBottom: 5,
+  },
+  imagePreview: {
+    width: 300,
+    height: 300,
+    borderRadius: 10,
+    marginVertical: 10,
+    alignSelf: "center",
   },
 });

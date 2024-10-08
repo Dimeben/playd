@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Pressable,
   KeyboardAvoidingView,
-  Platform
+  Platform,
 } from "react-native";
 import { AuthContext } from "../../contexts/AuthContext";
 import {
@@ -16,6 +16,7 @@ import {
   denyBooking,
 } from "../../firebase/firestore";
 import { Booking } from "../../firebase/types";
+import { SafeAreaView } from "react-native";
 
 const DjManageBookings = () => {
   const { username } = useContext(AuthContext);
@@ -67,6 +68,7 @@ const DjManageBookings = () => {
   };
 
   return (
+        <SafeAreaView style={styles.container}>
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -81,10 +83,9 @@ const DjManageBookings = () => {
               <Text style={styles.details}>Client: {booking.client}</Text>
               <Text style={styles.details}>Occasion: {booking.occasion}</Text>
               <Text style={styles.details}>Location: {booking.location}</Text>
-              <Text style={styles.details}>
-                Date: {booking.date?.toDateString()}
-              </Text>
-  
+             <Text style={styles.details}>
+  Date: {booking.date?.toDateString()} 
+</Text>
               <Text style={styles.statusMessage}>
                 {booking.status === "accepted"
                   ? "Booking Accepted"
@@ -92,7 +93,7 @@ const DjManageBookings = () => {
                   ? "Booking Declined"
                   : "Pending Decision"}
               </Text>
-  
+              
               {booking.status === "pending" && (
                 <View style={styles.buttonContainer}>
                   <Pressable
@@ -114,7 +115,9 @@ const DjManageBookings = () => {
         )}
       </ScrollView>
     </KeyboardAvoidingView>
+        </SafeAreaView>
   );  
+
 };
 
 const styles = StyleSheet.create({
