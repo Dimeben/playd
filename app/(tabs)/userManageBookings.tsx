@@ -196,9 +196,6 @@ const UserManageBookings = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 80}
     >
-      {username && (
-        <Text style={styles.currentUser}>Logged in as: {username}</Text>
-      )}
   
       <Text style={styles.header}>Your Bookings</Text>
   

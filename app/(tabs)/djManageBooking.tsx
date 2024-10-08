@@ -74,6 +74,8 @@ const DjManageBookings = () => {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
     >
+      <Text style={styles.header}>Your Bookings</Text>
+
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {djBookings.length === 0 ? (
           <Text style={styles.noBookingsMessage}>No bookings requested</Text>
@@ -171,6 +173,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
     color: "#555",
   },
+  header: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+  }
 });
 
 export default DjManageBookings;
