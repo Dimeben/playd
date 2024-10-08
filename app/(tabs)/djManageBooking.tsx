@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Pressable,
   KeyboardAvoidingView,
-  Platform
+  Platform,
 } from "react-native";
 import { AuthContext } from "../../contexts/AuthContext";
 import {
@@ -16,6 +16,7 @@ import {
   denyBooking,
 } from "../../firebase/firestore";
 import { Booking } from "../../firebase/types";
+import { SafeAreaView } from "react-native";
 
 const DjManageBookings = () => {
   const { username } = useContext(AuthContext);
@@ -67,49 +68,51 @@ const DjManageBookings = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {djBookings.map((booking) => (
-          <View key={booking.id} style={styles.bookingCard}>
-            <Text style={styles.details}>Client: {booking.client}</Text>
-            <Text style={styles.details}>Occasion: {booking.occasion}</Text>
-            <Text style={styles.details}>Location: {booking.location}</Text>
-            <Text style={styles.details}>
-              Date: {booking.date?.toDateString()}
-            </Text>
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {djBookings.map((booking) => (
+            <View key={booking.id} style={styles.bookingCard}>
+              <Text style={styles.details}>Client: {booking.client}</Text>
+              <Text style={styles.details}>Occasion: {booking.occasion}</Text>
+              <Text style={styles.details}>Location: {booking.location}</Text>
+              <Text style={styles.details}>
+                Date: {booking.date?.toDateString()}
+              </Text>
 
-            <Text style={styles.statusMessage}>
-              {booking.status === "accepted"
-                ? "Booking Accepted"
-                : booking.status === "declined"
-                ? "Booking Declined"
-                : "Pending Decision"}
-            </Text>
+              <Text style={styles.statusMessage}>
+                {booking.status === "accepted"
+                  ? "Booking Accepted"
+                  : booking.status === "declined"
+                  ? "Booking Declined"
+                  : "Pending Decision"}
+              </Text>
 
-            {booking.status === "pending" && (
-              <View style={styles.buttonContainer}>
-                <Pressable
-                  style={styles.button}
-                  onPress={() => handleAcceptBooking(booking.id)}
-                >
-                  <Text style={styles.buttonText}>Accept</Text>
-                </Pressable>
-                <Pressable
-                  style={styles.button}
-                  onPress={() => handleDenyBooking(booking.id)}
-                >
-                  <Text style={styles.buttonText}>Decline</Text>
-                </Pressable>
-              </View>
-            )}
-          </View>
-        ))}
-      </ScrollView>
-    </KeyboardAvoidingView>
+              {booking.status === "pending" && (
+                <View style={styles.buttonContainer}>
+                  <Pressable
+                    style={styles.button}
+                    onPress={() => handleAcceptBooking(booking.id)}
+                  >
+                    <Text style={styles.buttonText}>Accept</Text>
+                  </Pressable>
+                  <Pressable
+                    style={styles.button}
+                    onPress={() => handleDenyBooking(booking.id)}
+                  >
+                    <Text style={styles.buttonText}>Decline</Text>
+                  </Pressable>
+                </View>
+              )}
+            </View>
+          ))}
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
