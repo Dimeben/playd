@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import { db } from "@/firebase/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
-
+import { LinearGradient } from "expo-linear-gradient";
 const profile = () => {
   const [isDj, setIsDj] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
@@ -54,8 +54,15 @@ const profile = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="black" />
-        <Text>Loading Profile...</Text>
+        <LinearGradient
+          colors={["#93C6F9", "#97B4FA", "#400691"]}
+          style={styles.background}
+        >
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="black" />
+            <Text>Loading Profile...</Text>
+          </View>
+        </LinearGradient>
       </View>
     );
   }
@@ -68,6 +75,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  background: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    // flex: 1,
+    // height: "100%",
   },
 });
 export default profile;
