@@ -81,7 +81,7 @@ const EditUserProfile = () => {
 
   return (
     <LinearGradient
-      colors={["#93C6F9", "#97B4FA", "#400691"]}
+      colors={["#4e7ff4", "#97B4FA", "#400691"]}
       style={styles.background}
     >
       <ScrollView>
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 16,
     backgroundColor: "#007AFF",
-    borderRadius: 25,
+    borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
