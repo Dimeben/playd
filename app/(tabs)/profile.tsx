@@ -55,7 +55,7 @@ const profile = () => {
     return (
       <View style={styles.loadingContainer}>
         <LinearGradient
-          colors={["#93C6F9", "#97B4FA", "#400691"]}
+          colors={["#C80055", "#A000CC", "#0040CC"]}
           style={styles.background}
         >
           <View style={styles.loadingContainer}>

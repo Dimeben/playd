@@ -316,6 +316,7 @@ const styles = StyleSheet.create({
     fontFamily: "menlo-bold",
     marginTop: 14,
     marginBottom: 0,
+    color: "white",
   },
   loginMessage: {
     fontSize: 30,
