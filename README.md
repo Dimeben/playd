@@ -65,7 +65,7 @@ In the output, you'll find options to open the app in a
 ### Users
 
 1. **Login/Sign-up**: Users can log in or sign up for an account to access the app.
-2. **Browse DJs**: After logging in, users can see a list of available DJs to hire.
+2. **Browse DJs**: After logging in, users can see a list of available DJs to hire and can filter by location, genre and occasions.
 3. **DJ Profile**: View individual DJ profiles, including their price, ratings, and other details.
 4. **Booking a DJ**: Users can book DJs through the app by visiting the DJ's profile page and navigating to the booking page.
 5. **Manage Bookings**: Users can manage their past and upcoming bookings.

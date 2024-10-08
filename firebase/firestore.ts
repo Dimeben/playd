@@ -431,8 +431,8 @@ export const acceptBooking = async (bookingId: string): Promise<void> => {
 export const denyBooking = async (bookingId: string): Promise<void> => { 
   try {
     const bookingRef = doc(db, "bookings", bookingId);
-    await updateDoc(bookingRef, { status: "denied" });
-    console.log("Booking denied");
+    await updateDoc(bookingRef, { status: "declined" });
+    console.log("Booking declined");
   } catch (error) {
     console.error("Error denying booking:", error);
   }
