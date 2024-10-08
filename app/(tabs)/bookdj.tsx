@@ -141,9 +141,9 @@ const BookDj = () => {
 
       createBooking(bookingWithDateTime);
       alert("Booking request sent!");
-      router.back();
       clearForm();
-      router.back();
+      setShowBookingForm(false);
+      router.push("/listedDjs");
     } catch (error) {
       console.error("Error creating booking: ", error);
       alert("There was an error creating your booking. Please try again.");
