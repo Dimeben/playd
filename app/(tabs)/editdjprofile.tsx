@@ -189,7 +189,6 @@ const EditDjProfile = () => {
             {genres.map((g, index) => (
               <View key={index} style={styles.row}>
                 <Text>{g} </Text>
-
                 <TouchableOpacity
                   onPress={() => deleteGenre(index)}
                   style={styles.smallButton}
@@ -246,7 +245,7 @@ const EditDjProfile = () => {
 
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Price</Text>
+            <Text style={styles.label}>Price Per Hour</Text>
             <TextInput
               placeholder={`£${dj.price || "Write your price..."}`}
               placeholderTextColor={"black"}
