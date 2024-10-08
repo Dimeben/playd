@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  SafeAreaView,
 } from "react-native";
 import { AuthContext } from "../../contexts/AuthContext";
 import { getAuth } from "firebase/auth";
@@ -191,33 +192,38 @@ const UserManageBookings = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 80}
-    >
-  
-      <Text style={styles.header}>Your Bookings</Text>
-  
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : bookings.length === 0 ? (
-        <Text style={styles.noBookingsText}>No bookings requested.</Text>
-      ) : (
-        <FlatList
-          data={bookings}
-          renderItem={renderBooking}
-          keyExtractor={(item) => item.id.toString()}
-        />
-      )}
-    </KeyboardAvoidingView>
-  );  
+    <SafeAreaView style={styles.safeContainer}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 80}
+      >
+        <Text style={styles.header}>Your Bookings</Text>
+
+        {loading ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : bookings.length === 0 ? (
+          <Text style={styles.noBookingsText}>No bookings requested.</Text>
+        ) : (
+          <FlatList
+            data={bookings}
+            renderItem={renderBooking}
+            keyExtractor={(item) => item.id.toString()}
+          />
+        )}
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+  },
+  safeContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
   },
   bookingCard: {
     padding: 10,

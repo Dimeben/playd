@@ -48,7 +48,6 @@ const DjList = () => {
         const djData = await getAllDjs();
         const validDjs = djData.filter((dj): dj is DJ => {
           return (
-            dj.id !== undefined &&
             dj.first_name !== undefined &&
             dj.surname !== undefined &&
             dj.username !== undefined &&
