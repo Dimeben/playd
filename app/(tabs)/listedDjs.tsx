@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 12,
     marginBottom: 5,
-    backgroundColor: "White",
+    backgroundColor: "#f2f0f7",
     elevation: 1,
   },
   listContainer: {

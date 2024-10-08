@@ -3,7 +3,7 @@ import {
   View,
   Text,
   TextInput,
-  Button,
+  SafeAreaView,
   StyleSheet,
   Image,
   ScrollView,
@@ -159,7 +159,7 @@ const BookDj = () => {
       colors={["#93C6F9", "#97B4FA", "#400691"]}
       style={styles.gradientBackground}
     >
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         {selectedDj && (
           <View style={styles.djCard}>
             <Image
@@ -174,7 +174,7 @@ const BookDj = () => {
               <Text style={styles.name}>
                 {selectedDj.first_name} {selectedDj.surname}
               </Text>
-              <Text style={styles.genre}>
+              <Text style={styles.genre} numberOfLines={2} ellipsizeMode="tail">
                 Genre: {selectedDj.genres.join(", ")}
               </Text>
               <Text style={styles.city}>Location: {selectedDj.city}</Text>
@@ -277,13 +277,13 @@ const BookDj = () => {
             />
             <TouchableOpacity
               onPress={handleBookingSubmit}
-              style={styles.toggleButton}
+              style={styles.submitButton}
             >
-              <Text style={styles.toggleButtonText}>Submit Booking</Text>
+              <Text style={styles.submitButtonText}>Submit Booking</Text>
             </TouchableOpacity>
           </>
         )}
-      </View>
+      </SafeAreaView>
     </LinearGradient>
   );
 };
@@ -292,12 +292,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    marginBottom: 20,
   },
   header: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 5,
-    color: "Black",
+    color: "black",
   },
   input: {
     height: 40,
@@ -312,7 +313,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f0f7",
     borderRadius: 12,
     marginVertical: 12,
-    padding: 16,
+    padding: 10,
     shadowColor: "#000",
     shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 2 },
@@ -336,12 +337,15 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "Black",
+    color: "black",
   },
   genre: {
     fontSize: 14,
     color: "#555",
     marginTop: 5,
+    flexWrap: "wrap",
+    maxWidth: "100%",
+    paddingRight: 10,
   },
   city: {
     fontSize: 14,
@@ -401,17 +405,28 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 4,
-    color: "Black",
+    color: "black",
   },
   toggleButton: {
     padding: 10,
     backgroundColor: "#007bff",
     borderRadius: 5,
     alignItems: "center",
-    marginVertical: 10,
+    marginVertical: 5,
   },
   toggleButtonText: {
-    color: "#fff",
+    color: "white",
+    fontWeight: "bold",
+  },
+  submitButton: {
+    padding: 10,
+    backgroundColor: "#007bff",
+    borderRadius: 5,
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  submitButtonText: {
+    color: "white",
     fontWeight: "bold",
   },
   gradientBackground: {
