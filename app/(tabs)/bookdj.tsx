@@ -8,6 +8,8 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { createBooking, getFeedback } from "../../firebase/firestore";
@@ -141,9 +143,9 @@ const BookDj = () => {
 
       createBooking(bookingWithDateTime);
       alert("Booking request sent!");
-      router.back();
       clearForm();
-      router.back();
+      setShowBookingForm(false);
+      router.push("/listedDjs");
     } catch (error) {
       console.error("Error creating booking: ", error);
       alert("There was an error creating your booking. Please try again.");
@@ -193,31 +195,39 @@ const BookDj = () => {
           </View>
         )}
 
-        <Text style={styles.header}>Reviews</Text>
-        <GestureHandlerRootView style={styles.scrollContainer}>
-          <ScrollView contentContainerStyle={styles.feedbackContainer}>
-            {feedbackData.length === 0 ? (
-              <Text>No Feedback Available</Text>
-            ) : (
-              feedbackData.map((feedback) => (
-                <View key={feedback.id} style={styles.feedbackItem}>
-                  <Text style={styles.feedbackTitle}>{feedback.title}</Text>
-                  <Text style={styles.feedbackText}>By: {feedback.author}</Text>
-                  <Text style={styles.feedbackText}>
-                    Comment: {feedback.body}
-                  </Text>
-                  <Text style={styles.feedbackText}>
-                    Rating: {renderStars(feedback.stars)}
-                  </Text>
-                  <Text style={styles.feedbackText}>
-                    Date:{" "}
-                    {moment(feedback.date).format("DD MMMM YYYY [at] HH:mm:ss")}
-                  </Text>
-                </View>
-              ))
-            )}
-          </ScrollView>
-        </GestureHandlerRootView>
+        {!showBookingForm && (
+          <>
+            <Text style={styles.header}>Reviews</Text>
+            <GestureHandlerRootView style={styles.scrollContainer}>
+              <ScrollView contentContainerStyle={styles.feedbackContainer}>
+                {feedbackData.length === 0 ? (
+                  <Text>No Feedback Available</Text>
+                ) : (
+                  feedbackData.map((feedback) => (
+                    <View key={feedback.id} style={styles.feedbackItem}>
+                      <Text style={styles.feedbackTitle}>{feedback.title}</Text>
+                      <Text style={styles.feedbackText}>
+                        By: {feedback.author}
+                      </Text>
+                      <Text style={styles.feedbackText}>
+                        Comment: {feedback.body}
+                      </Text>
+                      <Text style={styles.feedbackText}>
+                        Rating: {renderStars(feedback.stars)}
+                      </Text>
+                      <Text style={styles.feedbackText}>
+                        Date:{" "}
+                        {moment(feedback.date).format(
+                          "DD MMMM YYYY [at] HH:mm:ss"
+                        )}
+                      </Text>
+                    </View>
+                  ))
+                )}
+              </ScrollView>
+            </GestureHandlerRootView>
+          </>
+        )}
 
         {/* Toggle button for showing/hiding the booking form */}
         <TouchableOpacity onPress={toggleForm} style={styles.toggleButton}>
@@ -228,61 +238,69 @@ const BookDj = () => {
 
         {showBookingForm && (
           <>
-            <Text style={styles.header}>Create a New Booking</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Event Location"
-              value={newBooking.location}
-              onChangeText={(text) =>
-                setNewBooking({ ...newBooking, location: text })
-              }
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Occasion"
-              value={newBooking.occasion}
-              onChangeText={(text) =>
-                setNewBooking({ ...newBooking, occasion: text })
-              }
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Event Details"
-              value={newBooking.event_details}
-              onChangeText={(text) =>
-                setNewBooking({ ...newBooking, event_details: text })
-              }
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Event Date (dd/mm/yyyy)"
-              value={newBooking.date}
-              onChangeText={handleDateInput}
-              maxLength={10}
-              keyboardType="numeric"
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Event Time (HH:mm)"
-              value={newBooking.time}
-              onChangeText={handleTimeInput}
-              maxLength={5}
-              keyboardType="numeric"
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Additional Comments"
-              value={newBooking.comments}
-              onChangeText={(text) =>
-                setNewBooking({ ...newBooking, comments: text })
-              }
-            />
-            <TouchableOpacity
-              onPress={handleBookingSubmit}
-              style={styles.toggleButton}
+            <KeyboardAvoidingView
+              style={styles.container}
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              keyboardVerticalOffset={0}
             >
-              <Text style={styles.toggleButtonText}>Submit Booking</Text>
-            </TouchableOpacity>
+              <ScrollView contentContainerStyle={styles.feedbackContainer}>
+                <Text style={styles.header}>Create a New Booking</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Event Location"
+                  value={newBooking.location}
+                  onChangeText={(text) =>
+                    setNewBooking({ ...newBooking, location: text })
+                  }
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Occasion"
+                  value={newBooking.occasion}
+                  onChangeText={(text) =>
+                    setNewBooking({ ...newBooking, occasion: text })
+                  }
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Event Details"
+                  value={newBooking.event_details}
+                  onChangeText={(text) =>
+                    setNewBooking({ ...newBooking, event_details: text })
+                  }
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Event Date (dd/mm/yyyy)"
+                  value={newBooking.date}
+                  onChangeText={handleDateInput}
+                  maxLength={10}
+                  keyboardType="numeric"
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Event Time (HH:mm)"
+                  value={newBooking.time}
+                  onChangeText={handleTimeInput}
+                  maxLength={5}
+                  keyboardType="numeric"
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Additional Comments"
+                  value={newBooking.comments}
+                  onChangeText={(text) =>
+                    setNewBooking({ ...newBooking, comments: text })
+                  }
+                />
+                <TouchableOpacity
+                  onPress={handleBookingSubmit}
+                  style={styles.toggleButton}
+                >
+                  <Text style={styles.toggleButtonText}>Submit Booking</Text>
+                </TouchableOpacity>
+              </ScrollView>
+            </KeyboardAvoidingView>
           </>
         )}
       </View>
