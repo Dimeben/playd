@@ -68,22 +68,24 @@ const DjManageBookings = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
-      >
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {djBookings.map((booking) => (
+        <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {djBookings.length === 0 ? (
+          <Text style={styles.noBookingsMessage}>No bookings requested</Text>
+        ) : (
+          djBookings.map((booking) => (
             <View key={booking.id} style={styles.bookingCard}>
               <Text style={styles.details}>Client: {booking.client}</Text>
               <Text style={styles.details}>Occasion: {booking.occasion}</Text>
               <Text style={styles.details}>Location: {booking.location}</Text>
-              <Text style={styles.details}>
-                Date: {booking.date?.toDateString()}
-              </Text>
-
+             <Text style={styles.details}>
+  Date: {booking.date?.toDateString()} 
+</Text>
               <Text style={styles.statusMessage}>
                 {booking.status === "accepted"
                   ? "Booking Accepted"
@@ -91,7 +93,7 @@ const DjManageBookings = () => {
                   ? "Booking Declined"
                   : "Pending Decision"}
               </Text>
-
+              
               {booking.status === "pending" && (
                 <View style={styles.buttonContainer}>
                   <Pressable
@@ -109,11 +111,13 @@ const DjManageBookings = () => {
                 </View>
               )}
             </View>
-          ))}
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
-  );
+          ))
+        )}
+      </ScrollView>
+    </KeyboardAvoidingView>
+        </SafeAreaView>
+  );  
+
 };
 
 const styles = StyleSheet.create({
@@ -159,6 +163,13 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  noBookingsMessage: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: 20,
+    color: "#555",
   },
 });
 
