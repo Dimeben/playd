@@ -172,7 +172,6 @@ const DjList = () => {
         <View style={styles.container}>
           <Text style={styles.header}>Filter DJs By:</Text>
 
-          {/* City Picker */}
           <TouchableOpacity
             style={styles.picker}
             onPress={() => setModalVisible(true)}
@@ -180,7 +179,6 @@ const DjList = () => {
             <Text>{selectedCity || "Select City"}</Text>
           </TouchableOpacity>
 
-          {/* Genre Picker */}
           <TouchableOpacity
             style={styles.picker}
             onPress={() => setGenreModalVisible(true)}
@@ -188,7 +186,6 @@ const DjList = () => {
             <Text>{selectedGenre || "Select Genre"}</Text>
           </TouchableOpacity>
 
-          {/* Occasion Picker */}
           <TouchableOpacity
             style={styles.picker}
             onPress={() => setOccasionModalVisible(true)}
@@ -196,7 +193,6 @@ const DjList = () => {
             <Text>{selectedOccasion || "Select Occasion"}</Text>
           </TouchableOpacity>
 
-          {/* City Modal */}
           <Modal
             transparent={true}
             visible={modalVisible}
@@ -227,7 +223,6 @@ const DjList = () => {
             </View>
           </Modal>
 
-          {/* Genre Modal */}
           <Modal
             transparent={true}
             visible={genreModalVisible}
@@ -258,7 +253,6 @@ const DjList = () => {
             </View>
           </Modal>
 
-          {/* Occasion Modal */}
           <Modal
             transparent={true}
             visible={occasionModalVisible}

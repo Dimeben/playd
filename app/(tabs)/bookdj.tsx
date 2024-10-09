@@ -316,6 +316,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 5,
+    marginLeft: 10,
     color: "black",
   },
   input: {
@@ -360,10 +361,8 @@ const styles = StyleSheet.create({
   genre: {
     fontSize: 14,
     color: "#555",
-    marginTop: 5,
     flexWrap: "wrap",
     maxWidth: "100%",
-    paddingRight: 10,
   },
   city: {
     fontSize: 14,
