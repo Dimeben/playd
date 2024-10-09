@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 26,
     marginTop: 20,
-    fontFamily: "menlo-bold",
+    fontFamily: "GeezaPro-Bold",
     alignSelf: "center",
     color: "black",
   },

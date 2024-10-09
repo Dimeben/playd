@@ -73,8 +73,13 @@ const EditUserProfile = () => {
   if (!user) {
     return (
       <SafeAreaView style={styles.container}>
-        <ActivityIndicator size="large" color="black" />
-        <Text>Loading user data...</Text>
+        <LinearGradient
+          colors={["#C80055", "#A000CC", "#0040CC"]}
+          style={styles.background}
+        >
+          <ActivityIndicator size="large" color="black" />
+          <Text>Loading user data...</Text>
+        </LinearGradient>
       </SafeAreaView>
     );
   }
@@ -171,7 +176,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     alignSelf: "center",
-    fontFamily: "menlo-bold",
+    fontFamily: "GeezaPro-Bold",
     marginTop: 14,
     marginBottom: 15,
   },

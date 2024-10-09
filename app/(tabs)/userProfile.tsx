@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     alignSelf: "center",
-    fontFamily: "menlo-bold",
+    fontFamily: "GeezaPro-Bold",
     marginTop: 10,
     marginBottom: 5,
   },

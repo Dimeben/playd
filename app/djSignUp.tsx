@@ -211,7 +211,7 @@ export default function DjSignUp() {
           />
           <Button title="Add Genre" onPress={addGenre} color="white" />
           <View>
-            <Text style={styles.smalllabel}>Genres:</Text>
+            <Text style={styles.smalllabel}>Genres</Text>
             {genres.map((g, index) => (
               <Text key={index} style={styles.smalllabel}>
                 {g}
@@ -226,7 +226,7 @@ export default function DjSignUp() {
           />
           <Button title="Add Occasion" onPress={addOccasion} color="white" />
           <View>
-            <Text style={styles.smalllabel}>Occasions:</Text>
+            <Text style={styles.smalllabel}>Occasions</Text>
             {occasions.map((o, index) => (
               <Text key={index} style={styles.smalllabel}>
                 {o}
@@ -235,7 +235,7 @@ export default function DjSignUp() {
           </View>
           <TextInput
             style={styles.input}
-            placeholder="Price"
+            placeholder="Price Per Hour"
             keyboardType="numeric"
             value={price}
             onChangeText={setPrice}
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     alignSelf: "center",
-    fontFamily: "menlo-bold",
+    fontFamily: "GeezaPro-Bold",
     marginTop: 10,
     marginBottom: 20,
     color: "black",
