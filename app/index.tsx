@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   View,
+  SafeAreaView,
 } from "react-native";
 const backgroundImage = require("../assets/images/cyberpunk-dj-illustration.jpg");
 export default function Index() {
@@ -12,33 +13,38 @@ export default function Index() {
 
   return (
     <View style={styles.container}>
-      <ImageBackground
-        source={backgroundImage}
-        resizeMode="cover"
-        style={styles.image}
-      >
-        <Text style={styles.heading}>Welcome to Playd</Text>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+      <SafeAreaView style={styles.safeContainer}>
+        <ImageBackground
+          source={backgroundImage}
+          resizeMode="cover"
+          style={styles.image}
         >
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => router.push("/login")}
+          <Text style={styles.heading}>Welcome to Playd</Text>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
-        </View>
-      </ImageBackground>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => router.push("/login")}
+            >
+              <Text style={styles.buttonText}>Login</Text>
+            </TouchableOpacity>
+          </View>
+        </ImageBackground>
+      </SafeAreaView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  safeContainer: {
     flex: 1,
   },
   image: {

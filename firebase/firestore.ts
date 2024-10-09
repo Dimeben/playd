@@ -65,8 +65,7 @@ export async function createUser(
 
     return userDocSnapshot.data();
   } catch (error) {
-    console.error("Error: ", error);
-    throw error;
+       throw error;
   }
 }
 
@@ -112,8 +111,7 @@ export async function createDJ(
 
     return djDocSnapshot.data();
   } catch (error) {
-    console.error("Error: ", error);
-    throw error;
+      throw error;
   }
 }
 
@@ -133,7 +131,7 @@ export async function deleteUser(userId: string) {
 
     await firebaseDeleteUser(user);
   } catch (error) {
-    console.error("Error deleting user: ", error);
+  
     throw error;
   }
 }
@@ -154,7 +152,7 @@ export async function deleteDJ(userId: string) {
 
     await firebaseDeleteUser(user);
   } catch (error) {
-    console.error("Error deleting DJ: ", error);
+    
     throw error;
   }
 }
@@ -173,7 +171,7 @@ export function signIn(email: string, password: string) {
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.error("signIn - Line 17 - Error occurred:", errorCode, errorMessage);
+    
       throw new Error(error);
     });
 }
@@ -185,7 +183,7 @@ export async function signOut() {
     }
     await firebaseSignOut(auth);
   } catch (error) {
-    console.error("Error signing out: ", error);
+ 
     throw error;
   }
 }
@@ -218,7 +216,7 @@ export async function getUserById(userId: string): Promise<User | null> {
       return null;
     }
   } catch (error) {
-    console.error("getUserById - Error fetching user by ID:", error);
+  
     throw error; 
   }
 }
@@ -317,7 +315,7 @@ export const getBookingsByUser = async (username: string): Promise<Booking[]> =>
 
     return bookings;
   } catch (error) {
-    console.error("Error fetching user bookings: ", error);
+  
     throw error;
   }
 };
@@ -348,7 +346,7 @@ export const getBookingsByDj = async (djUsername: string): Promise<Booking[]> =>
 
     return bookings;
   } catch (error) {
-    console.error("Error fetching DJ bookings: ", error);
+   
     throw error;
   }
 };
@@ -358,7 +356,7 @@ export const acceptBooking = async (bookingId: string): Promise<void> => {
     const bookingRef = doc(db, "bookings", bookingId);
     await updateDoc(bookingRef, { status: "accepted" });
   } catch (error) {
-    console.error("Error accepting booking:", error);
+
   }
 };
 
@@ -367,7 +365,7 @@ export const denyBooking = async (bookingId: string): Promise<void> => {
     const bookingRef = doc(db, "bookings", bookingId);
     await updateDoc(bookingRef, { status: "declined" });
   } catch (error) {
-    console.error("Error denying booking:", error);
+
   }
 };
 
@@ -375,7 +373,7 @@ export async function createBooking(booking: Partial<Booking>): Promise<void> {
   try {
     await addDoc(bookingsRef, { ...booking, status: 'pending' }); 
   } catch (error) {
-    console.error("Error creating booking: ", error);
+
     throw error;
   }
 }
@@ -389,8 +387,7 @@ export async function updateBooking(bookingId: string, updatedData: Partial<Book
     await updateDoc(bookingDocRef, updatedData);
     
   } catch (error) {
-    console.error("Error updating booking: ", error);
-  console.error("Error details: ", (error as Error).message);
+
     throw error;
   }
 }
@@ -402,7 +399,6 @@ export async function deleteBooking(bookingId: string): Promise<void> {
     await deleteDoc(bookingDocRef);
   } catch (error) {
 
-    console.error("Error deleting booking: ", error);
     throw error;
   }
 }
@@ -416,7 +412,7 @@ export async function patchUser(userId: string, newDetails: Partial<User>): Prom
     await updateDoc(userDocRef, newDetails);
 
   } catch (error) {
-    console.error("Error updating user: ", error);
+    
     throw error;
   }
 }
@@ -429,7 +425,7 @@ export async function patchDJ(djId: string, newDetails: Partial<DJ>): Promise<vo
     await updateDoc(djDocRef, newDetails);
 
   } catch (error) {
-    console.error("Error updating DJ: ", error);
+ 
     throw error; 
   }
 }
@@ -447,11 +443,10 @@ export async function patchDJByUsername(username: string, newDetails: Partial<DJ
 
       await patchDJ(djId, newDetails);
     } else {
-      console.error("patchDJByUsername - No DJ found with the specified username.");
       throw new Error("No DJ found with the specified username.");
     }
   } catch (error) {
-    console.error("Error updating DJ by username: ", error);
+
     throw error; 
   }
 }

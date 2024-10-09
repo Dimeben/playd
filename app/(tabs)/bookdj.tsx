@@ -10,6 +10,8 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { createBooking, getFeedback } from "../../firebase/firestore";
@@ -28,6 +30,7 @@ const BookDj = () => {
   }, [dj]);
 
   const [showBookingForm, setShowBookingForm] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [newBooking, setNewBooking] = useState({
     client: username || "",
     comments: "",
@@ -56,13 +59,15 @@ const BookDj = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
     const fetchFeedback = async () => {
       if (selectedDj?.username) {
         try {
           const feedbackArray = await getFeedback(selectedDj.username);
           setFeedbackData(feedbackArray);
         } catch (error) {
-          console.error("Error fetching feedback: ", error);
+          setLoading(false);
+          return;
         }
       }
     };
@@ -74,6 +79,7 @@ const BookDj = () => {
         client: username ?? "",
         dj: selectedDj.username,
       }));
+      setLoading(false);
     }
   }, [selectedDj]);
 
@@ -84,6 +90,7 @@ const BookDj = () => {
 
       return () => {
         clearForm();
+
         setShowBookingForm(false);
       };
     }, [selectedDj])
@@ -133,13 +140,13 @@ const BookDj = () => {
       const formattedDate = moment(`${year}-${month}-${day}`, "YYYY-MM-DD");
 
       if (!formattedDate.isValid()) {
-        alert("Invalid date format. Please use dd/mm/yyyy format.");
+        Alert.alert("Invalid date format. Please use dd/mm/yyyy format.");
         return;
       }
 
       const formattedTime = moment(newBooking.time, "HH:mm", true);
       if (!formattedTime.isValid()) {
-        alert("Invalid time format. Please use HH:mm format.");
+        Alert.alert("Invalid time format. Please use HH:mm format.");
         return;
       }
 
@@ -158,19 +165,40 @@ const BookDj = () => {
 
       createBooking(bookingWithDateTime);
 
-      alert("Booking request sent!");
+      Alert.alert("Booking request sent!");
       clearForm();
       setShowBookingForm(false);
       router.push("/listedDjs");
     } catch (error) {
-      console.error("Error creating booking: ", error);
-      alert("There was an error creating your booking. Please try again.");
+      Alert.alert(
+        "There was an error creating your booking. Please try again."
+      );
     }
   };
 
   const toggleForm = () => {
     setShowBookingForm(!showBookingForm);
   };
+
+  if (loading) {
+    return (
+      <View style={[styles.loadingContainer, styles.container]}>
+        <LinearGradient
+          colors={["#00005B", "#A000CC", "#0040CC"]}
+          style={styles.background}
+        >
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator
+              size="large"
+              color="white"
+              style={{ justifyContent: "center" }}
+            />
+            <Text style={styles.white}>Loading Profile...</Text>
+          </View>
+        </LinearGradient>
+      </View>
+    );
+  }
 
   return (
     <LinearGradient
@@ -473,6 +501,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   noFeedbackText: {
+    color: "white",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  background: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  },
+  white: {
     color: "white",
   },
 });

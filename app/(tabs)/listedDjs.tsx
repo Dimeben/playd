@@ -63,7 +63,7 @@ const DjList = () => {
       setOccasionOptions([...new Set(validDjs.flatMap((dj) => dj.occasions))]);
       setFilteredDjs(validDjs);
     } catch (error) {
-      console.error("Error fetching DJs: ", error);
+      return;
     } finally {
       setLoading(false);
     }

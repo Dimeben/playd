@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Pressable,
   KeyboardAvoidingView,
+  Alert,
   Platform,
 } from "react-native";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -51,7 +52,7 @@ const DjManageBookings = () => {
 
         setDjBookings(sortedBookings);
       } catch (error) {
-        console.error("Error fetching DJ bookings:", error);
+        return;
       }
     }
     setLoading(false);
@@ -78,7 +79,7 @@ const DjManageBookings = () => {
         )
       );
     } catch (error) {
-      console.error("Error accepting booking:", error);
+      Alert.alert("Error", "Booking couldn't be accepted. Please try again.");
     }
   };
 
@@ -93,7 +94,7 @@ const DjManageBookings = () => {
         )
       );
     } catch (error) {
-      console.error("Error denying booking:", error);
+      Alert.alert("Error", "Booking couldn't be declined. Please try again.");
     }
   };
 
@@ -158,6 +159,7 @@ const DjManageBookings = () => {
                           : styles.pending,
                       ]}
                     >
+                      Status:{" "}
                       {booking.status === "accepted"
                         ? "Booking Accepted"
                         : booking.status === "declined"

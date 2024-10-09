@@ -9,6 +9,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
 } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { signIn } from "@/firebase/firestore";
@@ -71,54 +72,56 @@ export default function Login() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
-    >
-      <LinearGradient
-        colors={["#00005B", "#A000CC", "#0040CC"]}
-        style={styles.background}
+    <SafeAreaView style={styles.safeContainer}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
       >
-        <Text style={styles.header}>
-          <Entypo name="login" size={24} color="white" /> Login
-        </Text>
+        <LinearGradient
+          colors={["#00005B", "#A000CC", "#0040CC"]}
+          style={styles.background}
+        >
+          <Text style={styles.header}>
+            <Entypo name="login" size={24} color="white" /> Login
+          </Text>
 
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.buttonContainer}>
-            <Link href="/userSignUp" style={styles.linkButton}>
-              <Text style={styles.linkText}>User Sign Up</Text>
-            </Link>
-            <Link href="/djSignUp" style={styles.linkButton}>
-              <Text style={styles.linkText}>DJ Sign Up</Text>
-            </Link>
-          </View>
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.buttonContainer}>
+              <Link href="/userSignUp" style={styles.linkButton}>
+                <Text style={styles.linkText}>User Sign Up</Text>
+              </Link>
+              <Link href="/djSignUp" style={styles.linkButton}>
+                <Text style={styles.linkText}>DJ Sign Up</Text>
+              </Link>
+            </View>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-          />
-          <View style={styles.passwordContainer}>
             <TextInput
-              style={styles.passwordInput}
-              placeholder="Password"
-              value={password}
-              secureTextEntry={!showPassword}
-              onChangeText={setPassword}
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
             />
-            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-              <Text>{showPassword ? "Hide" : "Show"}</Text>
-            </TouchableOpacity>
-          </View>
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={styles.passwordInput}
+                placeholder="Password"
+                value={password}
+                secureTextEntry={!showPassword}
+                onChangeText={setPassword}
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <Text>{showPassword ? "Hide" : "Show"}</Text>
+              </TouchableOpacity>
+            </View>
 
-          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-            <Text style={styles.linkText}>Login</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </LinearGradient>
-    </KeyboardAvoidingView>
+            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+              <Text style={styles.linkText}>Login</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </LinearGradient>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
@@ -126,6 +129,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  safeContainer: {
+    flex: 1,
   },
   scrollContainer: {
     flexGrow: 1,

@@ -40,10 +40,10 @@ const EditUserProfile = () => {
             setUpdateCity(userData.city);
             setGoBackIsVisible(true);
           } else {
-            console.log("User doesn't exist");
+            return;
           }
         } catch (err) {
-          console.error("Error fetching user: ", (err as Error).message);
+          return;
         }
       }
     };
@@ -64,11 +64,10 @@ const EditUserProfile = () => {
         router.push("/(tabs)/profile");
         Alert.alert("Profile successfully updated!");
       } else {
-        console.error("userId is null or undefined");
-        Alert.alert("Error", "User ID is not available.");
+        Alert.alert("Error", "Profile couldn't be updated. Please try again.");
       }
     } catch (err) {
-      console.error((err as Error).message);
+      return;
     }
   };
 

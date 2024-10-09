@@ -69,7 +69,7 @@ export default function DjSignUp() {
   const uploadMedia = async () => {
     try {
       if (!image) {
-        console.error("No image selected");
+        Alert.alert("No image selected");
         return;
       }
       const { uri } = await FileSystem.getInfoAsync(image);
@@ -93,7 +93,7 @@ export default function DjSignUp() {
       Alert.alert("Photo Uploaded");
       setImage(null);
     } catch (error) {
-      console.error(error);
+      Alert.alert("Something went wrong. Please try again.");
     }
   };
   const clearForm = () => {

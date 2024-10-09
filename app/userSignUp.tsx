@@ -63,10 +63,9 @@ export default function UserSignUp() {
   };
 
   const uploadMedia = async () => {
-
     try {
       if (!image) {
-        console.error("No image selected");
+        Alert.alert("No image selected");
         return;
       }
 
@@ -92,8 +91,7 @@ export default function UserSignUp() {
       Alert.alert("Photo Uploaded");
       setImage(null);
     } catch (error) {
-      console.error(error);
-
+      Alert.alert("Something went wrong. Please try again.");
     }
   };
 

@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   SafeAreaView,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { AuthContext } from "../../contexts/AuthContext";
 import { getAuth } from "firebase/auth";
@@ -68,7 +69,7 @@ const UserManageBookings = () => {
 
         setBookings(sortedBookings);
       } catch (error) {
-        console.error("Error fetching user bookings:", error);
+        return;
       }
     }
     setLoading(false);
@@ -99,12 +100,12 @@ const UserManageBookings = () => {
         };
 
         if (feedbackData.stars < 1 || feedbackData.stars > 5) {
-          alert("Please enter a valid rating between 1 and 5.");
+          Alert.alert("Please enter a valid rating between 1 and 5.");
           return;
         }
 
         if (!feedbackData.title || !feedbackData.stars || !feedback.body) {
-          alert("Please complete all fields");
+          Alert.alert("Please complete all fields");
           return;
         }
 
@@ -132,13 +133,12 @@ const UserManageBookings = () => {
         });
         setFeedbackFormVisible(null);
         await fetchBookings();
-        alert("Feedback posted successfully! DJ's rating updated.");
+        Alert.alert("Feedback posted successfully! DJ's rating updated.");
       } catch (error) {
-        console.error("Error posting feedback or updating DJ rating:", error);
-        alert("Failed to post feedback. Please try again.");
+        Alert.alert("Failed to post feedback. Please try again.");
       }
     } else {
-      alert("Please select a booking to leave feedback.");
+      Alert.alert("Please select a booking to leave feedback.");
     }
   };
 
@@ -191,7 +191,12 @@ const UserManageBookings = () => {
             },
           ]}
         >
-          Status: {item.status}
+          Status:{" "}
+          {item.status === "accepted"
+            ? "Booking Accepted"
+            : item.status === "declined"
+            ? "Booking Declined"
+            : "Pending Decision"}
         </Text>
 
         {canLeaveFeedback ? (

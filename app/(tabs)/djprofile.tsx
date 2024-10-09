@@ -38,7 +38,7 @@ const DjProfilePage = () => {
         const feedbackArray = await getFeedback(dj.username);
         setFeedbackData(feedbackArray);
       } catch (error) {
-        console.error("Error fetching feedback: ", error);
+        return;
       }
     }
   };
@@ -57,7 +57,6 @@ const DjProfilePage = () => {
       } else {
       }
     } catch (error) {
-      console.error("Error fetching DJ data:", (error as Error).message);
       Alert.alert("Error", "Unable to fetch DJ data. Please try again.");
     } finally {
       setIsLoading(false);
@@ -104,7 +103,7 @@ const DjProfilePage = () => {
         Alert.alert("You have signed out!");
         router.push("../login");
       })
-      .catch((err) => console.log("User didn't sign out"));
+      .catch((err) => Alert.alert("User didn't sign out"));
   };
 
   const handleDelete = (userId) => {

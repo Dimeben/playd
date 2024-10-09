@@ -46,7 +46,7 @@ const EditDjProfile = () => {
             setGoBackIsVisible(true);
           }
         } catch (err) {
-          console.error("Error fetching DJ data:", err);
+          return;
         } finally {
           setIsLoading(false);
         }
@@ -82,7 +82,7 @@ const EditDjProfile = () => {
         Alert.alert("Error", "User ID is not available.");
       }
     } catch (err) {
-      console.log("Error updating profile:", err);
+      Alert.alert("Error", "Profile couldn't be updated. Please try again.");
     }
   };
 

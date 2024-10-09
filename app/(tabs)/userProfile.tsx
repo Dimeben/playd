@@ -30,10 +30,10 @@ const Profile = () => {
         if (userData) {
           setUser(userData as User);
         } else {
-          console.log("User doesn't exist");
+          Alert.alert("User doesn't exist");
         }
       } catch (err) {
-        console.error("Error fetching user: ", (err as Error).message);
+        return;
       }
     }
   };
@@ -54,7 +54,7 @@ const Profile = () => {
         Alert.alert("You have signed out!");
         router.push("../login");
       })
-      .catch((err) => console.log("User didn't sign out"));
+      .catch((err) => Alert.alert("User didn't sign out. Please try again."));
   };
 
   const handleDelete = (userId) => {
