@@ -143,7 +143,7 @@ const EditDjProfile = () => {
       <View style={styles.loadingContainer}>
         <LinearGradient
           colors={["#C80055", "#A000CC", "#0040CC"]}
-          style={styles.background}
+          style={styles.backgroundLoading}
         >
           <Text>Loading DJ data...</Text>
         </LinearGradient>
@@ -222,17 +222,19 @@ const EditDjProfile = () => {
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Genres</Text>
-            {genres.map((g, index) => (
-              <View key={index} style={styles.row}>
-                <Text style={styles.white}>{g} </Text>
-                <TouchableOpacity
-                  onPress={() => deleteGenre(index)}
-                  style={styles.smallButton}
-                >
-                  <Text style={styles.linkText}>Delete</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
+            <View style={styles.row}>
+              {genres.map((g, index) => (
+                <View key={index}>
+                  <Text style={styles.white}>{g} </Text>
+                  <TouchableOpacity
+                    onPress={() => deleteGenre(index)}
+                    style={styles.smallButton}
+                  >
+                    <Text style={styles.linkText}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
             <TextInput
               style={styles.input}
               placeholder={`${
@@ -252,17 +254,19 @@ const EditDjProfile = () => {
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Occasions</Text>
-            {occasions.map((o, index) => (
-              <View key={index} style={styles.row}>
-                <Text style={styles.white}>{o}</Text>
-                <TouchableOpacity
-                  style={styles.smallButton}
-                  onPress={() => deleteOccasion(index)}
-                >
-                  <Text style={styles.linkText}>Delete</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
+            <View style={styles.row}>
+              {occasions.map((o, index) => (
+                <View key={index}>
+                  <Text style={styles.white}>{o}</Text>
+                  <TouchableOpacity
+                    style={styles.smallButton}
+                    onPress={() => deleteOccasion(index)}
+                  >
+                    <Text style={styles.linkText}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
             <TextInput
               style={styles.input}
               placeholder={`${
@@ -332,12 +336,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "row",
   },
-  background: {
-    // position: "absolute",
-    // left: 0,
-    // right: 0,
-    // top: 0,
-    // bottom: 0,
+  backgroundLoading: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
   },
   header: {
     fontSize: 30,
@@ -472,5 +476,6 @@ const styles = StyleSheet.create({
   },
   white: {
     color: "white",
+    marginLeft: 19,
   },
 });
