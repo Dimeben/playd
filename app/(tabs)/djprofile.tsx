@@ -52,19 +52,16 @@ const DjProfilePage = () => {
   const fetchDjData = async () => {
     setIsLoading(true);
     if (!userId) {
-  
       setIsLoading(false);
       return;
     }
 
     try {
-     
       const djData = await getDJById(userId);
 
       if (djData) {
         setDj(djData as DJ);
       } else {
-  
       }
     } catch (error) {
       console.error("Error fetching DJ data:", (error as Error).message);
@@ -75,7 +72,6 @@ const DjProfilePage = () => {
   };
 
   useEffect(() => {
-
     fetchDjData();
   }, [userId]);
 
@@ -309,7 +305,7 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: "white",
-    borderRadius: 16,
+    borderRadius: 12,
     borderWidth: 2,
     padding: 16,
     margin: 16,
@@ -359,7 +355,7 @@ const styles = StyleSheet.create({
   },
   buttonTouch: {
     height: 47,
-    borderRadius: 5,
+    borderRadius: 12,
     backgroundColor: "#007AFF",
     width: "80%",
     alignItems: "center",
@@ -382,7 +378,7 @@ const styles = StyleSheet.create({
   feedbackItem: {
     marginBottom: 15,
     padding: 12,
-    borderRadius: 5,
+    borderRadius: 12,
     backgroundColor: "white",
     borderWidth: 1,
   },
@@ -403,7 +399,7 @@ const styles = StyleSheet.create({
     paddingTop: 9,
     paddingBottom: 9,
     backgroundColor: "#007AFF",
-    borderRadius: 14,
+    borderRadius: 12,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
@@ -416,7 +412,7 @@ const styles = StyleSheet.create({
     paddingTop: 9,
     paddingBottom: 9,
     backgroundColor: "red",
-    borderRadius: 14,
+    borderRadius: 12,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,

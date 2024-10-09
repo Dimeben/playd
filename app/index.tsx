@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     marginRight: "auto",
     marginLeft: "auto",
     justifyContent: "center",
-    borderRadius: 25,
+    borderRadius: 12,
   },
   buttonText: {
     color: "white",

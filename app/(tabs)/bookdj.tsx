@@ -217,7 +217,9 @@ const BookDj = () => {
             <GestureHandlerRootView style={styles.scrollContainer}>
               <ScrollView contentContainerStyle={styles.feedbackContainer}>
                 {feedbackData.length === 0 ? (
-                  <Text>No Feedback Available</Text>
+                  <Text style={styles.noFeedbackText}>
+                    No Feedback Available
+                  </Text>
                 ) : (
                   feedbackData.map((feedback) => (
                     <View key={feedback.id} style={styles.feedbackItem}>
@@ -309,7 +311,7 @@ const BookDj = () => {
                 />
                 <TouchableOpacity
                   onPress={handleBookingSubmit}
-                  style={styles.toggleButton}
+                  style={styles.submitButton}
                 >
                   <Text style={styles.toggleButtonText}>Submit Booking</Text>
                 </TouchableOpacity>
@@ -341,6 +343,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 7,
     padding: 8,
+    borderRadius: 12,
     backgroundColor: "#f2f0f7",
   },
   djCard: {
@@ -355,6 +358,7 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 3,
     marginBottom: 15,
+    marginHorizontal: 15,
   },
   profilePicture: {
     width: 100,
@@ -428,6 +432,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
     elevation: 2,
+    marginHorizontal: 15,
   },
   feedbackText: {
     fontSize: 14,
@@ -443,18 +448,20 @@ const styles = StyleSheet.create({
   toggleButton: {
     padding: 10,
     backgroundColor: "#007bff",
-    borderRadius: 5,
+    borderRadius: 12,
     alignItems: "center",
     marginVertical: 5,
+    marginHorizontal: 15,
   },
   toggleButtonText: {
     color: "white",
     fontWeight: "bold",
+    marginHorizontal: 15,
   },
   submitButton: {
     padding: 10,
     backgroundColor: "#007bff",
-    borderRadius: 5,
+    borderRadius: 12,
     alignItems: "center",
     marginVertical: 10,
   },
@@ -464,6 +471,9 @@ const styles = StyleSheet.create({
   },
   gradientBackground: {
     flex: 1,
+  },
+  noFeedbackText: {
+    color: "white",
   },
 });
 

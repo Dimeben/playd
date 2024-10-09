@@ -85,7 +85,7 @@ export default function Login() {
         style={styles.background}
       >
         <Text style={styles.header}>
-          <Entypo name="login" size={24} color="black" /> Login
+          <Entypo name="login" size={24} color="white" /> Login
         </Text>
 
         <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     padding: 10,
     marginVertical: 5,
-    borderRadius: 5,
+    borderRadius: 12,
     width: "95%",
     backgroundColor: "white",
     marginLeft: 10,
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#ddd",
-    borderRadius: 5,
+    borderRadius: 12,
     paddingHorizontal: 10,
     marginVertical: 5,
     width: "95%",
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     paddingTop: 9,
     paddingBottom: 9,
     backgroundColor: "#007AFF",
-    borderRadius: 14,
+    borderRadius: 12,
     overflow: "hidden",
     margin: 10,
     marginLeft: 15,
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     paddingTop: 9,
     paddingBottom: 9,
     backgroundColor: "#007AFF",
-    borderRadius: 14,
+    borderRadius: 12,
     overflow: "hidden",
     margin: 10,
     alignSelf: "center",

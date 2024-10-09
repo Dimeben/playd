@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
     paddingTop: 9,
     paddingBottom: 9,
     backgroundColor: "#007AFF",
-    borderRadius: 14,
+    borderRadius: 12,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
   imagePreview: {
     width: 300,
     height: 300,
-    borderRadius: 10,
+    borderRadius: 12,
     marginVertical: 10,
     alignSelf: "center",
   },

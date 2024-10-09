@@ -27,7 +27,6 @@ const Profile = () => {
   const fetchUser = async () => {
     if (userId) {
       try {
-     
         const userData = await getUserById(userId);
         if (userData) {
           setUser(userData as User);
@@ -35,14 +34,12 @@ const Profile = () => {
           console.log("User doesn't exist");
         }
       } catch (err) {
-      
         console.error("Error fetching user: ", (err as Error).message);
       }
     }
   };
 
   useEffect(() => {
-
     fetchUser();
   }, [userId]);
 
@@ -158,7 +155,7 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: "white",
-    borderRadius: 16,
+    borderRadius: 12,
     borderWidth: 2,
     padding: 16,
     margin: 16,
@@ -196,7 +193,7 @@ const styles = StyleSheet.create({
     left: 10,
     padding: 10,
     backgroundColor: "#007AFF",
-    borderRadius: 5,
+    borderRadius: 12,
   },
   buttonText: {
     color: "#fff",
@@ -204,7 +201,7 @@ const styles = StyleSheet.create({
   },
   buttonTouch: {
     height: 47,
-    borderRadius: 5,
+    borderRadius: 12,
     backgroundColor: "#007AFF",
     width: "80%",
     alignItems: "center",
@@ -218,7 +215,7 @@ const styles = StyleSheet.create({
     paddingTop: 9,
     paddingBottom: 9,
     backgroundColor: "#007AFF",
-    borderRadius: 14,
+    borderRadius: 12,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
@@ -231,7 +228,7 @@ const styles = StyleSheet.create({
     paddingTop: 9,
     paddingBottom: 9,
     backgroundColor: "red",
-    borderRadius: 14,
+    borderRadius: 12,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
