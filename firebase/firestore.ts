@@ -46,12 +46,6 @@ export async function createUser(
       throw new Error("Authentication instance is undefined.");
     }
 
-    const usernameExists = await isUsernameTaken(newUser.username!, usersRef);
-
-    if (usernameExists) {
-      throw new Error("Username is already taken.");
-    }
-
     const defaultProfilePicture =
       "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/DJ-1.jpg?alt=media&token=b112f41e-5c50-44b7-b0ce-45240bef1cec";
     if (!newUser.profile_picture) {
@@ -97,12 +91,6 @@ export async function createDJ(
 
     if (!auth) {
       throw new Error("Authentication instance is undefined.");
-    }
-
-    const usernameExists = await isUsernameTaken(newDJ.username!, djRef);
-
-    if (usernameExists) {
-      throw new Error("Username is already taken.");
     }
 
     const defaultProfilePicture =

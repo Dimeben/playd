@@ -13,7 +13,7 @@ import {
   Platform,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { createDJ } from "../firebase/firestore";
+import { createDJ, djRef, usersRef } from "../firebase/firestore";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { storage } from "../firebase/storage";
@@ -21,6 +21,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, useRouter } from "expo-router";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { isUsernameTaken } from "@/firebase/utils";
 
 export default function DjSignUp() {
   const router = useRouter();
@@ -115,16 +116,47 @@ export default function DjSignUp() {
     setDescription("");
   };
   const handleDJRegister = async () => {
+    if (
+      !firstName ||
+      !surname ||
+      !username ||
+      !city ||
+      !genres ||
+      !occasions ||
+      !description
+    ) {
+      alert("Please complete all fields");
+      return;
+    }
     if (password !== confirmPassword) {
       Alert.alert("Error", "Passwords do not match.");
       return;
     }
+
     try {
+      const usernameExists = await isUsernameTaken(
+        username[0].toUpperCase() + username.substring(1),
+        djRef
+      );
+
+      if (usernameExists) {
+        throw new Error("Username is already taken.");
+      }
+
+      const userUsernameExists = await isUsernameTaken(
+        username[0].toUpperCase() + username.substring(1),
+        usersRef
+      );
+
+      if (userUsernameExists) {
+        throw new Error("Username is already taken.");
+      }
+
       await createDJ(email, password, {
-        first_name: firstName,
-        surname,
-        username,
-        city,
+        first_name: firstName[0].toUpperCase() + firstName.substring(1),
+        surname: surname[0].toUpperCase() + surname.substring(1),
+        username: username[0].toUpperCase() + username.substring(1),
+        city: city[0].toUpperCase() + city.substring(1),
         genres,
         occasions,
         price: parseFloat(price),
@@ -143,13 +175,16 @@ export default function DjSignUp() {
   };
   const addGenre = () => {
     if (genre && !genres.includes(genre)) {
-      setGenres([...genres, genre]);
+      setGenres([...genres, genre[0].toUpperCase() + genre.substring(1)]);
       setGenre("");
     }
   };
   const addOccasion = () => {
     if (occasion && !occasions.includes(occasion)) {
-      setOccasions([...occasions, occasion]);
+      setOccasions([
+        ...occasions,
+        occasion[0].toUpperCase() + occasion.substring(1),
+      ]);
       setOccasion("");
     }
   };
