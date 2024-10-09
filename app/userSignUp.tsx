@@ -171,13 +171,13 @@ export default function UserSignUp() {
                     style={{ width: 300, height: 300 }}
                   />
                 )}
-                <TouchableOpacity
-                  onPress={uploadMedia}
-                  style={styles.signupButton}
-                >
-                  <Text style={styles.linkText}>Upload Image</Text>
-                </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                onPress={uploadMedia}
+                style={styles.signupButton}
+              >
+                <Text style={styles.linkText}>Upload Image</Text>
+              </TouchableOpacity>
 
               <TextInput
                 style={styles.input}
@@ -310,7 +310,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginVertical: 5,
     width: "95%",
-
     backgroundColor: "white",
   },
   passwordInput: {
@@ -339,7 +338,7 @@ const styles = StyleSheet.create({
   linkText: {
     color: "#fff",
     fontSize: 18,
-    alignSelf: "center",
+    textAlign: "center",
   },
   paddingLeft: {
     paddingLeft: 10,
