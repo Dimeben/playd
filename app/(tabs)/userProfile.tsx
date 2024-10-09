@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     top: 50,
     left: 10,
     padding: 10,
-    backgroundColor: "#007AFF",
+    backgroundColor: "#005bbd",
     borderRadius: 5,
   },
   buttonText: {
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingTop: 9,
     paddingBottom: 9,
-    backgroundColor: "#007AFF",
+    backgroundColor: "#005bbd",
     borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",

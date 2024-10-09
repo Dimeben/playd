@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
   },
   buttonGoBack: {
     borderRadius: 25,
-    backgroundColor: "#007AFF",
+    backgroundColor: "#005bbd",
     width: 120,
     alignItems: "center",
     justifyContent: "center",
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingTop: 9,
     paddingBottom: 9,
-    backgroundColor: "#007AFF",
+    backgroundColor: "#005bbd",
     borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
