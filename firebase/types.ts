@@ -48,4 +48,5 @@ export interface Booking {
   location: string;
   occasion: string;
   status: 'pending' | 'accepted' | 'declined';
+  feedback_left: boolean;
 }

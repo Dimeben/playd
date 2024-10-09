@@ -27,7 +27,7 @@ const BookDj = () => {
     return Array.isArray(dj) ? JSON.parse(dj[0]) : dj ? JSON.parse(dj) : null;
   }, [dj]);
 
-  const [showBookingForm, setShowBookingForm] = useState(false); // Toggle state for form
+  const [showBookingForm, setShowBookingForm] = useState(false);
   const [newBooking, setNewBooking] = useState({
     client: username || "",
     comments: "",
@@ -37,6 +37,7 @@ const BookDj = () => {
     location: "",
     occasion: "",
     dj: selectedDj?.username || "",
+    feedback_left: false,
   });
 
   const [feedbackData, setFeedbackData] = useState<any[]>([]);
@@ -50,11 +51,11 @@ const BookDj = () => {
       location: "",
       occasion: "",
       dj: selectedDj?.username || "",
+      feedback_left: false,
     });
   };
 
   useEffect(() => {
-    console.log("bookdj useEffect - Line 40");
     const fetchFeedback = async () => {
       if (selectedDj?.username) {
         try {
@@ -151,10 +152,16 @@ const BookDj = () => {
       const bookingWithDateTime = {
         ...bookingWithoutTime,
         date: combinedDateTime,
+        feedback_left: false,
         status: "pending" as "pending",
       };
 
       createBooking(bookingWithDateTime);
+      console.log("Booking created: ", bookingWithDateTime);
+      console.log(
+        "Typeof feedback_left in Booking Created",
+        typeof bookingWithDateTime.feedback_left
+      );
       alert("Booking request sent!");
       clearForm();
       setShowBookingForm(false);

@@ -19,9 +19,13 @@ import {
   postFeedback,
   patchDJByUsername,
   getFeedback,
+  updateBooking,
+  bookingsRef,
 } from "../../firebase/firestore";
+import { useFocusEffect } from "expo-router";
 import { Booking, Feedback } from "../../firebase/types";
-import { Timestamp } from "firebase/firestore";
+import { db } from "@/firebase/firebaseConfig";
+import { Timestamp, doc, updateDoc, writeBatch } from "firebase/firestore";
 
 const UserManageBookings = () => {
   const { username } = useContext(AuthContext);
@@ -35,33 +39,40 @@ const UserManageBookings = () => {
     dj: "",
     date: new Date(),
   });
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [feedbackFormVisible, setFeedbackFormVisible] = useState<string | null>(
     null
   );
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchBookings = async () => {
-      setLoading(true);
-      if (username) {
-        try {
-          const bookings = await getBookingsByUser(username);
-          setBookings(bookings);
-        } catch (error) {
-          console.error("Error fetching user bookings:", error);
-        }
+  const fetchBookings = async () => {
+    setLoading(true);
+    if (username) {
+      try {
+        const bookings = await getBookingsByUser(username);
+        setBookings(bookings);
+      } catch (error) {
+        console.error("Error fetching user bookings:", error);
       }
-      setLoading(false);
-    };
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
     fetchBookings();
+    console.log(bookings);
   }, [username]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchBookings();
+    }, [username])
+  );
 
   const handlePostFeedback = async (bookingId: string) => {
     const selected = bookings.find((booking) => booking.id === bookingId);
-    setSelectedBooking(selected || null);
-
     if (selected) {
+      console.log("Current feedback_left status:", selected.feedback_left);
+      console.log("Type feedback_left status:", typeof selected.feedback_left);
       try {
         const feedbackData: Feedback = {
           author:
@@ -95,6 +106,9 @@ const UserManageBookings = () => {
         );
 
         await patchDJByUsername(selected.dj, { rating: averageRating });
+        console.log("Booking ID", bookingId);
+
+        await updateBooking(bookingId, { feedback_left: true });
 
         setFeedback({
           title: "",
@@ -104,7 +118,8 @@ const UserManageBookings = () => {
           date: new Date(),
         });
         setFeedbackFormVisible(null);
-
+        await fetchBookings();
+        console.log(bookings);
         alert("Feedback posted successfully! DJ's rating updated.");
       } catch (error) {
         console.error("Error posting feedback or updating DJ rating:", error);
@@ -116,7 +131,6 @@ const UserManageBookings = () => {
   };
 
   const renderBooking = ({ item }: { item: Booking }) => {
- 
     const bookingDate =
       item.date instanceof Timestamp
         ? item.date.toDate()
@@ -131,7 +145,10 @@ const UserManageBookings = () => {
 
     bookingDate.setHours(0, 0, 0, 0);
 
-    const canLeaveFeedback = currentDate > bookingDate;
+    const canLeaveFeedback =
+      currentDate > bookingDate &&
+      item.feedback_left !== true &&
+      item.status === "accepted";
 
     return (
       <View style={styles.bookingCard}>
