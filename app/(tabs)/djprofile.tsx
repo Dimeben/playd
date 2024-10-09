@@ -2,17 +2,14 @@ import {
   View,
   Text,
   Pressable,
-  FlatList,
   StyleSheet,
   Platform,
   Image,
   ScrollView,
-  Linking,
   SafeAreaView,
   TouchableOpacity,
   ActivityIndicator,
   Alert,
-  TextInput,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Link, useRouter } from "expo-router";
@@ -25,18 +22,14 @@ import {
 } from "../../firebase/firestore";
 import { AuthContext } from "../../contexts/AuthContext";
 import { DJ } from "../../firebase/types";
-import moment from "moment";
-import { WebView } from "react-native-webview";
-import SoundCloud from "@/components/SoundCloud";
 import { LinearGradient } from "expo-linear-gradient";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const DjProfilePage = () => {
-  const { isAuthenticated, userId, username } = useContext(AuthContext);
+  const { userId } = useContext(AuthContext);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [dj, setDj] = useState<DJ | null>(null);
-  const [soundcloudName, setSoundcloudName] = useState("multunes");
   const [feedbackData, setFeedbackData] = useState<any[]>([]);
 
   const fetchFeedback = async () => {
@@ -143,9 +136,6 @@ const DjProfilePage = () => {
 
   if (!dj) {
     return (
-      // <SafeAreaView style={styles.loadingContainer}>
-      //   <Text style={styles.errorMessage}>DJ profile not found</Text>
-      // </SafeAreaView>
       <SafeAreaView>
         <Text style={styles.loginMessage}>You must login first!</Text>
         <Text></Text>
@@ -171,22 +161,6 @@ const DjProfilePage = () => {
               "https://www.shutterstock.com/image-photo/zhangjiajie-national-forest-park-unesco-260nw-2402891639.jpg",
           }}
         />
-
-        {/* <View style={styles.formContainer}>
-        <View style={styles.inputContainer}>
-          <TextInput
-            placeholder={`Input Your SoundCloud Name`}
-            placeholderTextColor={"black"}
-            value={soundcloudName}
-            onChangeText={setSoundcloudName}
-            style={styles.input}
-            underlineColorAndroid="transparent"
-            autoCapitalize="none"
-          />
-        </View>
-      </View> */}
-
-        {/* {iframeString && <SoundCloud />} */}
 
         <ScrollView>
           <View style={styles.container}>
@@ -307,7 +281,6 @@ const styles = StyleSheet.create({
   icon: {
     flexDirection: "row",
     justifyContent: "center",
-    // marginBottom: 5,
     marginTop: 14,
   },
   card: {
@@ -335,7 +308,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "center",
     fontFamily: "GeezaPro-Bold",
-    // marginTop: 14,
     marginBottom: 0,
     color: "white",
   },
@@ -358,7 +330,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontSize: 20,
-    // paddingTop: 50,
   },
   buttonTouch: {
     height: 47,

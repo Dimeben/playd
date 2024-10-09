@@ -27,16 +27,6 @@ export interface FirebaseTimestamp {
   nanoseconds: number;
 }
 
-export interface Bookings {
-  client: string;
-  comments: string;
-  event_details: string;
-  date: Date | FirebaseTimestamp;
-  dj: string;
-  location: string;
-  occasion: string;
-}
-
 export interface Booking {
   id: string;
   client: string;

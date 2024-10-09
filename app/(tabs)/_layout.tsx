@@ -1,11 +1,9 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 
 export default function RootLayout() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const auth = getAuth();
 
   return (
     <Tabs

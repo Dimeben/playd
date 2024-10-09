@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from "react";
 import {
   View,
   Text,
-  FlatList,
   ScrollView,
   StyleSheet,
   Pressable,
@@ -19,46 +18,54 @@ import { Booking } from "../../firebase/types";
 import { SafeAreaView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Timestamp } from "firebase/firestore";
+import { useFocusEffect } from "expo-router";
 
 const DjManageBookings = () => {
   const { username } = useContext(AuthContext);
   const [djBookings, setDjBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchBookings = async () => {
-      setLoading(true);
-      if (username) {
-        try {
-          const fetchedBookings = await getBookingsByDj(username);
+  const fetchBookings = async () => {
+    setLoading(true);
+    if (username) {
+      try {
+        const fetchedBookings = await getBookingsByDj(username);
 
-          const sortedBookings = fetchedBookings.sort((a, b) => {
-            const bookingDateA =
-              a.date instanceof Timestamp
-                ? a.date.toDate()
-                : typeof a.date === "string"
-                ? new Date(a.date)
-                : a.date;
+        const sortedBookings = fetchedBookings.sort((a, b) => {
+          const bookingDateA =
+            a.date instanceof Timestamp
+              ? a.date.toDate()
+              : typeof a.date === "string"
+              ? new Date(a.date)
+              : a.date;
 
-            const bookingDateB =
-              b.date instanceof Timestamp
-                ? b.date.toDate()
-                : typeof b.date === "string"
-                ? new Date(b.date)
-                : b.date;
+          const bookingDateB =
+            b.date instanceof Timestamp
+              ? b.date.toDate()
+              : typeof b.date === "string"
+              ? new Date(b.date)
+              : b.date;
 
-            return bookingDateB.getTime() - bookingDateA.getTime();
-          });
+          return bookingDateB.getTime() - bookingDateA.getTime();
+        });
 
-          setDjBookings(sortedBookings);
-        } catch (error) {
-          console.error("Error fetching DJ bookings:", error);
-        }
+        setDjBookings(sortedBookings);
+      } catch (error) {
+        console.error("Error fetching DJ bookings:", error);
       }
-      setLoading(false);
-    };
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
     fetchBookings();
   }, [username]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchBookings();
+    }, [username])
+  );
 
   const handleAcceptBooking = async (bookingId: string) => {
     try {
@@ -110,13 +117,16 @@ const DjManageBookings = () => {
               </Text>
             ) : (
               djBookings.map((booking) => {
-              
-                const bookingDate = booking.date instanceof Timestamp
-                  ? booking.date.toDate()
-                  : new Date(booking.date);
+                const bookingDate =
+                  booking.date instanceof Timestamp
+                    ? booking.date.toDate()
+                    : new Date(booking.date);
 
                 const bookingDateFormatted = bookingDate.toLocaleDateString();
-                const bookingTimeFormatted = bookingDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const bookingTimeFormatted = bookingDate.toLocaleTimeString(
+                  [],
+                  { hour: "2-digit", minute: "2-digit" }
+                );
 
                 return (
                   <View key={booking.id} style={styles.bookingCard}>

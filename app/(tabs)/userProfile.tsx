@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useContext, useEffect, useState } from "react";
-import { doc } from "firebase/firestore";
 import { AuthContext } from "../../contexts/AuthContext";
 import { getUserById, signOut, deleteUser } from "../../firebase/firestore";
 import { Link, useRouter } from "expo-router";
@@ -179,8 +178,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     fontFamily: "GeezaPro-Bold",
     color: "white",
-    // marginTop: 10,
-    // marginBottom: 5,
   },
   loginMessage: {
     fontSize: 30,

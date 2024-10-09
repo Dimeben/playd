@@ -19,7 +19,7 @@ import * as FileSystem from "expo-file-system";
 import { storage } from "../firebase/storage";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { LinearGradient } from "expo-linear-gradient";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { isUsernameTaken } from "@/firebase/utils";
 
@@ -41,7 +41,6 @@ export default function DjSignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [image, setImage] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   interface CreateDJParams {
     first_name: string;
@@ -68,7 +67,6 @@ export default function DjSignUp() {
     }
   };
   const uploadMedia = async () => {
-    setUploading(true);
     try {
       if (!image) {
         console.error("No image selected");
@@ -90,14 +88,12 @@ export default function DjSignUp() {
       const filename = image.substring(image.lastIndexOf("/") + 1);
       const imageRef = ref(storage, filename);
       await uploadBytes(imageRef, blob);
-      setUploading(false);
       const url = await getDownloadURL(imageRef);
       setProfilePicture(url);
       Alert.alert("Photo Uploaded");
       setImage(null);
     } catch (error) {
       console.error(error);
-      setUploading(false);
     }
   };
   const clearForm = () => {

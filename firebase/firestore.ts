@@ -20,9 +20,8 @@ import {
   deleteUser as firebaseDeleteUser,
   signOut as firebaseSignOut,
 } from "firebase/auth";
-import { app, db, auth } from "./firebaseConfig";
-import { isUsernameTaken } from "./utils";
-import { User, DJ, Feedback, Bookings, Booking } from "./types";
+import { db, auth } from "./firebaseConfig";
+import { User, DJ, Feedback, Booking } from "./types";
 
 export const usersRef = collection(db, "users");
 export const djRef = collection(db, "djs");

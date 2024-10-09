@@ -14,7 +14,6 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { patchDJ, getDJById } from "@/firebase/firestore";
 import { DJ } from "../../firebase/types";
 import { LinearGradient } from "expo-linear-gradient";
-import Feather from "@expo/vector-icons/Feather";
 import { useFocusEffect } from "@react-navigation/native";
 const EditDjProfile = () => {
   const router = useRouter();

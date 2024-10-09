@@ -15,7 +15,6 @@ import { getUserById, patchUser } from "../../firebase/firestore";
 import { useRouter } from "expo-router";
 import { User } from "@/firebase/types";
 import { LinearGradient } from "expo-linear-gradient";
-import Feather from "@expo/vector-icons/Feather";
 import { useFocusEffect } from "@react-navigation/native";
 
 const EditUserProfile = () => {
@@ -27,7 +26,6 @@ const EditUserProfile = () => {
   const [updateSurname, setUpdateSurname] = useState("");
   const [updateCity, setUpdateCity] = useState("");
   const [goBackIsVisible, setGoBackIsVisible] = useState(false);
-  const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
     const fetchUser = async () => {

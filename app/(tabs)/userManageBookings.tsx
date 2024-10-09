@@ -3,10 +3,8 @@ import {
   View,
   Text,
   StyleSheet,
-  Button,
   TextInput,
   FlatList,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
@@ -21,7 +19,6 @@ import {
   patchDJByUsername,
   getFeedback,
   updateBooking,
-  bookingsRef,
 } from "../../firebase/firestore";
 import { useFocusEffect } from "expo-router";
 import { Booking, Feedback } from "../../firebase/types";

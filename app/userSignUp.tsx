@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   StyleSheet,
   Alert,
   TouchableOpacity,
@@ -36,7 +35,6 @@ export default function UserSignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [image, setImage] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
   const router = useRouter();
@@ -65,7 +63,6 @@ export default function UserSignUp() {
   };
 
   const uploadMedia = async () => {
-    setUploading(true);
 
     try {
       if (!image) {
@@ -90,14 +87,13 @@ export default function UserSignUp() {
       const filename = image.substring(image.lastIndexOf("/") + 1);
       const imageRef = ref(storage, filename);
       await uploadBytes(imageRef, blob);
-      setUploading(false);
       const url = await getDownloadURL(imageRef);
       setProfilePicture(url);
       Alert.alert("Photo Uploaded");
       setImage(null);
     } catch (error) {
       console.error(error);
-      setUploading(false);
+
     }
   };
 

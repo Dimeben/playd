@@ -1,7 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import {
-  getAuth,
   getReactNativePersistence,
   inMemoryPersistence,
   initializeAuth,

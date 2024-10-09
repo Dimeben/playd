@@ -82,8 +82,6 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    // flex: 1,
-    // height: "100%",
   },
   white: {
     color: "white",

@@ -3,19 +3,15 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   StyleSheet,
   Alert,
   TouchableOpacity,
-  SafeAreaView,
-  Image,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { signIn } from "@/firebase/firestore";
-import { AuthContext } from "@/contexts/AuthContext";
 import { isDjAccount } from "@/firebase/utils";
 import { LinearGradient } from "expo-linear-gradient";
 import Entypo from "@expo/vector-icons/Entypo";
