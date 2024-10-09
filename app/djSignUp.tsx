@@ -20,6 +20,8 @@ import { storage } from "../firebase/storage";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, useRouter } from "expo-router";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+
 export default function DjSignUp() {
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
@@ -161,7 +163,10 @@ export default function DjSignUp() {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.header}>DJ Signup</Text>
+          <Text style={styles.header}>
+            <FontAwesome5 name="compact-disc" size={30} color="black" /> DJ
+            Signup
+          </Text>
           <TextInput
             style={styles.input}
             placeholder="First Name"
@@ -174,8 +179,8 @@ export default function DjSignUp() {
             value={surname}
             onChangeText={setSurname}
           />
-          <TouchableOpacity onPress={pickImage}>
-            <Text style={styles.white}>Select an Image</Text>
+          <TouchableOpacity onPress={pickImage} style={styles.signupButton}>
+            <Text style={styles.linkText}>Select an Image</Text>
           </TouchableOpacity>
           <View>
             {image && (
@@ -211,9 +216,11 @@ export default function DjSignUp() {
           />
           <Button title="Add Genre" onPress={addGenre} color="white" />
           <View>
-            <Text style={styles.smalllabel}>Genres:</Text>
+            <Text style={styles.smalllabel}>Genres</Text>
             {genres.map((g, index) => (
-              <Text key={index}>{g}</Text>
+              <Text key={index} style={styles.smalllabel}>
+                {g}
+              </Text>
             ))}
           </View>
           <TextInput
@@ -224,14 +231,16 @@ export default function DjSignUp() {
           />
           <Button title="Add Occasion" onPress={addOccasion} color="white" />
           <View>
-            <Text style={styles.smalllabel}>Occasions:</Text>
+            <Text style={styles.smalllabel}>Occasions</Text>
             {occasions.map((o, index) => (
-              <Text key={index}>{o}</Text>
+              <Text key={index} style={styles.smalllabel}>
+                {o}
+              </Text>
             ))}
           </View>
           <TextInput
             style={styles.input}
-            placeholder="Price"
+            placeholder="Price Per Hour"
             keyboardType="numeric"
             value={price}
             onChangeText={setPrice}
@@ -316,10 +325,10 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     alignSelf: "center",
-    fontFamily: "menlo-bold",
+    fontFamily: "GeezaPro-Bold",
     marginTop: 10,
     marginBottom: 20,
-    color: "white",
+    color: "black",
   },
   passwordContainer: {
     flexDirection: "row",
@@ -342,15 +351,15 @@ const styles = StyleSheet.create({
   signupButton: {
     paddingRight: 40,
     paddingLeft: 40,
-    paddingTop: 16,
-    paddingBottom: 16,
+    paddingTop: 9,
+    paddingBottom: 9,
     backgroundColor: "#007AFF",
     borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
     alignSelf: "center",
-    width: "95%",
+    width: "85%",
   },
   linkText: {
     color: "#fff",

@@ -15,6 +15,7 @@ import { getUserById, patchUser } from "../../firebase/firestore";
 import { useRouter } from "expo-router";
 import { User } from "@/firebase/types";
 import { LinearGradient } from "expo-linear-gradient";
+import Feather from "@expo/vector-icons/Feather";
 import { useFocusEffect } from "@react-navigation/native";
 
 const EditUserProfile = () => {
@@ -96,8 +97,13 @@ const EditUserProfile = () => {
   if (!user) {
     return (
       <SafeAreaView style={styles.container}>
-        <ActivityIndicator size="large" color="black" />
-        <Text>Loading user data...</Text>
+        <LinearGradient
+          colors={["#C80055", "#A000CC", "#0040CC"]}
+          style={styles.background}
+        >
+          <ActivityIndicator size="large" color="black" />
+          <Text>Loading user data...</Text>
+        </LinearGradient>
       </SafeAreaView>
     );
   }
@@ -174,7 +180,7 @@ const EditUserProfile = () => {
             style={styles.signupButton}
             onPress={handleUpdateProfile}
           >
-            <Text style={styles.linkText}>Submit</Text>
+            <Text style={styles.linkText}>Submit All Changes</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -194,7 +200,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     alignSelf: "center",
-    fontFamily: "menlo-bold",
+    fontFamily: "GeezaPro-Bold",
     marginTop: 14,
     marginBottom: 15,
   },
@@ -238,7 +244,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   buttonGoBack: {
-    height: 47,
     borderRadius: 25,
     backgroundColor: "#007AFF",
     width: 120,
@@ -289,8 +294,8 @@ const styles = StyleSheet.create({
   signupButton: {
     paddingRight: 40,
     paddingLeft: 40,
-    paddingTop: 16,
-    paddingBottom: 16,
+    paddingTop: 9,
+    paddingBottom: 9,
     backgroundColor: "#007AFF",
     borderRadius: 14,
     borderRightWidth: 1,
@@ -299,7 +304,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     marginTop: 20,
     alignSelf: "center",
-    width: "95%",
+    width: "85%",
   },
   linkText: {
     color: "#fff",

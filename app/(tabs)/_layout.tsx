@@ -10,10 +10,13 @@ export default function RootLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "blue",
-        tabBarInactiveTintColor: "gray",
+        tabBarActiveTintColor: "white",
+        tabBarInactiveTintColor: "white",
         tabBarShowLabel: true,
         headerShown: false,
+        tabBarStyle: {
+          backgroundColor: "#000",
+        },
       }}
     >
       <Tabs.Screen
@@ -21,7 +24,7 @@ export default function RootLayout() {
         options={{
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" color={color} size={size} />
+            <Ionicons name="home-outline" color="white" size={size} />
           ),
         }}
       />
@@ -31,7 +34,7 @@ export default function RootLayout() {
         options={{
           tabBarLabel: "Manage Bookings",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar-outline" size={24} color="black" />
+            <Ionicons name="calendar-outline" size={24} color="white" />
           ),
         }}
       />
@@ -41,7 +44,7 @@ export default function RootLayout() {
         options={{
           tabBarLabel: "Profile",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-outline" color={color} size={size} />
+            <Ionicons name="person-outline" color="white" size={size} />
           ),
         }}
       />
