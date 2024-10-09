@@ -98,7 +98,7 @@ const EditUserProfile = () => {
     return (
       <SafeAreaView style={styles.container}>
         <LinearGradient
-          colors={["#C80055", "#A000CC", "#0040CC"]}
+          colors={["#00005B", "#A000CC", "#0040CC"]}
           style={styles.backgroundLoading}
         >
           <View style={styles.container}>
@@ -112,7 +112,7 @@ const EditUserProfile = () => {
 
   return (
     <LinearGradient
-      colors={["#C80055", "#A000CC", "#0040CC"]}
+      colors={["#00005B", "#A000CC", "#0040CC"]}
       style={styles.background}
     >
       <ScrollView>
@@ -205,10 +205,11 @@ const styles = StyleSheet.create({
     fontFamily: "GeezaPro-Bold",
     marginTop: 14,
     marginBottom: 15,
+    color: "white",
   },
   background: {
     flex: 1,
-      },
+  },
   backgroundLoading: {
     position: "absolute",
     left: 0,
@@ -250,7 +251,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   buttonGoBack: {
-
     borderRadius: 25,
     backgroundColor: "#1c93ed",
     borderWidth: 1,
@@ -262,6 +262,7 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 5,
     margin: 5,
+    fontWeight: "bold",
   },
   button: {
     height: 47,
@@ -287,6 +288,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontSize: 20,
+    fontWeight: "bold",
   },
   passwordText: {
     fontSize: 20,
@@ -319,6 +321,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     alignSelf: "center",
+    fontWeight: "bold",
   },
   label: {
     color: "white",

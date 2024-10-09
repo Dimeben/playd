@@ -125,16 +125,16 @@ const DjProfilePage = () => {
     return (
       <View style={[styles.loadingContainer, styles.container]}>
         <LinearGradient
-          colors={["#C80055", "#A000CC", "#0040CC"]}
+          colors={["#00005B", "#A000CC", "#0040CC"]}
           style={styles.background}
         >
           <View style={styles.loadingContainer}>
             <ActivityIndicator
               size="large"
-              color="black"
+              color="white"
               style={{ justifyContent: "center" }}
             />
-            <Text>Loading Profile...</Text>
+            <Text style={styles.white}>Loading Profile...</Text>
           </View>
         </LinearGradient>
       </View>
@@ -160,7 +160,7 @@ const DjProfilePage = () => {
     <>
       <SafeAreaView />
       <LinearGradient
-        colors={["#C80055", "#A000CC", "#0040CC"]}
+        colors={["#00005B", "#A000CC", "#0040CC"]}
         style={styles.background}
       >
         <Image
@@ -191,7 +191,7 @@ const DjProfilePage = () => {
         <ScrollView>
           <View style={styles.container}>
             <View style={styles.icon}>
-              <MaterialIcons name="manage-accounts" size={44} color="black" />
+              <MaterialIcons name="manage-accounts" size={44} color="white" />
               <Text style={styles.header}> {dj.username}</Text>
             </View>
             <View style={styles.card}>
@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
     fontFamily: "GeezaPro-Bold",
     // marginTop: 14,
     marginBottom: 0,
-    color: "black",
+    color: "white",
   },
   loginMessage: {
     fontSize: 30,
@@ -433,5 +433,9 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     alignSelf: "center",
+    fontWeight: "bold",
+  },
+  white: {
+    color: "white",
   },
 });

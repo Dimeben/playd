@@ -161,7 +161,7 @@ const EditDjProfile = () => {
   return (
     <ScrollView style={{ backgroundColor: "white" }}>
       <LinearGradient
-        colors={["#C80055", "#A000CC", "#0040CC"]}
+        colors={["#00005B", "#A000CC", "#0040CC"]}
         style={styles.background}
       >
         <View style={styles.container}>
@@ -349,6 +349,7 @@ const styles = StyleSheet.create({
     fontFamily: "GeezaPro-Bold",
     marginTop: 14,
     marginBottom: 15,
+    color: "white",
   },
   formContainer: {
     flexDirection: "row",
@@ -378,7 +379,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flex: 1,
-        width: 50,
+    width: 50,
     marginBottom: 5,
     overflow: "hidden",
   },
@@ -419,7 +420,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
-    fontSize: 20,
+    fontSize: 18,
+    fontWeight: "bold",
   },
   passwordText: {
     fontSize: 20,
@@ -467,6 +469,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     alignSelf: "center",
+    fontWeight: "bold",
   },
   label: {
     color: "white",
