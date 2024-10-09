@@ -169,7 +169,7 @@ const DjList = () => {
 
   return (
     <LinearGradient
-      colors={["#93C6F9", "#97B4FA", "#400691"]}
+      colors={["#C80055", "#A000CC", "#0040CC"]}
       style={styles.gradientBackground}
     >
       <SafeAreaView style={styles.container}>
@@ -311,10 +311,10 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   header: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "Black",
+    color: "white",
   },
   picker: {
     padding: 5,
@@ -420,10 +420,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 5,
     marginBottom: 10,
-    borderWidth: 1,
+    borderWidth: 2,
+    borderBlockColor: "black",
   },
   clearButtonText: {
-    color: "black",
+    color: "white",
     fontWeight: "bold",
     fontSize: 14,
   },

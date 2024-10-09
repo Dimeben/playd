@@ -11,6 +11,7 @@ import {
   Platform,
   ActivityIndicator,
   SafeAreaView,
+  TouchableOpacity,
 } from "react-native";
 import { AuthContext } from "../../contexts/AuthContext";
 import { getAuth } from "firebase/auth";
@@ -22,6 +23,7 @@ import {
 } from "../../firebase/firestore";
 import { Booking, Feedback } from "../../firebase/types";
 import { Timestamp } from "firebase/firestore";
+import { LinearGradient } from "expo-linear-gradient";
 
 const UserManageBookings = () => {
   const { username } = useContext(AuthContext);
@@ -116,7 +118,6 @@ const UserManageBookings = () => {
   };
 
   const renderBooking = ({ item }: { item: Booking }) => {
- 
     const bookingDate =
       item.date instanceof Timestamp
         ? item.date.toDate()
@@ -135,28 +136,51 @@ const UserManageBookings = () => {
 
     return (
       <View style={styles.bookingCard}>
-        <Text style={styles.bookingText}>DJ: {item.dj}</Text>
+        <Text style={styles.djbookingText}>DJ: {item.dj}</Text>
         <Text style={styles.bookingText}>
           Event Details: {item.event_details}
         </Text>
         <Text style={styles.bookingText}>Date: {bookingDateFormatted}</Text>
         <Text style={styles.bookingText}>Location: {item.location}</Text>
-        <Text style={styles.bookingText}>Status: {item.status}</Text>
+        <Text
+          style={[
+            styles.statusBookingText,
+            {
+              color:
+                item.status === "accepted"
+                  ? "green"
+                  : item.status === "pending"
+                  ? "blue"
+                  : item.status === "declined"
+                  ? "red"
+                  : "black",
+            },
+          ]}
+        >
+          Status: {item.status}
+        </Text>
 
         {canLeaveFeedback ? (
           <>
-            <Button
-              title={
+            <TouchableOpacity
+              style={[
+                styles.feedbackButton,
                 feedbackFormVisible === item.id
-                  ? "Hide Feedback Form"
-                  : "Leave Feedback"
-              }
+                  ? styles.hideFeedbackButton
+                  : styles.leaveFeedbackButton,
+              ]}
               onPress={() =>
                 setFeedbackFormVisible(
                   feedbackFormVisible === item.id ? null : item.id
                 )
               }
-            />
+            >
+              <Text style={styles.feedbackButtonText}>
+                {feedbackFormVisible === item.id
+                  ? "Hide Feedback Form"
+                  : "Leave Feedback"}
+              </Text>
+            </TouchableOpacity>
 
             {feedbackFormVisible === item.id && (
               <View style={styles.feedbackForm}>
@@ -197,14 +221,15 @@ const UserManageBookings = () => {
                     }));
                   }}
                 />
-                <Button
-                  title="Submit Feedback"
+                <TouchableOpacity
+                  style={styles.submitButton}
                   onPress={() => handlePostFeedback(item.id)}
-                />
+                >
+                  <Text style={styles.submitButtonText}>Submit Feedback</Text>
+                </TouchableOpacity>
 
-                <Button
-                  title="Cancel"
-                  color="red"
+                <TouchableOpacity
+                  style={styles.cancelButton}
                   onPress={() => {
                     setFeedbackFormVisible(null),
                       setFeedback({
@@ -215,7 +240,9 @@ const UserManageBookings = () => {
                         date: new Date(),
                       });
                   }}
-                />
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
               </View>
             )}
           </>
@@ -225,49 +252,53 @@ const UserManageBookings = () => {
   };
 
   return (
-    <SafeAreaView style={styles.safeContainer}>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 80}
-      >
-        <Text style={styles.header}>Your Bookings</Text>
+    <LinearGradient
+      colors={["#C80055", "#A000CC", "#0040CC"]}
+      style={styles.gradientBackground}
+    >
+      <SafeAreaView style={styles.safeContainer}>
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 80}
+        >
+          <Text style={styles.header}>Your Bookings</Text>
 
-        {loading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
-        ) : bookings.length === 0 ? (
-          <Text style={styles.noBookingsText}>No bookings requested.</Text>
-        ) : (
-          <FlatList
-            data={bookings}
-            renderItem={renderBooking}
-            keyExtractor={(item) => item.id.toString()}
-          />
-        )}
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+          {loading ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : bookings.length === 0 ? (
+            <Text style={styles.noBookingsText}>No bookings requested.</Text>
+          ) : (
+            <FlatList
+              data={bookings}
+              renderItem={renderBooking}
+              keyExtractor={(item) => item.id.toString()}
+            />
+          )}
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 15,
   },
   safeContainer: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   bookingCard: {
-    padding: 10,
+    padding: 15,
     marginBottom: 10,
-    backgroundColor: "#fff",
-    borderRadius: 5,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
+    backgroundColor: "#f2f0f7",
+    borderRadius: 12,
+    shadowColor: "grey",
+    shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
-    elevation: 1,
+    elevation: 3,
   },
   currentUser: {
     fontSize: 16,
@@ -275,18 +306,32 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   header: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     marginBottom: 10,
+    color: "white",
   },
   bookingText: {
+    fontSize: 14,
+    marginBottom: 5,
+    color: "black",
+  },
+  djbookingText: {
     fontSize: 16,
     marginBottom: 5,
+    color: "black",
+    fontWeight: "bold",
+  },
+  statusBookingText: {
+    fontSize: 14,
+    marginBottom: 5,
+    color: "black",
+    fontWeight: "bold",
   },
   feedbackForm: {
     padding: 16,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 8,
+    backgroundColor: "#f2f0f7",
+    borderRadius: 12,
     marginTop: 20,
   },
   feedbackHeader: {
@@ -299,7 +344,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     padding: 8,
     marginBottom: 10,
-    borderRadius: 4,
+    borderRadius: 12,
   },
   noBookingsText: {
     fontSize: 16,
@@ -307,6 +352,54 @@ const styles = StyleSheet.create({
     color: "#999",
     textAlign: "center",
     marginTop: 20,
+  },
+  gradientBackground: {
+    flex: 1,
+  },
+  feedbackButton: {
+    padding: 10,
+    borderRadius: 12,
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  leaveFeedbackButton: {
+    backgroundColor: "#007AFF",
+  },
+  hideFeedbackButton: {
+    backgroundColor: "#007AFF",
+  },
+  feedbackButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  submitButton: {
+    backgroundColor: "green",
+    fontWeight: "bold",
+    fontSize: 16,
+    borderRadius: 12,
+    padding: 8,
+    marginTop: 5,
+    alignItems: "center",
+  },
+  cancelButton: {
+    backgroundColor: "red",
+    fontWeight: "bold",
+    fontSize: 16,
+    borderRadius: 12,
+    padding: 8,
+    marginTop: 5,
+    alignItems: "center",
+  },
+  submitButtonText: {
+    color: "white",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  cancelButtonText: {
+    color: "white",
+    fontSize: 14,
+    fontWeight: "bold",
   },
 });
 
