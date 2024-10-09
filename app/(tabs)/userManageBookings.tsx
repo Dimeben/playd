@@ -116,10 +116,22 @@ const UserManageBookings = () => {
   };
 
   const renderBooking = ({ item }: { item: Booking }) => {
+    // Convert Firebase Timestamp to JavaScript Date object
     const bookingDate =
       item.date instanceof Timestamp
-        ? item.date.toDate().toLocaleDateString()
-        : item.date.toLocaleDateString();
+        ? item.date.toDate()
+        : typeof item.date === "string"
+        ? new Date(item.date)
+        : item.date;
+
+    const bookingDateFormatted = bookingDate.toLocaleDateString();
+
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    bookingDate.setHours(0, 0, 0, 0);
+
+    const canLeaveFeedback = currentDate > bookingDate;
 
     return (
       <View style={styles.bookingCard}>
@@ -127,82 +139,87 @@ const UserManageBookings = () => {
         <Text style={styles.bookingText}>
           Event Details: {item.event_details}
         </Text>
-        <Text style={styles.bookingText}>Date: {bookingDate}</Text>
+        <Text style={styles.bookingText}>Date: {bookingDateFormatted}</Text>
         <Text style={styles.bookingText}>Location: {item.location}</Text>
         <Text style={styles.bookingText}>Status: {item.status}</Text>
-        <Button
-          title={
-            feedbackFormVisible === item.id
-              ? "Hide Feedback Form"
-              : "Leave Feedback"
-          }
-          onPress={() =>
-            setFeedbackFormVisible(
-              feedbackFormVisible === item.id ? null : item.id
-            )
-          }
-        />
-        {feedbackFormVisible === item.id && (
-          <View style={styles.feedbackForm}>
-            <Text style={styles.feedbackHeader}>
-              Leave Feedback for DJ {item.dj}
-            </Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Feedback Title"
-              value={feedback.title || ""}
-              onChangeText={(text) =>
-                setFeedback((prevFeedback) => ({
-                  ...prevFeedback,
-                  title: text,
-                }))
-              }
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Feedback Body"
-              value={feedback.body || ""}
-              onChangeText={(text) =>
-                setFeedback((prevFeedback) => ({
-                  ...prevFeedback,
-                  body: text,
-                }))
-              }
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Stars (1-5)"
-              value={feedback.stars || 0}
-              keyboardType="numeric"
-              onChangeText={(text) => {
-                const stars = Number(text);
-                setFeedback((prevFeedback) => ({
-                  ...prevFeedback,
-                  stars,
-                }));
-              }}
-            />
+
+        {canLeaveFeedback ? (
+          <>
             <Button
-              title="Submit Feedback"
-              onPress={() => handlePostFeedback(item.id)}
+              title={
+                feedbackFormVisible === item.id
+                  ? "Hide Feedback Form"
+                  : "Leave Feedback"
+              }
+              onPress={() =>
+                setFeedbackFormVisible(
+                  feedbackFormVisible === item.id ? null : item.id
+                )
+              }
             />
 
-            <Button
-              title="Cancel"
-              color="red"
-              onPress={() => {
-                setFeedbackFormVisible(null),
-                  setFeedback({
-                    title: "",
-                    body: "",
-                    stars: 0,
-                    dj: "",
-                    date: new Date(),
-                  });
-              }}
-            />
-          </View>
-        )}
+            {feedbackFormVisible === item.id && (
+              <View style={styles.feedbackForm}>
+                <Text style={styles.feedbackHeader}>
+                  Leave Feedback for DJ {item.dj}
+                </Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Feedback Title"
+                  value={feedback.title || ""}
+                  onChangeText={(text) =>
+                    setFeedback((prevFeedback) => ({
+                      ...prevFeedback,
+                      title: text,
+                    }))
+                  }
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Feedback Body"
+                  value={feedback.body || ""}
+                  onChangeText={(text) =>
+                    setFeedback((prevFeedback) => ({
+                      ...prevFeedback,
+                      body: text,
+                    }))
+                  }
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Stars (1-5)"
+                  keyboardType="numeric"
+                  onChangeText={(text) => {
+                    const stars = Number(text);
+                    setFeedback((prevFeedback) => ({
+                      ...prevFeedback,
+                      stars,
+                    }));
+                  }}
+                />
+                <Button
+                  title="Submit Feedback"
+                  onPress={() => handlePostFeedback(item.id)}
+                />
+
+                <Button
+                  title="Cancel"
+                  color="red"
+                  onPress={() => {
+                    setFeedbackFormVisible(null),
+                      setFeedback({
+                        title: "",
+                        body: "",
+                        stars: 0,
+                        dj: "",
+                        date: new Date(),
+                      });
+                  }}
+                />
+              </View>
+            )}
+          </>
+        ) : null}
       </View>
     );
   };
