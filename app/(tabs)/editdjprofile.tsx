@@ -109,11 +109,7 @@ const EditDjProfile = () => {
   useFocusEffect(
     React.useCallback(() => {
       clearForm();
-
-      return () => {
-        clearForm();
-      };
-    }, [])
+    }, [userId])
   );
 
   const addGenre = () => {
