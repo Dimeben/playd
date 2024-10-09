@@ -394,13 +394,11 @@ export async function createBooking(booking: Partial<Booking>): Promise<void> {
 }
 
 export async function updateBooking(bookingId: string, updatedData: Partial<Booking>): Promise<void> {
-  console.log("Updating booking with ID:", bookingId);
-  console.log("With data:", updatedData);
+
   try {
   
     const bookingDocRef = doc(bookingsRef, bookingId);
-    console.log("Document Reference:", bookingDocRef.path);
-    console.log("updatedData: ", updatedData)
+
     await updateDoc(bookingDocRef, updatedData);
     
   } catch (error) {
@@ -416,7 +414,7 @@ export async function deleteBooking(bookingId: string): Promise<void> {
     const bookingDocRef = doc(bookingsRef, bookingId);
     await deleteDoc(bookingDocRef);
   } catch (error) {
-    console.log("deleteBooking - Line 8 - Error occurred");
+
     console.error("Error deleting booking: ", error);
     throw error;
   }

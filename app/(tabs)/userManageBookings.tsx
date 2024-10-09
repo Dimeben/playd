@@ -79,7 +79,7 @@ const UserManageBookings = () => {
 
   useEffect(() => {
     fetchBookings();
-    console.log(bookings);
+
   }, [username]);
 
   useFocusEffect(
@@ -91,8 +91,7 @@ const UserManageBookings = () => {
   const handlePostFeedback = async (bookingId: string) => {
     const selected = bookings.find((booking) => booking.id === bookingId);
     if (selected) {
-      console.log("Current feedback_left status:", selected.feedback_left);
-      console.log("Type feedback_left status:", typeof selected.feedback_left);
+
       try {
         const feedbackData: Feedback = {
           author:
@@ -126,7 +125,7 @@ const UserManageBookings = () => {
         );
 
         await patchDJByUsername(selected.dj, { rating: averageRating });
-        console.log("Booking ID", bookingId);
+    
 
         await updateBooking(bookingId, { feedback_left: true });
 
@@ -139,7 +138,6 @@ const UserManageBookings = () => {
         });
         setFeedbackFormVisible(null);
         await fetchBookings();
-        console.log(bookings);
         alert("Feedback posted successfully! DJ's rating updated.");
       } catch (error) {
         console.error("Error posting feedback or updating DJ rating:", error);

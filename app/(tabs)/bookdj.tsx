@@ -157,11 +157,7 @@ const BookDj = () => {
       };
 
       createBooking(bookingWithDateTime);
-      console.log("Booking created: ", bookingWithDateTime);
-      console.log(
-        "Typeof feedback_left in Booking Created",
-        typeof bookingWithDateTime.feedback_left
-      );
+
       alert("Booking request sent!");
       clearForm();
       setShowBookingForm(false);
