@@ -73,7 +73,7 @@ const Profile = () => {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={["#93C6F9", "#97B4FA", "#400691"]}
+        colors={["#C80055", "#A000CC", "#0040CC"]}
         style={styles.background}
       >
         <SafeAreaView />
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 16,
     backgroundColor: "#007AFF",
-    borderRadius: 25,
+    borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 16,
     backgroundColor: "red",
-    borderRadius: 25,
+    borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,

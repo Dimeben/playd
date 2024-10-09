@@ -126,7 +126,7 @@ const EditDjProfile = () => {
   return (
     <ScrollView style={{ backgroundColor: "white" }}>
       <LinearGradient
-        colors={["#93C6F9", "#97B4FA", "#400691"]}
+        colors={["#C80055", "#A000CC", "#0040CC"]}
         style={styles.background}
       >
         <View style={styles.container}>
@@ -188,7 +188,7 @@ const EditDjProfile = () => {
             <Text style={styles.label}>Genres</Text>
             {genres.map((g, index) => (
               <View key={index} style={styles.row}>
-                <Text>{g} </Text>
+                <Text style={styles.white}>{g} </Text>
                 <TouchableOpacity
                   onPress={() => deleteGenre(index)}
                   style={styles.smallButton}
@@ -218,7 +218,7 @@ const EditDjProfile = () => {
             <Text style={styles.label}>Occasions</Text>
             {occasions.map((o, index) => (
               <View key={index} style={styles.row}>
-                <Text>{o}</Text>
+                <Text style={styles.white}>{o}</Text>
                 <TouchableOpacity
                   style={styles.smallButton}
                   onPress={() => deleteOccasion(index)}
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
   },
   buttonGoBack: {
     height: 47,
-    borderRadius: 25,
+    borderRadius: 14,
     backgroundColor: "#007AFF",
     width: 120,
     alignItems: "center",
@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
   },
   button: {
     height: 47,
-    borderRadius: 25,
+    borderRadius: 14,
     backgroundColor: "#007AFF",
     width: 80,
     alignItems: "center",
@@ -398,12 +398,13 @@ const styles = StyleSheet.create({
   },
   smallButton: {
     backgroundColor: "red",
-    borderRadius: 25,
+    borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     padding: 10,
     margin: 2,
     marginLeft: 5,
+    marginBottom: 5,
     alignSelf: "center",
   },
   signupButton: {
@@ -412,7 +413,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 16,
     backgroundColor: "#007AFF",
-    borderRadius: 25,
+    borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
@@ -430,5 +431,8 @@ const styles = StyleSheet.create({
     color: "white",
     marginBottom: 2,
     fontWeight: "bold",
+  },
+  white: {
+    color: "white",
   },
 });

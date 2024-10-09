@@ -12,7 +12,7 @@ export default function Index() {
   const router = useRouter();
 
   const image = {
-    uri: "https://img.freepik.com/free-photo/cyberpunk-dj-illustration_23-2151656032.jpg?t=st=1728052685~exp=1728056285~hmac=bbac23adf299ba2724537eedf8a8d2986e6f3d0c5dacf73c564e6767609c5762&w=826",
+    uri: "https://img.freepik.com/free-photo/cyberpunk-dj-illustration_23-2151656032.jpg?t=st=1728403380~exp=1728406980~hmac=d5d250d038fbccd00c02e3da06e15057250fcb57514bf30927303c56d1bbf60e&w=826",
   };
 
   return (

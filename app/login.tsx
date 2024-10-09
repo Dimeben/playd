@@ -80,7 +80,7 @@ export default function Login() {
       keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
     >
       <LinearGradient
-        colors={["#93C6F9", "#97B4FA", "#400691"]}
+        colors={["#C80055", "#A000CC", "#0040CC"]}
         style={styles.background}
       >
         <Text style={styles.header}>Login</Text>
@@ -175,13 +175,16 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   linkButton: {
-    paddingRight: 40,
-    paddingLeft: 40,
+    paddingRight: 32,
+    paddingLeft: 32,
     paddingTop: 16,
     paddingBottom: 16,
     backgroundColor: "#007AFF",
-    borderRadius: 25,
+    borderRadius: 14,
     overflow: "hidden",
+    margin: 10,
+    marginLeft: 15,
+    marginRight: 15,
   },
   loginButton: {
     paddingRight: 40,
@@ -189,14 +192,16 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 16,
     backgroundColor: "#007AFF",
-    borderRadius: 25,
+    borderRadius: 14,
     overflow: "hidden",
     margin: 10,
     alignSelf: "center",
+    marginTop: 15,
   },
   linkText: {
     color: "#fff",
     fontSize: 18,
+    fontWeight: "bold",
   },
   background: {
     position: "absolute",

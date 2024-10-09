@@ -152,13 +152,15 @@ export default function UserSignUp() {
       >
         <View style={styles.container}>
           <LinearGradient
-            colors={["#93C6F9", "#97B4FA", "#400691"]}
+            colors={["#C80055", "#A000CC", "#0040CC"]}
             style={styles.background}
           >
             <ScrollView>
               <Text style={styles.header}>User Signup</Text>
               <TouchableOpacity onPress={pickImage}>
-                <Text style={styles.paddingLeft}>Select an Image</Text>
+                <Text style={[styles.paddingLeft, styles.white]}>
+                  Select an Image
+                </Text>
               </TouchableOpacity>
               <View>
                 {image && (
@@ -287,6 +289,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontFamily: "menlo-bold",
     alignSelf: "center",
+    color: "white",
   },
   input: {
     borderWidth: 1,
@@ -327,7 +330,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 16,
     backgroundColor: "#007AFF",
-    borderRadius: 25,
+    borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
@@ -344,5 +347,9 @@ const styles = StyleSheet.create({
   },
   marginTop: {
     marginTop: 15,
+  },
+  white: {
+    color: "white",
+    fontWeight: "bold",
   },
 });
