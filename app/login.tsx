@@ -201,7 +201,6 @@ const styles = StyleSheet.create({
   linkText: {
     color: "#fff",
     fontSize: 18,
-    fontWeight: "bold",
   },
   background: {
     position: "absolute",
