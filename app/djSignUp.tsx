@@ -20,6 +20,8 @@ import { storage } from "../firebase/storage";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, useRouter } from "expo-router";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+
 export default function DjSignUp() {
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
@@ -161,7 +163,10 @@ export default function DjSignUp() {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.header}>DJ Signup</Text>
+          <Text style={styles.header}>
+            <FontAwesome5 name="compact-disc" size={30} color="black" /> DJ
+            Signup
+          </Text>
           <TextInput
             style={styles.input}
             placeholder="First Name"

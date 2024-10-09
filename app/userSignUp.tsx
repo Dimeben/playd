@@ -21,6 +21,7 @@ import { storage } from "../firebase/storage";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 export default function UserSignUp() {
   const [username, setUsername] = useState("");
@@ -156,7 +157,10 @@ export default function UserSignUp() {
             style={styles.background}
           >
             <ScrollView>
-              <Text style={styles.header}>User Signup</Text>
+              <Text style={styles.header}>
+                <FontAwesome5 name="compact-disc" size={30} color="black" />{" "}
+                User Signup
+              </Text>
               <TouchableOpacity onPress={pickImage} style={styles.signupButton}>
                 <Text style={styles.linkText}>Select an Image</Text>
               </TouchableOpacity>
