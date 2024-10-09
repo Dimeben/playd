@@ -15,6 +15,7 @@ import { getUserById, patchUser } from "../../firebase/firestore";
 import { useRouter } from "expo-router";
 import { User } from "@/firebase/types";
 import { LinearGradient } from "expo-linear-gradient";
+import { useFocusEffect } from "@react-navigation/native";
 
 const EditUserProfile = () => {
   const router = useRouter();
@@ -38,6 +39,7 @@ const EditUserProfile = () => {
             setUpdateFirstName(userData.first_name);
             setUpdateSurname(userData.surname);
             setUpdateCity(userData.city);
+            setGoBackIsVisible(true);
           } else {
             console.log("User doesn't exist");
           }
@@ -60,6 +62,7 @@ const EditUserProfile = () => {
         };
         await patchUser(userId, updatedData);
         setGoBackIsVisible(true);
+        router.push("/(tabs)/profile");
         Alert.alert("Profile successfully updated!");
       } else {
         console.error("userId is null or undefined");
@@ -69,6 +72,26 @@ const EditUserProfile = () => {
       console.error((err as Error).message);
     }
   };
+
+  const clearForm = async () => {
+    const userData = await getUserById(userId!);
+    if (userData) {
+      setUpdateFirstName(userData.first_name);
+      setUpdateSurname(userData.surname);
+      setUpdateCity(userData.city);
+    }
+  };
+
+  const handleGoBack = () => {
+    clearForm();
+    router.push("/(tabs)/profile");
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      clearForm();
+    }, [userId])
+  );
 
   if (!user) {
     return (
@@ -92,7 +115,7 @@ const EditUserProfile = () => {
           {goBackIsVisible && (
             <TouchableOpacity
               style={styles.buttonGoBack}
-              onPress={() => router.push("/(tabs)/profile")}
+              onPress={handleGoBack}
             >
               <Text style={styles.buttonText}>Go Back</Text>
             </TouchableOpacity>
