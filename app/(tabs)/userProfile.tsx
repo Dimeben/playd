@@ -113,7 +113,7 @@ const Profile = () => {
               <Text>City: {user.city}</Text>
             </Pressable>
             <Link style={styles.signupButton} href="/EditUserProfile">
-              <Text style={styles.linkText}>Edit Profile</Text>
+              <Text style={styles.linkText}>{"         "}Edit Profile</Text>
             </Link>
           </View>
         )}
@@ -164,8 +164,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     padding: 16,
     margin: 16,
-    height: 180,
-    width: "80%",
+    height: "auto",
+    width: "auto",
     ...Platform.select({
       ios: {
         shadowOffset: { width: 2, height: 2 },
