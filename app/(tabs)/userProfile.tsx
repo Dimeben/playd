@@ -13,10 +13,13 @@ import { useFocusEffect } from "@react-navigation/native";
 import React, { useContext, useEffect, useState } from "react";
 import { doc } from "firebase/firestore";
 import { AuthContext } from "../../contexts/AuthContext";
-import { getUserById, signOut } from "../../firebase/firestore";
+import { getUserById, signOut, deleteUser } from "../../firebase/firestore";
 import { Link, useRouter } from "expo-router";
 import { User } from "@/firebase/types";
 import { LinearGradient } from "expo-linear-gradient";
+
+
+
 const Profile = () => {
   const [user, setUser] = useState<User | undefined>(undefined);
   const { isAuthenticated, userId } = useContext(AuthContext);
@@ -59,6 +62,13 @@ const Profile = () => {
         router.push("../login");
       })
       .catch((err) => console.log("User didn't sign out"));
+  };
+
+  const handleDelete = (userId) => {
+    deleteUser(userId).then(() => {
+      Alert.alert("You have successfully deleted your account!");
+      router.push("../login");
+    });
   };
 
   if (!isAuthenticated) {
