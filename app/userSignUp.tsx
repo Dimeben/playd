@@ -157,10 +157,8 @@ export default function UserSignUp() {
           >
             <ScrollView>
               <Text style={styles.header}>User Signup</Text>
-              <TouchableOpacity onPress={pickImage}>
-                <Text style={[styles.paddingLeft, styles.white]}>
-                  Select an Image
-                </Text>
+              <TouchableOpacity onPress={pickImage} style={styles.signupButton}>
+                <Text style={styles.linkText}>Select an Image</Text>
               </TouchableOpacity>
               <View>
                 {image && (
@@ -289,7 +287,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontFamily: "menlo-bold",
     alignSelf: "center",
-    color: "white",
+    color: "black",
   },
   input: {
     borderWidth: 1,
@@ -327,15 +325,15 @@ const styles = StyleSheet.create({
   signupButton: {
     paddingRight: 40,
     paddingLeft: 40,
-    paddingTop: 16,
-    paddingBottom: 16,
+    paddingTop: 9,
+    paddingBottom: 9,
     backgroundColor: "#007AFF",
     borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
     alignSelf: "center",
-    width: "95%",
+    width: "85%",
   },
   linkText: {
     color: "#fff",

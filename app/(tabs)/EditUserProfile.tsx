@@ -151,7 +151,7 @@ const EditUserProfile = () => {
             style={styles.signupButton}
             onPress={handleUpdateProfile}
           >
-            <Text style={styles.linkText}>Submit</Text>
+            <Text style={styles.linkText}>Submit All Changes</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -215,7 +215,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   buttonGoBack: {
-    height: 47,
     borderRadius: 25,
     backgroundColor: "#007AFF",
     width: 120,
@@ -266,8 +265,8 @@ const styles = StyleSheet.create({
   signupButton: {
     paddingRight: 40,
     paddingLeft: 40,
-    paddingTop: 16,
-    paddingBottom: 16,
+    paddingTop: 9,
+    paddingBottom: 9,
     backgroundColor: "#007AFF",
     borderRadius: 14,
     borderRightWidth: 1,
@@ -276,7 +275,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     marginTop: 20,
     alignSelf: "center",
-    width: "95%",
+    width: "85%",
   },
   linkText: {
     color: "#fff",
