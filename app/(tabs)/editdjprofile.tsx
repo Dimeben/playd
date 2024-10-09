@@ -14,6 +14,8 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { patchDJ, getDJById } from "@/firebase/firestore";
 import { DJ } from "../../firebase/types";
 import { LinearGradient } from "expo-linear-gradient";
+import Feather from "@expo/vector-icons/Feather";
+
 const EditDjProfile = () => {
   const router = useRouter();
   const { userId } = useContext(AuthContext);
@@ -136,7 +138,9 @@ const EditDjProfile = () => {
       >
         <View style={styles.container}>
           <SafeAreaView />
-          <Text style={styles.header}>Edit Your Profile</Text>
+          <Text style={styles.header}>
+            <Feather name="edit" size={30} color="black" /> Edit Your Profile
+          </Text>
           <View>
             {goBackIsVisible && (
               <TouchableOpacity

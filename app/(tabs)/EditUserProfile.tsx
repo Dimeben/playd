@@ -15,6 +15,7 @@ import { getUserById, patchUser } from "../../firebase/firestore";
 import { useRouter } from "expo-router";
 import { User } from "@/firebase/types";
 import { LinearGradient } from "expo-linear-gradient";
+import Feather from "@expo/vector-icons/Feather";
 
 const EditUserProfile = () => {
   const router = useRouter();
@@ -92,7 +93,9 @@ const EditUserProfile = () => {
       <ScrollView>
         <View style={styles.container}>
           <SafeAreaView />
-          <Text style={styles.header}>Edit Your Profile</Text>
+          <Text style={styles.header}>
+            <Feather name="edit" size={30} color="black" /> Edit Your Profile
+          </Text>
 
           {goBackIsVisible && (
             <TouchableOpacity
