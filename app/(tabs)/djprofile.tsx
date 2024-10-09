@@ -119,13 +119,22 @@ const DjProfilePage = () => {
   };
 
   const handleDelete = (userId) => {
-    deleteDJ(userId);
+    deleteDJ(userId).then(() => {
+      Alert.alert("You have successfully deleted your account!");
+      router.push("../login");
+    });
   };
 
   if (isLoading) {
     return (
       <View style={[styles.loadingContainer, styles.container]}>
-        <ActivityIndicator size="large" color="black" />
+        <LinearGradient
+          colors={["#C80055", "#A000CC", "#0040CC"]}
+          style={styles.background}
+        >
+          <ActivityIndicator size="large" color="black" />
+        </LinearGradient>
+
         <Text>Loading Profile...</Text>
       </View>
     );
@@ -213,7 +222,12 @@ const DjProfilePage = () => {
                 <Text style={styles.linkText}>Edit Profile</Text>
               </Link>
             </View>
-
+            <TouchableOpacity
+              style={styles.signupButton}
+              onPress={handleLogout}
+            >
+              <Text style={styles.linkText}>Logout</Text>
+            </TouchableOpacity>
             <View style={styles.card}>
               <Text style={styles.heading}>Feedback</Text>
               <ScrollView contentContainerStyle={styles.feedbackContainer}>
@@ -248,12 +262,6 @@ const DjProfilePage = () => {
               </ScrollView>
             </View>
 
-            <TouchableOpacity
-              style={styles.signupButton}
-              onPress={handleLogout}
-            >
-              <Text style={styles.linkText}>Logout</Text>
-            </TouchableOpacity>
             <TouchableOpacity
               style={styles.deleteButton}
               onPress={() => handleDelete(userId)}
@@ -316,7 +324,7 @@ const styles = StyleSheet.create({
     fontFamily: "menlo-bold",
     marginTop: 14,
     marginBottom: 0,
-    color: "white",
+    color: "black",
   },
   loginMessage: {
     fontSize: 30,
@@ -382,28 +390,28 @@ const styles = StyleSheet.create({
   signupButton: {
     paddingRight: 40,
     paddingLeft: 40,
-    paddingTop: 16,
-    paddingBottom: 16,
+    paddingTop: 9,
+    paddingBottom: 9,
     backgroundColor: "#007AFF",
     borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
     alignSelf: "center",
-    width: "95%",
+    width: "81%",
   },
   deleteButton: {
     paddingRight: 40,
     paddingLeft: 40,
-    paddingTop: 16,
-    paddingBottom: 16,
+    paddingTop: 9,
+    paddingBottom: 9,
     backgroundColor: "red",
     borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
     alignSelf: "center",
-    width: "95%",
+    width: "81%",
   },
   linkText: {
     color: "#fff",

@@ -7,7 +7,7 @@ import {
   Text,
   View,
 } from "react-native";
-
+import backgroundImage from "../assets/images/cyberpunk-dj-illustration.jpg";
 export default function Index() {
   const router = useRouter();
 
@@ -17,7 +17,11 @@ export default function Index() {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+      <ImageBackground
+        source={backgroundImage}
+        resizeMode="cover"
+        style={styles.image}
+      >
         <Text style={styles.heading}>Welcome to Playd</Text>
         <View
           style={{
