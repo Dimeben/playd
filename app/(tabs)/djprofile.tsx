@@ -134,13 +134,15 @@ const DjProfilePage = () => {
           colors={["#C80055", "#A000CC", "#0040CC"]}
           style={styles.background}
         >
-          {/* <ActivityIndicator
-            size="large"
-            color="black"
-            style={{ justifyContent: "center", flex: 1 }}
-          /> */}
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator
+              size="large"
+              color="black"
+              style={{ justifyContent: "center" }}
+            />
+            <Text>Loading Profile...</Text>
+          </View>
         </LinearGradient>
-        <Text>Loading Profile...</Text>
       </View>
     );
   }
@@ -304,6 +306,11 @@ const styles = StyleSheet.create({
     minHeight: 150,
     maxHeight: 150,
     backgroundColor: "#0553",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   icon: {
     flexDirection: "row",
