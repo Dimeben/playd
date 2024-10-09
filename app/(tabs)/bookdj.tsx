@@ -189,8 +189,9 @@ const BookDj = () => {
               style={styles.profilePicture}
             />
             <View style={styles.cardContent}>
-              <Text style={styles.name}>
-                {selectedDj.first_name} {selectedDj.surname}
+              <Text style={styles.name}>{selectedDj.username}</Text>
+              <Text style={styles.description}>
+                Name: {selectedDj.first_name} {selectedDj.surname}
               </Text>
               <Text style={styles.genre} numberOfLines={2} ellipsizeMode="tail">
                 Genre: {selectedDj.genres.join(", ")}
@@ -245,7 +246,6 @@ const BookDj = () => {
           </>
         )}
 
-        {/* Toggle button for showing/hiding the booking form */}
         <TouchableOpacity onPress={toggleForm} style={styles.toggleButton}>
           <Text style={styles.toggleButtonText}>
             {showBookingForm ? "Hide Booking Form" : "Book a DJ"}
@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
   },
   city: {
     fontSize: 14,
-    color: "#999",
+    color: "#555",
     marginVertical: 1,
   },
   price: {

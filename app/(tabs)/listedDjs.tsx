@@ -143,8 +143,9 @@ const DjList = () => {
         style={styles.profilePicture}
         accessibilityLabel={`Profile picture of ${item.first_name} ${item.surname}`}
       />
-      <Text style={styles.name}>
-        {item.first_name} {item.surname}
+      <Text style={styles.name}>{item.username}</Text>
+      <Text style={styles.description}>
+        Name: {item.first_name} {item.surname}
       </Text>
       {Array.isArray(item.genres) && item.genres.length > 0 && (
         <Text style={styles.genre}>Genre: {item.genres.join(", ")}</Text>
