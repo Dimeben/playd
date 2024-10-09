@@ -52,20 +52,16 @@ const DjProfilePage = () => {
   const fetchDjData = async () => {
     setIsLoading(true);
     if (!userId) {
-      console.log("djprofile useEffect - Line 45");
-      console.log("User ID is null");
       setIsLoading(false);
       return;
     }
 
     try {
-      console.log("djprofile useEffect - Line 52");
       const djData = await getDJById(userId);
 
       if (djData) {
         setDj(djData as DJ);
       } else {
-        console.log("DJ not found");
       }
     } catch (error) {
       console.error("Error fetching DJ data:", (error as Error).message);
@@ -76,8 +72,6 @@ const DjProfilePage = () => {
   };
 
   useEffect(() => {
-    console.log("djprofile useEffect - Line 41");
-
     fetchDjData();
   }, [userId]);
 
@@ -210,7 +204,6 @@ const DjProfilePage = () => {
                   Genres:{" "}
                   {dj.genres.length > 1 ? dj.genres.join(", ") : dj.genres}
                 </Text>
-                {/* {console.log(typeof dj.genres)} */}
                 <Text>
                   Occasions:{" "}
                   {dj.occasions.length > 1
@@ -225,7 +218,6 @@ const DjProfilePage = () => {
                 style={styles.signupButton}
                 href={{
                   pathname: "/editdjprofile",
-                  // /* 1. Navigate to the details route with query params */
                   params: { dj: dj },
                 }}
               >
@@ -320,7 +312,7 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: "white",
-    borderRadius: 16,
+    borderRadius: 12,
     borderWidth: 2,
     padding: 16,
     margin: 16,
@@ -370,7 +362,7 @@ const styles = StyleSheet.create({
   },
   buttonTouch: {
     height: 47,
-    borderRadius: 5,
+    borderRadius: 12,
     backgroundColor: "#007AFF",
     width: "80%",
     alignItems: "center",
@@ -393,7 +385,7 @@ const styles = StyleSheet.create({
   feedbackItem: {
     marginBottom: 15,
     padding: 12,
-    borderRadius: 5,
+    borderRadius: 12,
     backgroundColor: "white",
     borderWidth: 1,
   },
@@ -430,7 +422,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
 
     backgroundColor: "red",
-    borderRadius: 14,
+    borderRadius: 12,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,

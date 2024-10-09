@@ -20,7 +20,10 @@ import {
   postFeedback,
   patchDJByUsername,
   getFeedback,
+  updateBooking,
+  bookingsRef,
 } from "../../firebase/firestore";
+import { useFocusEffect } from "expo-router";
 import { Booking, Feedback } from "../../firebase/types";
 import { Timestamp } from "firebase/firestore";
 import { LinearGradient } from "expo-linear-gradient";
@@ -37,33 +40,58 @@ const UserManageBookings = () => {
     dj: "",
     date: new Date(),
   });
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [feedbackFormVisible, setFeedbackFormVisible] = useState<string | null>(
     null
   );
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchBookings = async () => {
-      setLoading(true);
-      if (username) {
-        try {
-          const bookings = await getBookingsByUser(username);
-          setBookings(bookings);
-        } catch (error) {
-          console.error("Error fetching user bookings:", error);
-        }
+  const fetchBookings = async () => {
+    setLoading(true);
+    if (username) {
+      try {
+        const fetchedBookings = await getBookingsByUser(username);
+
+        const sortedBookings = fetchedBookings.sort((a, b) => {
+          const bookingDateA =
+            a.date instanceof Timestamp
+              ? a.date.toDate()
+              : typeof a.date === "string"
+              ? new Date(a.date)
+              : a.date;
+
+          const bookingDateB =
+            b.date instanceof Timestamp
+              ? b.date.toDate()
+              : typeof b.date === "string"
+              ? new Date(b.date)
+              : b.date;
+
+          return bookingDateB.getTime() - bookingDateA.getTime();
+        });
+
+        setBookings(sortedBookings);
+      } catch (error) {
+        console.error("Error fetching user bookings:", error);
       }
-      setLoading(false);
-    };
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
     fetchBookings();
+
   }, [username]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchBookings();
+    }, [username])
+  );
 
   const handlePostFeedback = async (bookingId: string) => {
     const selected = bookings.find((booking) => booking.id === bookingId);
-    setSelectedBooking(selected || null);
-
     if (selected) {
+
       try {
         const feedbackData: Feedback = {
           author:
@@ -97,6 +125,9 @@ const UserManageBookings = () => {
         );
 
         await patchDJByUsername(selected.dj, { rating: averageRating });
+    
+
+        await updateBooking(bookingId, { feedback_left: true });
 
         setFeedback({
           title: "",
@@ -106,7 +137,7 @@ const UserManageBookings = () => {
           date: new Date(),
         });
         setFeedbackFormVisible(null);
-
+        await fetchBookings();
         alert("Feedback posted successfully! DJ's rating updated.");
       } catch (error) {
         console.error("Error posting feedback or updating DJ rating:", error);
@@ -126,13 +157,17 @@ const UserManageBookings = () => {
         : item.date;
 
     const bookingDateFormatted = bookingDate.toLocaleDateString();
+    const bookingTimeFormatted = bookingDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
 
     bookingDate.setHours(0, 0, 0, 0);
 
-    const canLeaveFeedback = currentDate > bookingDate;
+    const canLeaveFeedback =
+      currentDate > bookingDate &&
+      item.feedback_left !== true &&
+      item.status === "accepted";
 
     return (
       <View style={styles.bookingCard}>
@@ -140,7 +175,11 @@ const UserManageBookings = () => {
         <Text style={styles.bookingText}>
           Event Details: {item.event_details}
         </Text>
+        <Text style={styles.bookingText}>
+          Comments: {item.comments}
+        </Text>
         <Text style={styles.bookingText}>Date: {bookingDateFormatted}</Text>
+        <Text style={styles.bookingText}>Time: {bookingTimeFormatted}</Text>
         <Text style={styles.bookingText}>Location: {item.location}</Text>
         <Text
           style={[

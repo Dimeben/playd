@@ -207,13 +207,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   background: {
-    // position: "absolute",
-    // left: 0,
-    // right: 0,
-    // top: 0,
     flex: 1,
-    // height: "100%",
-  },
+      },
   backgroundLoading: {
     position: "absolute",
     left: 0,
@@ -235,7 +230,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingHorizontal: 8,
     backgroundColor: "white",
-    borderRadius: 5,
+    borderRadius: 12,
   },
   inputMultiline: {
     height: "auto",
@@ -245,7 +240,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 5,
     fontSize: 20,
-    borderRadius: 25,
+    borderRadius: 12,
   },
   inputContainer: {
     flex: 1,
@@ -255,6 +250,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   buttonGoBack: {
+
     borderRadius: 25,
     backgroundColor: "#1c93ed",
     borderWidth: 1,
@@ -269,7 +265,7 @@ const styles = StyleSheet.create({
   },
   button: {
     height: 47,
-    borderRadius: 25,
+    borderRadius: 12,
     backgroundColor: "#007AFF",
     width: 80,
     alignItems: "center",

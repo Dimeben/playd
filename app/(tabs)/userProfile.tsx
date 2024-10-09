@@ -27,24 +27,19 @@ const Profile = () => {
   const fetchUser = async () => {
     if (userId) {
       try {
-        console.log("profile useEffect - Line 27");
         const userData = await getUserById(userId);
         if (userData) {
-          console.log("profile useEffect - Line 30");
           setUser(userData as User);
         } else {
-          console.log("profile useEffect - Line 33");
           console.log("User doesn't exist");
         }
       } catch (err) {
-        console.log("profile useEffect - Line 37");
         console.error("Error fetching user: ", (err as Error).message);
       }
     }
   };
-  console.log("profile useEffect - Line 42");
+
   useEffect(() => {
-    console.log("profile useEffect - Line 23");
     fetchUser();
   }, [userId]);
 
@@ -160,7 +155,7 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: "white",
-    borderRadius: 16,
+    borderRadius: 12,
     borderWidth: 2,
     padding: 16,
     margin: 16,
@@ -206,7 +201,7 @@ const styles = StyleSheet.create({
   },
   buttonTouch: {
     height: 47,
-    borderRadius: 5,
+    borderRadius: 12,
     backgroundColor: "#007AFF",
     width: "80%",
     alignItems: "center",
@@ -235,7 +230,7 @@ const styles = StyleSheet.create({
     paddingBottom: 9,
     borderWidth: 1,
     backgroundColor: "red",
-    borderRadius: 14,
+    borderRadius: 12,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,

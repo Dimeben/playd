@@ -156,7 +156,7 @@ export default function UserSignUp() {
             colors={["#C80055", "#A000CC", "#0040CC"]}
             style={styles.background}
           >
-            <ScrollView>
+            <ScrollView contentContainerStyle={{ alignItems: "center" }}>
               <Text style={styles.header}>
                 <FontAwesome5 name="compact-disc" size={30} color="black" />{" "}
                 User Signup
@@ -171,13 +171,13 @@ export default function UserSignUp() {
                     style={{ width: 300, height: 300 }}
                   />
                 )}
-                <TouchableOpacity
-                  onPress={uploadMedia}
-                  style={styles.signupButton}
-                >
-                  <Text style={styles.linkText}>Upload Image</Text>
-                </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                onPress={uploadMedia}
+                style={styles.signupButton}
+              >
+                <Text style={styles.linkText}>Upload Image</Text>
+              </TouchableOpacity>
 
               <TextInput
                 style={styles.input}
@@ -297,7 +297,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
     padding: 10,
-    marginLeft: 8,
     marginVertical: 5,
     borderRadius: 5,
     width: "95%",
@@ -309,11 +308,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 5,
-    paddingHorizontal: 10,
     marginVertical: 5,
     width: "95%",
-    marginLeft: 8,
-
     backgroundColor: "white",
   },
   passwordInput: {
@@ -343,7 +339,7 @@ const styles = StyleSheet.create({
   linkText: {
     color: "#fff",
     fontSize: 18,
-    alignSelf: "center",
+    textAlign: "center",
   },
   paddingLeft: {
     paddingLeft: 10,

@@ -18,21 +18,44 @@ import {
 import { Booking } from "../../firebase/types";
 import { SafeAreaView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { Timestamp } from "firebase/firestore";
+
 const DjManageBookings = () => {
   const { username } = useContext(AuthContext);
   const [djBookings, setDjBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchBookings = async () => {
+      setLoading(true);
       if (username) {
         try {
-          const bookings = await getBookingsByDj(username);
-          setDjBookings(bookings);
-          console.log(bookings);
+          const fetchedBookings = await getBookingsByDj(username);
+
+          const sortedBookings = fetchedBookings.sort((a, b) => {
+            const bookingDateA =
+              a.date instanceof Timestamp
+                ? a.date.toDate()
+                : typeof a.date === "string"
+                ? new Date(a.date)
+                : a.date;
+
+            const bookingDateB =
+              b.date instanceof Timestamp
+                ? b.date.toDate()
+                : typeof b.date === "string"
+                ? new Date(b.date)
+                : b.date;
+
+            return bookingDateB.getTime() - bookingDateA.getTime();
+          });
+
+          setDjBookings(sortedBookings);
         } catch (error) {
           console.error("Error fetching DJ bookings:", error);
         }
       }
+      setLoading(false);
     };
     fetchBookings();
   }, [username]);
@@ -86,55 +109,71 @@ const DjManageBookings = () => {
                 No bookings requested
               </Text>
             ) : (
-              djBookings.map((booking) => (
-                <View key={booking.id} style={styles.bookingCard}>
-                  <Text style={styles.clientDetails}>
-                    Client: {booking.client}
-                  </Text>
-                  <Text style={styles.occasionDetails}>
-                    Occasion: {booking.occasion}
-                  </Text>
-                  <Text style={styles.locationDetails}>
-                    Location: {booking.location}
-                  </Text>
-                  <Text style={styles.dateDetails}>
-                    Date: {booking.date?.toDateString()}
-                  </Text>
-                  <Text
-                    style={[
-                      styles.statusMessage,
-                      booking.status === "accepted"
-                        ? styles.accepted
-                        : booking.status === "declined"
-                        ? styles.declined
-                        : styles.pending,
-                    ]}
-                  >
-                    {booking.status === "accepted"
-                      ? "Booking Accepted"
-                      : booking.status === "declined"
-                      ? "Booking Declined"
-                      : "Pending Decision"}
-                  </Text>
+              djBookings.map((booking) => {
+              
+                const bookingDate = booking.date instanceof Timestamp
+                  ? booking.date.toDate()
+                  : new Date(booking.date);
 
-                  {booking.status === "pending" && (
-                    <View style={styles.buttonContainer}>
-                      <Pressable
-                        style={styles.button}
-                        onPress={() => handleAcceptBooking(booking.id)}
-                      >
-                        <Text style={styles.buttonText}>Accept</Text>
-                      </Pressable>
-                      <Pressable
-                        style={styles.button}
-                        onPress={() => handleDenyBooking(booking.id)}
-                      >
-                        <Text style={styles.buttonText}>Decline</Text>
-                      </Pressable>
-                    </View>
-                  )}
-                </View>
-              ))
+                const bookingDateFormatted = bookingDate.toLocaleDateString();
+                const bookingTimeFormatted = bookingDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                return (
+                  <View key={booking.id} style={styles.bookingCard}>
+                    <Text style={styles.clientDetails}>
+                      Client: {booking.client}
+                    </Text>
+                    <Text style={styles.occasionDetails}>
+                      Occasion: {booking.occasion}
+                    </Text>
+                    <Text style={styles.occasionDetails}>
+                      Comments: {booking.comments}
+                    </Text>
+                    <Text style={styles.locationDetails}>
+                      Location: {booking.location}
+                    </Text>
+                    <Text style={styles.dateDetails}>
+                      Date: {bookingDateFormatted}
+                    </Text>
+                    <Text style={styles.dateDetails}>
+                      Time: {bookingTimeFormatted}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.statusMessage,
+                        booking.status === "accepted"
+                          ? styles.accepted
+                          : booking.status === "declined"
+                          ? styles.declined
+                          : styles.pending,
+                      ]}
+                    >
+                      {booking.status === "accepted"
+                        ? "Booking Accepted"
+                        : booking.status === "declined"
+                        ? "Booking Declined"
+                        : "Pending Decision"}
+                    </Text>
+
+                    {booking.status === "pending" && (
+                      <View style={styles.buttonContainer}>
+                        <Pressable
+                          style={styles.button}
+                          onPress={() => handleAcceptBooking(booking.id)}
+                        >
+                          <Text style={styles.buttonText}>Accept</Text>
+                        </Pressable>
+                        <Pressable
+                          style={styles.button}
+                          onPress={() => handleDenyBooking(booking.id)}
+                        >
+                          <Text style={styles.buttonText}>Decline</Text>
+                        </Pressable>
+                      </View>
+                    )}
+                  </View>
+                );
+              })
             )}
           </ScrollView>
         </KeyboardAvoidingView>

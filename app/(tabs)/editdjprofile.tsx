@@ -15,7 +15,6 @@ import { patchDJ, getDJById } from "@/firebase/firestore";
 import { DJ } from "../../firebase/types";
 import { LinearGradient } from "expo-linear-gradient";
 import Feather from "@expo/vector-icons/Feather";
-
 import { useFocusEffect } from "@react-navigation/native";
 const EditDjProfile = () => {
   const router = useRouter();
@@ -363,7 +362,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingHorizontal: 8,
     backgroundColor: "white",
-    borderRadius: 5,
+    borderRadius: 12,
   },
   inputMultiline: {
     height: "auto",
@@ -375,15 +374,11 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 5,
     fontSize: 20,
-    borderRadius: 5,
+    borderRadius: 12,
   },
   inputContainer: {
     flex: 1,
-    // borderLeftWidth: 1,
-    // borderRightWidth: 1,
-    // borderTopWidth: 1,
-    // borderBottomWidth: 1,
-    width: 50,
+        width: 50,
     marginBottom: 5,
     overflow: "hidden",
   },
@@ -439,7 +434,7 @@ const styles = StyleSheet.create({
   },
   smallButton: {
     backgroundColor: "red",
-    borderRadius: 14,
+    borderRadius: 12,
     borderRightWidth: 1,
     borderWidth: 1,
     overflow: "hidden",

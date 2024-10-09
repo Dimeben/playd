@@ -161,24 +161,13 @@ export default function DjSignUp() {
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={100}
       >
         <ScrollView contentContainerStyle={styles.container}>
           <Text style={styles.header}>
             <FontAwesome5 name="compact-disc" size={30} color="black" /> DJ
             Signup
           </Text>
-          <TextInput
-            style={styles.input}
-            placeholder="First Name"
-            value={firstName}
-            onChangeText={setFirstName}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Surname"
-            value={surname}
-            onChangeText={setSurname}
-          />
           <TouchableOpacity onPress={pickImage} style={styles.signupButton}>
             <Text style={styles.linkText}>Select an Image</Text>
           </TouchableOpacity>
@@ -189,6 +178,18 @@ export default function DjSignUp() {
             <TouchableOpacity onPress={uploadMedia} style={styles.signupButton}>
               <Text style={styles.linkText}>Upload Image</Text>
             </TouchableOpacity>
+            <TextInput
+              style={styles.input}
+              placeholder="First Name"
+              value={firstName}
+              onChangeText={setFirstName}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Surname"
+              value={surname}
+              onChangeText={setSurname}
+            />
           </View>
           <TextInput
             style={styles.input}
@@ -314,12 +315,14 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   input: {
+
     height: 40,
     borderColor: "gray",
     borderRadius: 5,
     borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 8,
+    borderColor: "#ddd",
+    padding: 10,
+    marginVertical: 5,
     backgroundColor: "white",
   },
   header: {
@@ -334,15 +337,15 @@ const styles = StyleSheet.create({
   passwordContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 5,
+    marginVertical: 5,
+    backgroundColor: "white",
   },
   passwordInput: {
     flex: 1,
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    paddingHorizontal: 8,
-    backgroundColor: "white",
+    padding: 10,
   },
   successMessage: {
     fontSize: 18,
@@ -359,7 +362,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
-    margin: 10,
+    marginTop: 10,
+    marginBottom: 15,
     alignSelf: "center",
     width: "85%",
   },
@@ -375,7 +379,7 @@ const styles = StyleSheet.create({
   imagePreview: {
     width: 300,
     height: 300,
-    borderRadius: 10,
+    borderRadius: 12,
     marginVertical: 10,
     alignSelf: "center",
   },
