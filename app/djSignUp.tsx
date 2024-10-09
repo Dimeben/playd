@@ -190,7 +190,7 @@ export default function DjSignUp() {
   };
   return (
     <LinearGradient
-      colors={["#C80055", "#A000CC", "#0040CC"]}
+      colors={["#00005B", "#A000CC", "#0040CC"]}
       style={styles.background}
     >
       <KeyboardAvoidingView
@@ -200,7 +200,7 @@ export default function DjSignUp() {
       >
         <ScrollView contentContainerStyle={styles.container}>
           <Text style={styles.header}>
-            <FontAwesome5 name="compact-disc" size={30} color="black" /> DJ
+            <FontAwesome5 name="compact-disc" size={30} color="white" /> DJ
             Signup
           </Text>
           <TouchableOpacity onPress={pickImage} style={styles.signupButton}>
@@ -350,7 +350,6 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   input: {
-
     height: 40,
     borderColor: "gray",
     borderRadius: 5,
@@ -367,7 +366,7 @@ const styles = StyleSheet.create({
     fontFamily: "GeezaPro-Bold",
     marginTop: 10,
     marginBottom: 20,
-    color: "black",
+    color: "white",
   },
   passwordContainer: {
     flexDirection: "row",
@@ -406,6 +405,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     alignSelf: "center",
+    fontWeight: "bold",
   },
   smalllabel: {
     color: "white",

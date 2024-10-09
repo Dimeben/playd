@@ -79,7 +79,6 @@ const UserManageBookings = () => {
 
   useEffect(() => {
     fetchBookings();
-
   }, [username]);
 
   useFocusEffect(
@@ -91,7 +90,6 @@ const UserManageBookings = () => {
   const handlePostFeedback = async (bookingId: string) => {
     const selected = bookings.find((booking) => booking.id === bookingId);
     if (selected) {
-
       try {
         const feedbackData: Feedback = {
           author:
@@ -125,7 +123,6 @@ const UserManageBookings = () => {
         );
 
         await patchDJByUsername(selected.dj, { rating: averageRating });
-    
 
         await updateBooking(bookingId, { feedback_left: true });
 
@@ -157,7 +154,10 @@ const UserManageBookings = () => {
         : item.date;
 
     const bookingDateFormatted = bookingDate.toLocaleDateString();
-    const bookingTimeFormatted = bookingDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const bookingTimeFormatted = bookingDate.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
@@ -175,9 +175,7 @@ const UserManageBookings = () => {
         <Text style={styles.bookingText}>
           Event Details: {item.event_details}
         </Text>
-        <Text style={styles.bookingText}>
-          Comments: {item.comments}
-        </Text>
+        <Text style={styles.bookingText}>Comments: {item.comments}</Text>
         <Text style={styles.bookingText}>Date: {bookingDateFormatted}</Text>
         <Text style={styles.bookingText}>Time: {bookingTimeFormatted}</Text>
         <Text style={styles.bookingText}>Location: {item.location}</Text>
@@ -292,7 +290,7 @@ const UserManageBookings = () => {
 
   return (
     <LinearGradient
-      colors={["#C80055", "#A000CC", "#0040CC"]}
+      colors={["#00005B", "#A000CC", "#0040CC"]}
       style={styles.gradientBackground}
     >
       <SafeAreaView style={styles.safeContainer}>
