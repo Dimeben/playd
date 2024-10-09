@@ -73,6 +73,16 @@ const UserManageBookings = () => {
           date: new Date(),
         };
 
+        if (feedbackData.stars < 1 || feedbackData.stars > 5) {
+          alert("Please enter a valid rating between 1 and 5.");
+          return;
+        }
+
+        if (!feedbackData.title || !feedbackData.stars || !feedback.body) {
+          alert("Please complete all fields");
+          return;
+        }
+
         await postFeedback(feedbackData);
 
         const djFeedbacks = await getFeedback(selected.dj);
@@ -162,28 +172,34 @@ const UserManageBookings = () => {
             <TextInput
               style={styles.input}
               placeholder="Stars (1-5)"
+              value={feedback.stars || 0}
               keyboardType="numeric"
-              value={feedback.stars !== undefined && feedback.stars !== 0 ? feedback.stars.toString() : ""}
               onChangeText={(text) => {
                 const stars = Number(text);
-                if (stars >= 1 && stars <= 5) {
-                  setFeedback((prevFeedback) => ({
-                    ...prevFeedback,
-                    stars,
-                  }));
-                } else {
-                  alert("Please enter a valid rating between 1 and 5.");
-                }
+                setFeedback((prevFeedback) => ({
+                  ...prevFeedback,
+                  stars,
+                }));
               }}
             />
             <Button
               title="Submit Feedback"
               onPress={() => handlePostFeedback(item.id)}
             />
+
             <Button
               title="Cancel"
               color="red"
-              onPress={() => setFeedbackFormVisible(null)}
+              onPress={() => {
+                setFeedbackFormVisible(null),
+                  setFeedback({
+                    title: "",
+                    body: "",
+                    stars: 0,
+                    dj: "",
+                    date: new Date(),
+                  });
+              }}
             />
           </View>
         )}
