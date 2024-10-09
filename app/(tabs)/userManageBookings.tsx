@@ -49,8 +49,27 @@ const UserManageBookings = () => {
     setLoading(true);
     if (username) {
       try {
-        const bookings = await getBookingsByUser(username);
-        setBookings(bookings);
+        const fetchedBookings = await getBookingsByUser(username);
+
+        const sortedBookings = fetchedBookings.sort((a, b) => {
+          const bookingDateA =
+            a.date instanceof Timestamp
+              ? a.date.toDate()
+              : typeof a.date === "string"
+              ? new Date(a.date)
+              : a.date;
+
+          const bookingDateB =
+            b.date instanceof Timestamp
+              ? b.date.toDate()
+              : typeof b.date === "string"
+              ? new Date(b.date)
+              : b.date;
+
+          return bookingDateB.getTime() - bookingDateA.getTime();
+        });
+
+        setBookings(sortedBookings);
       } catch (error) {
         console.error("Error fetching user bookings:", error);
       }
