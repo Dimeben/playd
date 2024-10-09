@@ -77,7 +77,7 @@ const Profile = () => {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={["#C80055", "#A000CC", "#0040CC"]}
+        colors={["#00005B", "#A000CC", "#0040CC"]}
         style={styles.background}
       >
         <SafeAreaView />
@@ -85,7 +85,7 @@ const Profile = () => {
           <MaterialIcons
             name="manage-accounts"
             size={44}
-            color="black"
+            color="white"
             style={styles.icon}
           />
           <Text style={styles.header}> {user?.username}</Text>
@@ -178,6 +178,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "center",
     fontFamily: "GeezaPro-Bold",
+    color: "white",
     // marginTop: 10,
     // marginBottom: 5,
   },
@@ -241,5 +242,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     alignSelf: "center",
+    fontWeight: "bold",
   },
 });

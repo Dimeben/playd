@@ -176,12 +176,12 @@ export default function UserSignUp() {
       >
         <View style={styles.container}>
           <LinearGradient
-            colors={["#C80055", "#A000CC", "#0040CC"]}
+            colors={["#00005B", "#A000CC", "#0040CC"]}
             style={styles.background}
           >
             <ScrollView contentContainerStyle={{ alignItems: "center" }}>
               <Text style={styles.header}>
-                <FontAwesome5 name="compact-disc" size={30} color="black" />{" "}
+                <FontAwesome5 name="compact-disc" size={30} color="white" />{" "}
                 User Signup
               </Text>
               <TouchableOpacity onPress={pickImage} style={styles.signupButton}>
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontFamily: "GeezaPro-Bold",
     alignSelf: "center",
-    color: "black",
+    color: "white",
   },
   input: {
     borderWidth: 1,
@@ -362,6 +362,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     textAlign: "center",
+    fontWeight: "bold",
   },
   paddingLeft: {
     paddingLeft: 10,

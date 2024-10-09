@@ -162,12 +162,12 @@ const DjList = () => {
     return (
       <View style={styles.loadingContainer}>
         <LinearGradient
-          colors={["#C80055", "#A000CC", "#0040CC"]}
+          colors={["#00005B", "#A000CC", "#0040CC"]}
           style={styles.backgroundLoading}
         >
           <View style={styles.containerLoading}>
-            <ActivityIndicator size="large" color="black" />
-            <Text>Loading Profile...</Text>
+            <ActivityIndicator size="large" color="white" />
+            <Text style={styles.white}>Loading Profile...</Text>
           </View>
         </LinearGradient>
       </View>
@@ -176,7 +176,7 @@ const DjList = () => {
 
   return (
     <LinearGradient
-      colors={["#C80055", "#A000CC", "#0040CC"]}
+      colors={["#00005B", "#A000CC", "#0040CC"]}
       style={styles.gradientBackground}
     >
       <SafeAreaView style={styles.container}>
@@ -448,5 +448,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     // flex: 1,
     // height: "100%",
+  },
+  white: {
+    color: "white",
   },
 });
