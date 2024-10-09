@@ -17,6 +17,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import moment from "moment";
 import { AuthContext } from "../../contexts/AuthContext";
 import { LinearGradient } from "expo-linear-gradient";
+import { useFocusEffect } from "@react-navigation/native";
 
 const BookDj = () => {
   const router = useRouter();
@@ -67,13 +68,25 @@ const BookDj = () => {
 
     if (selectedDj) {
       fetchFeedback();
-      setNewBooking({
-        ...newBooking,
+      setNewBooking((prevBooking) => ({
+        ...prevBooking,
         client: username ?? "",
         dj: selectedDj.username,
-      });
+      }));
     }
   }, [selectedDj]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      clearForm();
+      setShowBookingForm(false);
+
+      return () => {
+        clearForm();
+        setShowBookingForm(false);
+      };
+    }, [selectedDj])
+  );
 
   const renderStars = (rating: number) => {
     const totalStars = 5;
