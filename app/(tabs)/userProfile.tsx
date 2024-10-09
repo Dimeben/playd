@@ -17,8 +17,7 @@ import { getUserById, signOut, deleteUser } from "../../firebase/firestore";
 import { Link, useRouter } from "expo-router";
 import { User } from "@/firebase/types";
 import { LinearGradient } from "expo-linear-gradient";
-
-
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const Profile = () => {
   const [user, setUser] = useState<User | undefined>(undefined);
@@ -87,7 +86,15 @@ const Profile = () => {
         style={styles.background}
       >
         <SafeAreaView />
-        <Text style={styles.header}>{user?.username}</Text>
+        <View style={styles.icon}>
+          <MaterialIcons
+            name="manage-accounts"
+            size={44}
+            color="black"
+            style={styles.icon}
+          />
+          <Text style={styles.header}> {user?.username}</Text>
+        </View>
         <Image
           style={styles.image}
           source={{
@@ -146,6 +153,11 @@ const styles = StyleSheet.create({
     maxHeight: 200,
     backgroundColor: "#0553",
   },
+  icon: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 5,
+  },
   card: {
     backgroundColor: "white",
     borderRadius: 16,
@@ -170,9 +182,9 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     alignSelf: "center",
-    fontFamily: "menlo-bold",
-    marginTop: 10,
-    marginBottom: 5,
+    fontFamily: "GeezaPro-Bold",
+    // marginTop: 10,
+    // marginBottom: 5,
   },
   loginMessage: {
     fontSize: 30,
@@ -205,28 +217,28 @@ const styles = StyleSheet.create({
   signupButton: {
     paddingRight: 40,
     paddingLeft: 40,
-    paddingTop: 16,
-    paddingBottom: 16,
+    paddingTop: 9,
+    paddingBottom: 9,
     backgroundColor: "#007AFF",
     borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
     alignSelf: "center",
-    width: "95%",
+    width: "85%",
   },
   deleteButton: {
     paddingRight: 40,
     paddingLeft: 40,
-    paddingTop: 16,
-    paddingBottom: 16,
+    paddingTop: 9,
+    paddingBottom: 9,
     backgroundColor: "red",
     borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
     alignSelf: "center",
-    width: "95%",
+    width: "85%",
   },
   linkText: {
     color: "#fff",

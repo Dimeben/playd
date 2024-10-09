@@ -21,6 +21,7 @@ import { storage } from "../firebase/storage";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 export default function UserSignUp() {
   const [username, setUsername] = useState("");
@@ -156,11 +157,12 @@ export default function UserSignUp() {
             style={styles.background}
           >
             <ScrollView>
-              <Text style={styles.header}>User Signup</Text>
-              <TouchableOpacity onPress={pickImage}>
-                <Text style={[styles.paddingLeft, styles.white]}>
-                  Select an Image
-                </Text>
+              <Text style={styles.header}>
+                <FontAwesome5 name="compact-disc" size={30} color="black" />{" "}
+                User Signup
+              </Text>
+              <TouchableOpacity onPress={pickImage} style={styles.signupButton}>
+                <Text style={styles.linkText}>Select an Image</Text>
               </TouchableOpacity>
               <View>
                 {image && (
@@ -287,9 +289,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 26,
     marginTop: 20,
-    fontFamily: "menlo-bold",
+    fontFamily: "GeezaPro-Bold",
     alignSelf: "center",
-    color: "white",
+    color: "black",
   },
   input: {
     borderWidth: 1,
@@ -327,15 +329,15 @@ const styles = StyleSheet.create({
   signupButton: {
     paddingRight: 40,
     paddingLeft: 40,
-    paddingTop: 16,
-    paddingBottom: 16,
+    paddingTop: 9,
+    paddingBottom: 9,
     backgroundColor: "#007AFF",
     borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
     alignSelf: "center",
-    width: "95%",
+    width: "85%",
   },
   linkText: {
     color: "#fff",
