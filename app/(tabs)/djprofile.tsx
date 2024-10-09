@@ -29,6 +29,8 @@ import moment from "moment";
 import { WebView } from "react-native-webview";
 import SoundCloud from "@/components/SoundCloud";
 import { LinearGradient } from "expo-linear-gradient";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+
 const DjProfilePage = () => {
   const { isAuthenticated, userId, username } = useContext(AuthContext);
   const router = useRouter();
@@ -189,7 +191,10 @@ const DjProfilePage = () => {
 
         <ScrollView>
           <View style={styles.container}>
-            <Text style={styles.header}>{dj.username}</Text>
+            <View style={styles.icon}>
+              <MaterialIcons name="manage-accounts" size={44} color="black" />
+              <Text style={styles.header}> {dj.username}</Text>
+            </View>
             <View style={styles.card}>
               <Pressable>
                 <Text>Username: {dj.username}</Text>
@@ -297,6 +302,12 @@ const styles = StyleSheet.create({
     maxHeight: 150,
     backgroundColor: "#0553",
   },
+  icon: {
+    flexDirection: "row",
+    justifyContent: "center",
+    // marginBottom: 5,
+    marginTop: 14,
+  },
   card: {
     backgroundColor: "white",
     borderRadius: 16,
@@ -322,7 +333,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "center",
     fontFamily: "GeezaPro-Bold",
-    marginTop: 14,
+    // marginTop: 14,
     marginBottom: 0,
     color: "black",
   },

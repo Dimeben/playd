@@ -17,6 +17,8 @@ import { getUserById, signOut } from "../../firebase/firestore";
 import { Link, useRouter } from "expo-router";
 import { User } from "@/firebase/types";
 import { LinearGradient } from "expo-linear-gradient";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+
 const Profile = () => {
   const [user, setUser] = useState<User | undefined>(undefined);
   const { isAuthenticated, userId } = useContext(AuthContext);
@@ -77,7 +79,15 @@ const Profile = () => {
         style={styles.background}
       >
         <SafeAreaView />
-        <Text style={styles.header}>{user?.username}</Text>
+        <View style={styles.icon}>
+          <MaterialIcons
+            name="manage-accounts"
+            size={44}
+            color="black"
+            style={styles.icon}
+          />
+          <Text style={styles.header}> {user?.username}</Text>
+        </View>
         <Image
           style={styles.image}
           source={{
@@ -136,6 +146,11 @@ const styles = StyleSheet.create({
     maxHeight: 200,
     backgroundColor: "#0553",
   },
+  icon: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 5,
+  },
   card: {
     backgroundColor: "white",
     borderRadius: 16,
@@ -161,8 +176,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "center",
     fontFamily: "GeezaPro-Bold",
-    marginTop: 10,
-    marginBottom: 5,
+    // marginTop: 10,
+    // marginBottom: 5,
   },
   loginMessage: {
     fontSize: 30,
