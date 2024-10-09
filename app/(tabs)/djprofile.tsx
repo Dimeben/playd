@@ -134,9 +134,12 @@ const DjProfilePage = () => {
           colors={["#C80055", "#A000CC", "#0040CC"]}
           style={styles.background}
         >
-          <ActivityIndicator size="large" color="black" />
+          {/* <ActivityIndicator
+            size="large"
+            color="black"
+            style={{ justifyContent: "center", flex: 1 }}
+          /> */}
         </LinearGradient>
-
         <Text>Loading Profile...</Text>
       </View>
     );

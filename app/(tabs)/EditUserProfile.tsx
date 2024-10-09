@@ -93,9 +93,7 @@ const EditUserProfile = () => {
       <ScrollView>
         <View style={styles.container}>
           <SafeAreaView />
-          <Text style={styles.header}>
-            <Feather name="edit" size={30} color="black" /> Edit Your Profile
-          </Text>
+          <Text style={styles.header}>Edit Your Profile</Text>
 
           {goBackIsVisible && (
             <TouchableOpacity
