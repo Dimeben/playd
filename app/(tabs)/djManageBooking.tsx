@@ -17,7 +17,7 @@ import {
 } from "../../firebase/firestore";
 import { Booking } from "../../firebase/types";
 import { SafeAreaView } from "react-native";
-
+import { LinearGradient } from "expo-linear-gradient";
 const DjManageBookings = () => {
   const { username } = useContext(AuthContext);
   const [djBookings, setDjBookings] = useState<Booking[]>([]);
@@ -67,7 +67,11 @@ const DjManageBookings = () => {
     }
   };
 
-    return (
+  return (
+    <LinearGradient
+      colors={["#C80055", "#A000CC", "#0040CC"]}
+      style={styles.gradientBackground}
+    >
       <SafeAreaView style={styles.safeContainer}>
         <KeyboardAvoidingView
           style={styles.container}
@@ -76,26 +80,43 @@ const DjManageBookings = () => {
         >
           <ScrollView contentContainerStyle={styles.scrollContainer}>
             <Text style={styles.header}>Your Bookings</Text>
-            
+
             {djBookings.length === 0 ? (
-              <Text style={styles.noBookingsMessage}>No bookings requested</Text>
+              <Text style={styles.noBookingsMessage}>
+                No bookings requested
+              </Text>
             ) : (
               djBookings.map((booking) => (
                 <View key={booking.id} style={styles.bookingCard}>
-                  <Text style={styles.details}>Client: {booking.client}</Text>
-                  <Text style={styles.details}>Occasion: {booking.occasion}</Text>
-                  <Text style={styles.details}>Location: {booking.location}</Text>
-                  <Text style={styles.details}>
+                  <Text style={styles.clientDetails}>
+                    Client: {booking.client}
+                  </Text>
+                  <Text style={styles.occasionDetails}>
+                    Occasion: {booking.occasion}
+                  </Text>
+                  <Text style={styles.locationDetails}>
+                    Location: {booking.location}
+                  </Text>
+                  <Text style={styles.dateDetails}>
                     Date: {booking.date?.toDateString()}
                   </Text>
-                  <Text style={styles.statusMessage}>
+                  <Text
+                    style={[
+                      styles.statusMessage,
+                      booking.status === "accepted"
+                        ? styles.accepted
+                        : booking.status === "declined"
+                        ? styles.declined
+                        : styles.pending,
+                    ]}
+                  >
                     {booking.status === "accepted"
                       ? "Booking Accepted"
                       : booking.status === "declined"
                       ? "Booking Declined"
                       : "Pending Decision"}
                   </Text>
-    
+
                   {booking.status === "pending" && (
                     <View style={styles.buttonContainer}>
                       <Pressable
@@ -118,16 +139,17 @@ const DjManageBookings = () => {
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    );
-  };
+    </LinearGradient>
+  );
+};
 
 const styles = StyleSheet.create({
   safeContainer: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   container: {
     flex: 1,
+    padding: 15,
   },
   scrollContainer: {
     padding: 16,
@@ -135,38 +157,53 @@ const styles = StyleSheet.create({
   bookingCard: {
     padding: 10,
     marginBottom: 10,
-    backgroundColor: "#fff",
-    borderRadius: 5,
-    shadowColor: "#000",
+    backgroundColor: "#f2f0f7",
+    borderRadius: 12,
+    shadowColor: "grey",
+    shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 3,
   },
-  details: {
+  dateDetails: {
     fontSize: 14,
+    color: "black",
+  },
+  clientDetails: {
+    fontSize: 16,
+    color: "black",
+    fontWeight: "bold",
+  },
+  occasionDetails: {
+    fontSize: 14,
+    color: "black",
+  },
+  locationDetails: {
+    fontSize: 14,
+    color: "black",
   },
   statusMessage: {
     fontSize: 16,
     fontWeight: "bold",
     marginVertical: 10,
-    color: "#333",
   },
   buttonContainer: {
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: "#ccc",
     padding: 10,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-evenly",
   },
   button: {
     padding: 10,
     backgroundColor: "#4CAF50",
-    borderRadius: 5,
+    borderRadius: 12,
     alignItems: "center",
+    flex: 1,
+    marginHorizontal: 20,
   },
   buttonText: {
-    color: "#fff",
+    color: "white",
     fontWeight: "bold",
   },
   noBookingsMessage: {
@@ -174,15 +211,27 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginTop: 20,
-    color: "#555",
+    color: "white",
   },
   header: {
     fontSize: 18,
-  fontWeight: "bold",
-  marginBottom: 10,
-  marginLeft: 16, 
-  textAlign: "left", 
-  color: "#333",
+    fontWeight: "bold",
+    marginBottom: 10,
+    marginLeft: 16,
+    textAlign: "left",
+    color: "white",
+  },
+  gradientBackground: {
+    flex: 1,
+  },
+  accepted: {
+    color: "green",
+  },
+  declined: {
+    color: "red",
+  },
+  pending: {
+    color: "blue",
   },
 });
 

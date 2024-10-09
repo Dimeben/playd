@@ -171,7 +171,7 @@ const BookDj = () => {
 
   return (
     <LinearGradient
-      colors={["#93C6F9", "#97B4FA", "#400691"]}
+      colors={["#C80055", "#A000CC", "#0040CC"]}
       style={styles.gradientBackground}
     >
       <SafeAreaView style={styles.container}>
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 5,
     marginLeft: 10,
-    color: "black",
+    color: "white",
   },
   input: {
     height: 40,
@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
   feedbackItem: {
     marginBottom: 10,
     padding: 12,
-    borderRadius: 5,
+    borderRadius: 12,
     backgroundColor: "#f2f0f7",
     borderWidth: 1,
     shadowColor: "grey",
@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   feedbackText: {
-    fontSize: 12,
+    fontSize: 14,
     color: "black",
     marginBottom: 4,
   },

@@ -16,6 +16,7 @@ import { DJ } from "../../firebase/types";
 import { LinearGradient } from "expo-linear-gradient";
 import Feather from "@expo/vector-icons/Feather";
 
+import { useFocusEffect } from "@react-navigation/native";
 const EditDjProfile = () => {
   const router = useRouter();
   const { userId } = useContext(AuthContext);
@@ -44,6 +45,7 @@ const EditDjProfile = () => {
             setDj(djData);
             setGenres(djData.genres || []);
             setOccasions(djData.occasions || []);
+            setGoBackIsVisible(true);
           }
         } catch (err) {
           console.error("Error fetching DJ data:", err);
@@ -76,6 +78,7 @@ const EditDjProfile = () => {
 
         await patchDJ(userId, updatedData);
         setGoBackIsVisible(true);
+        router.push("/(tabs)/djprofile");
         Alert.alert("Profile successfully updated!");
       } else {
         Alert.alert("Error", "User ID is not available.");
@@ -84,6 +87,32 @@ const EditDjProfile = () => {
       console.log("Error updating profile:", err);
     }
   };
+
+  const clearForm = async () => {
+    const djData = await getDJById(userId!);
+    if (djData) {
+      setDj(djData);
+      setGenres(djData.genres || []);
+      setOccasions(djData.occasions || []);
+      setUpdateFirstName(djData.first_name || "");
+      setUpdateSurname(djData.surname || "");
+      setUpdateCity(djData.city || "");
+      setUpdatePrice(djData.price);
+      setUpdateDescription(djData.description || "");
+      setGoBackIsVisible(true);
+    }
+  };
+
+  const handleGoBack = () => {
+    clearForm();
+    router.push("/(tabs)/djprofile");
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      clearForm();
+    }, [userId])
+  );
 
   const addGenre = () => {
     if (newGenre.trim() !== "") {
@@ -143,7 +172,7 @@ const EditDjProfile = () => {
             {goBackIsVisible && (
               <TouchableOpacity
                 style={styles.buttonGoBack}
-                onPress={() => router.push("/(tabs)/djprofile")}
+                onPress={handleGoBack}
               >
                 <Text style={styles.buttonText}>Go Back</Text>
               </TouchableOpacity>
