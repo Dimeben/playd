@@ -156,7 +156,7 @@ export default function UserSignUp() {
             colors={["#C80055", "#A000CC", "#0040CC"]}
             style={styles.background}
           >
-            <ScrollView>
+            <ScrollView contentContainerStyle={{ alignItems: "center" }}>
               <Text style={styles.header}>
                 <FontAwesome5 name="compact-disc" size={30} color="black" />{" "}
                 User Signup
@@ -297,7 +297,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
     padding: 10,
-    marginLeft: 8,
     marginVertical: 5,
     borderRadius: 5,
     width: "95%",
@@ -309,10 +308,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 5,
-    paddingHorizontal: 10,
     marginVertical: 5,
     width: "95%",
-    marginLeft: 8,
 
     backgroundColor: "white",
   },
