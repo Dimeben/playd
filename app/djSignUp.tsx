@@ -315,11 +315,14 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   input: {
+
+    height: 40,
+    borderColor: "gray",
+    borderRadius: 5,
     borderWidth: 1,
     borderColor: "#ddd",
     padding: 10,
     marginVertical: 5,
-    borderRadius: 5,
     backgroundColor: "white",
   },
   header: {
@@ -354,8 +357,9 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingTop: 9,
     paddingBottom: 9,
-    backgroundColor: "#007AFF",
-    borderRadius: 12,
+    borderWidth: 1,
+    backgroundColor: "#1c93ed",
+    borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     marginTop: 10,

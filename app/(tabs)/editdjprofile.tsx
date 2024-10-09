@@ -142,7 +142,7 @@ const EditDjProfile = () => {
       <View style={styles.loadingContainer}>
         <LinearGradient
           colors={["#C80055", "#A000CC", "#0040CC"]}
-          style={styles.background}
+          style={styles.backgroundLoading}
         >
           <Text>Loading DJ data...</Text>
         </LinearGradient>
@@ -221,17 +221,19 @@ const EditDjProfile = () => {
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Genres</Text>
-            {genres.map((g, index) => (
-              <View key={index} style={styles.row}>
-                <Text style={styles.white}>{g} </Text>
-                <TouchableOpacity
-                  onPress={() => deleteGenre(index)}
-                  style={styles.smallButton}
-                >
-                  <Text style={styles.linkText}>Delete</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
+            <View style={styles.row}>
+              {genres.map((g, index) => (
+                <View key={index}>
+                  <Text style={styles.white}>{g} </Text>
+                  <TouchableOpacity
+                    onPress={() => deleteGenre(index)}
+                    style={styles.smallButton}
+                  >
+                    <Text style={styles.linkText}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
             <TextInput
               style={styles.input}
               placeholder={`${
@@ -251,17 +253,19 @@ const EditDjProfile = () => {
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Occasions</Text>
-            {occasions.map((o, index) => (
-              <View key={index} style={styles.row}>
-                <Text style={styles.white}>{o}</Text>
-                <TouchableOpacity
-                  style={styles.smallButton}
-                  onPress={() => deleteOccasion(index)}
-                >
-                  <Text style={styles.linkText}>Delete</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
+            <View style={styles.row}>
+              {occasions.map((o, index) => (
+                <View key={index}>
+                  <Text style={styles.white}>{o}</Text>
+                  <TouchableOpacity
+                    style={styles.smallButton}
+                    onPress={() => deleteOccasion(index)}
+                  >
+                    <Text style={styles.linkText}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
             <TextInput
               style={styles.input}
               placeholder={`${
@@ -331,12 +335,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "row",
   },
-  background: {
-    // position: "absolute",
-    // left: 0,
-    // right: 0,
-    // top: 0,
-    // bottom: 0,
+  backgroundLoading: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
   },
   header: {
     fontSize: 30,
@@ -374,18 +378,15 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flex: 1,
-    // borderLeftWidth: 1,
-    // borderRightWidth: 1,
-    // borderTopWidth: 1,
-    // borderBottomWidth: 1,
-    width: 50,
+        width: 50,
     marginBottom: 5,
     overflow: "hidden",
   },
   buttonGoBack: {
-    borderRadius: 12,
-    backgroundColor: "#007AFF",
+    borderRadius: 14,
+    backgroundColor: "#1c93ed",
     width: 120,
+    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
     paddingLeft: 10,
@@ -396,7 +397,8 @@ const styles = StyleSheet.create({
   },
   button: {
     height: 47,
-    borderRadius: 12,
+    borderRadius: 14,
+    borderWidth: 1,
     backgroundColor: "#007AFF",
     width: 80,
     alignItems: "center",
@@ -434,6 +436,7 @@ const styles = StyleSheet.create({
     backgroundColor: "red",
     borderRadius: 12,
     borderRightWidth: 1,
+    borderWidth: 1,
     overflow: "hidden",
     paddingLeft: 14,
     paddingRight: 14,
@@ -449,8 +452,9 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingTop: 9,
     paddingBottom: 9,
-    backgroundColor: "#007AFF",
-    borderRadius: 12,
+    borderWidth: 1,
+    backgroundColor: "#1c93ed",
+    borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
@@ -471,5 +475,6 @@ const styles = StyleSheet.create({
   },
   white: {
     color: "white",
+    marginLeft: 19,
   },
 });

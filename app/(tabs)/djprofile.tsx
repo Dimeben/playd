@@ -128,13 +128,15 @@ const DjProfilePage = () => {
           colors={["#C80055", "#A000CC", "#0040CC"]}
           style={styles.background}
         >
-          {/* <ActivityIndicator
-            size="large"
-            color="black"
-            style={{ justifyContent: "center", flex: 1 }}
-          /> */}
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator
+              size="large"
+              color="black"
+              style={{ justifyContent: "center" }}
+            />
+            <Text>Loading Profile...</Text>
+          </View>
         </LinearGradient>
-        <Text>Loading Profile...</Text>
       </View>
     );
   }
@@ -219,7 +221,7 @@ const DjProfilePage = () => {
                   params: { dj: dj },
                 }}
               >
-                <Text style={styles.linkText}>Edit Profile</Text>
+                <Text style={styles.linkText}>{"     "}Edit Profile</Text>
               </Link>
             </View>
             <TouchableOpacity
@@ -296,6 +298,11 @@ const styles = StyleSheet.create({
     minHeight: 150,
     maxHeight: 150,
     backgroundColor: "#0553",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   icon: {
     flexDirection: "row",
@@ -398,8 +405,9 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingTop: 9,
     paddingBottom: 9,
-    backgroundColor: "#007AFF",
-    borderRadius: 12,
+    borderWidth: 1,
+    backgroundColor: "#1c93ed",
+    borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
@@ -411,6 +419,8 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingTop: 9,
     paddingBottom: 9,
+    borderWidth: 1,
+
     backgroundColor: "red",
     borderRadius: 12,
     borderRightWidth: 1,

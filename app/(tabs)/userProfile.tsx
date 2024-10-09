@@ -108,7 +108,7 @@ const Profile = () => {
               <Text>City: {user.city}</Text>
             </Pressable>
             <Link style={styles.signupButton} href="/EditUserProfile">
-              <Text style={styles.linkText}>Edit Profile</Text>
+              <Text style={styles.linkText}>{"         "}Edit Profile</Text>
             </Link>
           </View>
         )}
@@ -159,8 +159,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     padding: 16,
     margin: 16,
-    height: 180,
-    width: "80%",
+    height: "auto",
+    width: "auto",
     ...Platform.select({
       ios: {
         shadowOffset: { width: 2, height: 2 },
@@ -192,8 +192,8 @@ const styles = StyleSheet.create({
     top: 50,
     left: 10,
     padding: 10,
-    backgroundColor: "#007AFF",
-    borderRadius: 12,
+    backgroundColor: "#005bbd",
+    borderRadius: 5,
   },
   buttonText: {
     color: "#fff",
@@ -214,8 +214,9 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingTop: 9,
     paddingBottom: 9,
-    backgroundColor: "#007AFF",
-    borderRadius: 12,
+    borderWidth: 1,
+    backgroundColor: "#1c93ed",
+    borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
@@ -227,6 +228,7 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingTop: 9,
     paddingBottom: 9,
+    borderWidth: 1,
     backgroundColor: "red",
     borderRadius: 12,
     borderRightWidth: 1,
