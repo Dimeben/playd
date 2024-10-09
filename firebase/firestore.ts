@@ -41,18 +41,14 @@ export async function createUser(
   }
 ) {
   try {
-    console.log("createUser - Line 1 - Attempting to create user with email:", email);
     
     if (!auth) {
-      console.log("createUser - Line 6");
       throw new Error("Authentication instance is undefined.");
     }
 
     const usernameExists = await isUsernameTaken(newUser.username!, usersRef);
-    console.log("createUser - Line 10 - Checked if username exists:", newUser.username);
 
     if (usernameExists) {
-      console.log("createUser - Line 14 - Username Exists");
       throw new Error("Username is already taken.");
     }
 
@@ -60,7 +56,6 @@ export async function createUser(
       "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/DJ-1.jpg?alt=media&token=b112f41e-5c50-44b7-b0ce-45240bef1cec";
     if (!newUser.profile_picture) {
       newUser.profile_picture = defaultProfilePicture;
-      console.log("createUser - Line 22 - Default profile picture set.");
     }
 
     const userCredential = await createUserWithEmailAndPassword(
@@ -69,18 +64,14 @@ export async function createUser(
       password
     );
     const user = userCredential.user;
-    console.log("createUser - Line 29 - User created:", user.uid);
 
     await setDoc(doc(usersRef, user.uid), newUser);
-    console.log("createUser - Line 33 - User data saved.");
 
     const userDocRef = doc(usersRef, user.uid);
     const userDocSnapshot = await getDoc(userDocRef);
-    console.log("createUser - Line 37 - Retrieved user document:", userDocSnapshot.data());
 
     return userDocSnapshot.data();
   } catch (error) {
-    console.log("createUser - Line 42 - Error occurred");
     console.error("Error: ", error);
     throw error;
   }
@@ -103,18 +94,14 @@ export async function createDJ(
   }
 ) {
   try {
-    console.log("createDJ - Line 1 - Attempting to create DJ with email:", email);
 
     if (!auth) {
-      console.log("createDJ - Line 6");
       throw new Error("Authentication instance is undefined.");
     }
 
     const usernameExists = await isUsernameTaken(newDJ.username!, djRef);
-    console.log("createDJ - Line 10 - Checked if username exists:", newDJ.username);
 
     if (usernameExists) {
-      console.log("createDJ - Line 14 - Username Exists");
       throw new Error("Username is already taken.");
     }
 
@@ -122,7 +109,6 @@ export async function createDJ(
       "https://firebasestorage.googleapis.com/v0/b/find-my-dj-3a559.appspot.com/o/DJ-1.jpg?alt=media&token=b112f41e-5c50-44b7-b0ce-45240bef1cec";
     if (!newDJ.profile_picture) {
       newDJ.profile_picture = defaultProfilePicture;
-      console.log("createDJ - Line 22 - Default profile picture set.");
     }
 
     const userCredential = await createUserWithEmailAndPassword(
@@ -131,18 +117,14 @@ export async function createDJ(
       password
     );
     const user = userCredential.user;
-    console.log("createDJ - Line 29 - DJ created:", user.uid);
 
     await setDoc(doc(djRef, user.uid), newDJ);
-    console.log("createDJ - Line 33 - DJ data saved.");
 
     const djDocRef = doc(djRef, user.uid);
     const djDocSnapshot = await getDoc(djDocRef);
-    console.log("createDJ - Line 37 - Retrieved DJ document:", djDocSnapshot.data());
 
     return djDocSnapshot.data();
   } catch (error) {
-    console.log("createDJ - Line 42 - Error occurred");
     console.error("Error: ", error);
     throw error;
   }
@@ -150,27 +132,20 @@ export async function createDJ(
 
 export async function deleteUser(userId: string) {
   try {
-    console.log("deleteUser - Line 1 - Attempting to delete user with ID:", userId);
     
     if (!auth) {
-      console.log("deleteUser - Line 6");
       throw new Error("Authentication instance is undefined.");
     }
     const user = auth.currentUser;
     if (!user || user.uid !== userId) {
-      console.log("deleteUser - Line 10 - No valid authenticated user found for deletion.");
       throw new Error("No valid authenticated user found for deletion.");
     }
 
     const userDocRef = doc(usersRef, userId);
-    console.log("deleteUser - Line 16 - Deleting user document:", userId);
     await deleteDoc(userDocRef);
-    console.log("deleteUser - Line 19 - User document deleted from Firestore.");
 
     await firebaseDeleteUser(user);
-    console.log("deleteUser - Line 22 - User deleted from Firebase Authentication.");
   } catch (error) {
-    console.log("deleteUser - Line 25 - Error occurred");
     console.error("Error deleting user: ", error);
     throw error;
   }
@@ -178,44 +153,34 @@ export async function deleteUser(userId: string) {
 
 export async function deleteDJ(userId: string) {
   try {
-    console.log("deleteDJ - Line 1 - Attempting to delete DJ with ID:", userId);
     
     if (!auth) {
-      console.log("deleteDJ - Line 6");
       throw new Error("Authentication instance is undefined.");
     }
     const user = auth.currentUser;
     if (!user || user.uid !== userId) {
-      console.log("deleteDJ - Line 10 - No valid authenticated DJ found for deletion.");
       throw new Error("No valid authenticated DJ found for deletion.");
     }
 
     const djDocRef = doc(djRef, userId);
-    console.log("deleteDJ - Line 16 - Deleting DJ document:", userId);
     await deleteDoc(djDocRef);
-    console.log("deleteDJ - Line 19 - DJ document deleted from Firestore.");
 
     await firebaseDeleteUser(user);
-    console.log("deleteDJ - Line 22 - DJ deleted from Firebase Authentication.");
   } catch (error) {
-    console.log("deleteDJ - Line 25 - Error occurred");
     console.error("Error deleting DJ: ", error);
     throw error;
   }
 }
 
 export function signIn(email: string, password: string) {
-  console.log("signIn - Line 1 - Attempting to sign in with email:", email);
   
   if (!auth) {
-    console.log("signIn - Line 6 - Authentication instance is undefined.");
     throw new Error("Authentication instance is undefined.");
   }
   
   return signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
-      console.log("signIn - Line 12 - Signed in user:", user);
       return user;
     })
     .catch((error) => {
@@ -228,22 +193,17 @@ export function signIn(email: string, password: string) {
 
 export async function signOut() {
   try {
-    console.log("signOut - Line 1 - Attempting to sign out.");
     if (!auth) {
-      console.log("signOut - Line 5 - Authentication instance is undefined.");
       throw new Error("Authentication instance is undefined.");
     }
     await firebaseSignOut(auth);
-    console.log("signOut - Line 9 - User signed out successfully.");
   } catch (error) {
-    console.log("signOut - Line 12 - Error occurred");
     console.error("Error signing out: ", error);
     throw error;
   }
 }
 
 export async function getAllDjs(): Promise<DJ[]> {
-  console.log("getAllDjs - Line 1 - Fetching all DJs.");
   const allDjs = query(collection(db, "djs"));
   const djsArray: DJ[] = [];
   const getAllDjsSnapshot: QuerySnapshot<DocumentData> = await getDocs(allDjs);
@@ -255,12 +215,10 @@ export async function getAllDjs(): Promise<DJ[]> {
       ...djData,
     });
   });
-  console.log("getAllDjs - Line 12 - Retrieved DJs:", djsArray);
   return djsArray;
 }
 
 export async function getUserById(userId: string): Promise<User | null> {
-  console.log("getUserById - Line 1 - Fetching User by ID:", userId);
 
   try {
     const userDocRef = doc(usersRef, userId); 
@@ -268,10 +226,8 @@ export async function getUserById(userId: string): Promise<User | null> {
     const userDocSnapshot = await getDoc(userDocRef);
 
     if (userDocSnapshot.exists()) {
-      console.log("getUserById - Line 6 - User found:", userDocSnapshot.data());
       return userDocSnapshot.data() as User
     } else {
-      console.log("getUserById - Line 11 - No user found for ID:", userId);
       return null;
     }
   } catch (error) {
@@ -281,21 +237,17 @@ export async function getUserById(userId: string): Promise<User | null> {
 }
 
 export async function getDJById(id: string): Promise<DJ | null> {
-  console.log("getDJById - Line 1 - Fetching DJ by ID:", id);
   const djDocRef = doc(djRef, id);
   const djDocSnapshot = await getDoc(djDocRef);
 
   if (djDocSnapshot.exists()) {
-    console.log("getDJById - Line 6 - DJ found:", djDocSnapshot.data());
     return djDocSnapshot.data() as DJ
   } else {
-    console.log("getDJById - Line 11 - No DJ found for ID:", id);
     return null;
   }
 }
 
 export async function getFeedback(djUsername: string): Promise<Feedback[]> {
-  console.log("getFeedback - Line 1 - Fetching feedback for DJ:", djUsername);
 
   const feedbackArray: Feedback[] = [];
 
@@ -313,9 +265,7 @@ export async function getFeedback(djUsername: string): Promise<Feedback[]> {
       });
     });
 
-    console.log("getFeedback - Line 12 - Retrieved feedback:", feedbackArray);
   } catch (error) {
-    console.error("getFeedback - Error fetching feedback:", error);
     throw error; 
   }
 
@@ -324,7 +274,6 @@ export async function getFeedback(djUsername: string): Promise<Feedback[]> {
 
 export async function postFeedback(feedback: Feedback): Promise<void> {
   try {
-    console.log("Attempting to post feedback:", feedback);
 
     if (
       !feedback.author || 
@@ -346,12 +295,9 @@ export async function postFeedback(feedback: Feedback): Promise<void> {
       title: feedback.title,
       date: Timestamp.fromDate(feedback.date),
     };
-    console.log(feedbackData)
     await addDoc(feedbackRef, feedbackData);
 
-    console.log("Feedback posted successfully.");
   } catch (error) {
-    console.error("Error posting feedback: ", error);
     throw error;
   }
 }
@@ -378,6 +324,7 @@ export const getBookingsByUser = async (username: string): Promise<Booking[]> =>
         location: data.location || "",
         occasion: data.occasion || "",
         status: data.status || "pending",
+        feedback_left: data.feedback_left || false
       });
     });
 
@@ -408,6 +355,7 @@ export const getBookingsByDj = async (djUsername: string): Promise<Booking[]> =>
         location: data.location || "",
         occasion: data.occasion || "",
         status: data.status || "pending",
+        feedback_left: data.feedback_left || false
       });
     });
 
@@ -422,7 +370,6 @@ export const acceptBooking = async (bookingId: string): Promise<void> => {
   try {
     const bookingRef = doc(db, "bookings", bookingId);
     await updateDoc(bookingRef, { status: "accepted" });
-    console.log("Booking accepted");
   } catch (error) {
     console.error("Error accepting booking:", error);
   }
@@ -432,7 +379,6 @@ export const denyBooking = async (bookingId: string): Promise<void> => {
   try {
     const bookingRef = doc(db, "bookings", bookingId);
     await updateDoc(bookingRef, { status: "declined" });
-    console.log("Booking declined");
   } catch (error) {
     console.error("Error denying booking:", error);
   }
@@ -448,29 +394,27 @@ export async function createBooking(booking: Partial<Booking>): Promise<void> {
 }
 
 export async function updateBooking(bookingId: string, updatedData: Partial<Booking>): Promise<void> {
-  try {
-    console.log("updateBooking - Line 1 - Attempting to update booking ID:", bookingId);
 
+  try {
+  
     const bookingDocRef = doc(bookingsRef, bookingId);
 
     await updateDoc(bookingDocRef, updatedData);
-
-    console.log("updateBooking - Line 5 - Booking updated successfully.");
+    
   } catch (error) {
-    console.log("updateBooking - Line 8 - Error occurred");
     console.error("Error updating booking: ", error);
+  console.error("Error details: ", (error as Error).message);
     throw error;
   }
 }
 
 export async function deleteBooking(bookingId: string): Promise<void> {
   try {
-    console.log("deleteBooking - Line 1 - Attempting to delete booking ID:", bookingId);
+    
     const bookingDocRef = doc(bookingsRef, bookingId);
     await deleteDoc(bookingDocRef);
-    console.log("deleteBooking - Line 5 - Booking deleted successfully.");
   } catch (error) {
-    console.log("deleteBooking - Line 8 - Error occurred");
+
     console.error("Error deleting booking: ", error);
     throw error;
   }
@@ -478,15 +422,13 @@ export async function deleteBooking(bookingId: string): Promise<void> {
 
 export async function patchUser(userId: string, newDetails: Partial<User>): Promise<void> {
   try {
-    console.log("patchUser - Line 1 - Attempting to update user ID:", userId);
+
 
     const userDocRef = doc(usersRef, userId);
 
     await updateDoc(userDocRef, newDetails);
 
-    console.log("patchUser - Line 5 - User updated successfully.");
   } catch (error) {
-    console.log("patchUser - Line 8 - Error occurred");
     console.error("Error updating user: ", error);
     throw error;
   }
@@ -494,15 +436,12 @@ export async function patchUser(userId: string, newDetails: Partial<User>): Prom
 
 export async function patchDJ(djId: string, newDetails: Partial<DJ>): Promise<void> {
   try {
-    console.log("patchDJ - Line 1 - Attempting to update DJ ID:", djId);
 
     const djDocRef = doc(djRef, djId);
 
     await updateDoc(djDocRef, newDetails);
 
-    console.log("patchDJ - Line 5 - DJ updated successfully.");
   } catch (error) {
-    console.log("patchDJ - Line 8 - Error occurred");
     console.error("Error updating DJ: ", error);
     throw error; 
   }
@@ -510,7 +449,6 @@ export async function patchDJ(djId: string, newDetails: Partial<DJ>): Promise<vo
 
 export async function patchDJByUsername(username: string, newDetails: Partial<DJ>): Promise<void> {
   try {
-    console.log("patchDJByUsername - Attempting to find DJ with username:", username);
 
     const djQuery = query(djRef, where("username", "==", username));
     
@@ -519,17 +457,13 @@ export async function patchDJByUsername(username: string, newDetails: Partial<DJ
       const djDoc = querySnapshot.docs[0];
       const djId = djDoc.id;
 
-      console.log("patchDJByUsername - DJ found with ID:", djId);
 
       await patchDJ(djId, newDetails);
-
-      console.log("patchDJByUsername - DJ updated successfully.");
     } else {
       console.error("patchDJByUsername - No DJ found with the specified username.");
       throw new Error("No DJ found with the specified username.");
     }
   } catch (error) {
-    console.log("patchDJByUsername - Error occurred while updating DJ.");
     console.error("Error updating DJ by username: ", error);
     throw error; 
   }

@@ -27,24 +27,22 @@ const Profile = () => {
   const fetchUser = async () => {
     if (userId) {
       try {
-        console.log("profile useEffect - Line 27");
+     
         const userData = await getUserById(userId);
         if (userData) {
-          console.log("profile useEffect - Line 30");
           setUser(userData as User);
         } else {
-          console.log("profile useEffect - Line 33");
           console.log("User doesn't exist");
         }
       } catch (err) {
-        console.log("profile useEffect - Line 37");
+      
         console.error("Error fetching user: ", (err as Error).message);
       }
     }
   };
-  console.log("profile useEffect - Line 42");
+
   useEffect(() => {
-    console.log("profile useEffect - Line 23");
+
     fetchUser();
   }, [userId]);
 
