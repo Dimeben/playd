@@ -177,8 +177,8 @@ const styles = StyleSheet.create({
   linkButton: {
     paddingRight: 32,
     paddingLeft: 32,
-    paddingTop: 16,
-    paddingBottom: 16,
+    paddingTop: 9,
+    paddingBottom: 9,
     backgroundColor: "#007AFF",
     borderRadius: 14,
     overflow: "hidden",
@@ -189,8 +189,8 @@ const styles = StyleSheet.create({
   loginButton: {
     paddingRight: 40,
     paddingLeft: 40,
-    paddingTop: 16,
-    paddingBottom: 16,
+    paddingTop: 9,
+    paddingBottom: 9,
     backgroundColor: "#007AFF",
     borderRadius: 14,
     overflow: "hidden",
