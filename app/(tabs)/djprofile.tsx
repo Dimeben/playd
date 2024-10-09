@@ -413,7 +413,8 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingTop: 9,
     paddingBottom: 9,
-    backgroundColor: "#005bbd",
+    borderWidth: 1,
+    backgroundColor: "#1c93ed",
     borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
@@ -426,6 +427,8 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingTop: 9,
     paddingBottom: 9,
+    borderWidth: 1,
+
     backgroundColor: "red",
     borderRadius: 14,
     borderRightWidth: 1,

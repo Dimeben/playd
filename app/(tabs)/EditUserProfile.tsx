@@ -99,10 +99,12 @@ const EditUserProfile = () => {
       <SafeAreaView style={styles.container}>
         <LinearGradient
           colors={["#C80055", "#A000CC", "#0040CC"]}
-          style={styles.background}
+          style={styles.backgroundLoading}
         >
-          <ActivityIndicator size="large" color="black" />
-          <Text>Loading user data...</Text>
+          <View style={styles.container}>
+            <ActivityIndicator size="large" color="black" />
+            <Text>Loading profile...</Text>
+          </View>
         </LinearGradient>
       </SafeAreaView>
     );
@@ -212,6 +214,15 @@ const styles = StyleSheet.create({
     flex: 1,
     // height: "100%",
   },
+  backgroundLoading: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    // flex: 1,
+    // height: "100%",
+  },
   formContainer: {
     flexDirection: "row",
     marginLeft: 10,
@@ -245,7 +256,8 @@ const styles = StyleSheet.create({
   },
   buttonGoBack: {
     borderRadius: 25,
-    backgroundColor: "#005bbd",
+    backgroundColor: "#1c93ed",
+    borderWidth: 1,
     width: 120,
     alignItems: "center",
     justifyContent: "center",
@@ -296,7 +308,8 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingTop: 9,
     paddingBottom: 9,
-    backgroundColor: "#005bbd",
+    borderWidth: 1,
+    backgroundColor: "#1c93ed",
     borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
