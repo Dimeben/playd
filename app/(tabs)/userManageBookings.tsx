@@ -126,6 +126,7 @@ const UserManageBookings = () => {
         : item.date;
 
     const bookingDateFormatted = bookingDate.toLocaleDateString();
+    const bookingTimeFormatted = bookingDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
@@ -133,14 +134,18 @@ const UserManageBookings = () => {
     bookingDate.setHours(0, 0, 0, 0);
 
     const canLeaveFeedback = currentDate > bookingDate;
-
+    
     return (
       <View style={styles.bookingCard}>
         <Text style={styles.djbookingText}>DJ: {item.dj}</Text>
         <Text style={styles.bookingText}>
           Event Details: {item.event_details}
         </Text>
+        <Text style={styles.bookingText}>
+          Comments: {item.comments}
+        </Text>
         <Text style={styles.bookingText}>Date: {bookingDateFormatted}</Text>
+        <Text style={styles.bookingText}>Time: {bookingTimeFormatted}</Text>
         <Text style={styles.bookingText}>Location: {item.location}</Text>
         <Text
           style={[
