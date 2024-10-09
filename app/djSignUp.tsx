@@ -174,8 +174,8 @@ export default function DjSignUp() {
             value={surname}
             onChangeText={setSurname}
           />
-          <TouchableOpacity onPress={pickImage}>
-            <Text style={styles.white}>Select an Image</Text>
+          <TouchableOpacity onPress={pickImage} style={styles.signupButton}>
+            <Text style={styles.linkText}>Select an Image</Text>
           </TouchableOpacity>
           <View>
             {image && (
@@ -213,7 +213,9 @@ export default function DjSignUp() {
           <View>
             <Text style={styles.smalllabel}>Genres:</Text>
             {genres.map((g, index) => (
-              <Text key={index}>{g}</Text>
+              <Text key={index} style={styles.smalllabel}>
+                {g}
+              </Text>
             ))}
           </View>
           <TextInput
@@ -226,7 +228,9 @@ export default function DjSignUp() {
           <View>
             <Text style={styles.smalllabel}>Occasions:</Text>
             {occasions.map((o, index) => (
-              <Text key={index}>{o}</Text>
+              <Text key={index} style={styles.smalllabel}>
+                {o}
+              </Text>
             ))}
           </View>
           <TextInput
@@ -319,7 +323,7 @@ const styles = StyleSheet.create({
     fontFamily: "menlo-bold",
     marginTop: 10,
     marginBottom: 20,
-    color: "white",
+    color: "black",
   },
   passwordContainer: {
     flexDirection: "row",
@@ -342,15 +346,15 @@ const styles = StyleSheet.create({
   signupButton: {
     paddingRight: 40,
     paddingLeft: 40,
-    paddingTop: 16,
-    paddingBottom: 16,
+    paddingTop: 9,
+    paddingBottom: 9,
     backgroundColor: "#007AFF",
     borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
     margin: 10,
     alignSelf: "center",
-    width: "95%",
+    width: "85%",
   },
   linkText: {
     color: "#fff",
