@@ -18,6 +18,7 @@ import { signIn } from "@/firebase/firestore";
 import { AuthContext } from "@/contexts/AuthContext";
 import { isDjAccount } from "@/firebase/utils";
 import { LinearGradient } from "expo-linear-gradient";
+import Entypo from "@expo/vector-icons/Entypo";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -83,7 +84,9 @@ export default function Login() {
         colors={["#C80055", "#A000CC", "#0040CC"]}
         style={styles.background}
       >
-        <Text style={styles.header}>Login</Text>
+        <Text style={styles.header}>
+          <Entypo name="login" size={24} color="black" /> Login
+        </Text>
 
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.buttonContainer}>
