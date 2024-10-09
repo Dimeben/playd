@@ -116,7 +116,7 @@ const UserManageBookings = () => {
   };
 
   const renderBooking = ({ item }: { item: Booking }) => {
-    // Convert Firebase Timestamp to JavaScript Date object
+ 
     const bookingDate =
       item.date instanceof Timestamp
         ? item.date.toDate()
