@@ -229,7 +229,7 @@ const DjProfilePage = () => {
                   params: { dj: dj },
                 }}
               >
-                <Text style={styles.linkText}>Edit Profile</Text>
+                <Text style={styles.linkText}>{"     "}Edit Profile</Text>
               </Link>
             </View>
             <TouchableOpacity

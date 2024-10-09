@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import { db } from "@/firebase/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
-
+import { LinearGradient } from "expo-linear-gradient";
 const manageBookings = () => {
   const [isDj, setIsDj] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
@@ -54,8 +54,15 @@ const manageBookings = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="black" />
-        <Text>Loading Bookings...</Text>
+        <LinearGradient
+          colors={["#C80055", "#A000CC", "#0040CC"]}
+          style={styles.backgroundLoading}
+        >
+          <View style={styles.containerLoading}>
+            <ActivityIndicator size="large" color="black" />
+            <Text>Loading Bookings...</Text>
+          </View>
+        </LinearGradient>
       </View>
     );
   }
@@ -69,5 +76,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  containerLoading: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  backgroundLoading: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    // flex: 1,
+    // height: "100%",
   },
 });
