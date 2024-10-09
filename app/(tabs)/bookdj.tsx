@@ -27,7 +27,7 @@ const BookDj = () => {
     return Array.isArray(dj) ? JSON.parse(dj[0]) : dj ? JSON.parse(dj) : null;
   }, [dj]);
 
-  const [showBookingForm, setShowBookingForm] = useState(false); // Toggle state for form
+  const [showBookingForm, setShowBookingForm] = useState(false);
   const [newBooking, setNewBooking] = useState({
     client: username || "",
     comments: "",
@@ -36,6 +36,7 @@ const BookDj = () => {
     time: "",
     location: "",
     occasion: "",
+    description: "",
     dj: selectedDj?.username || "",
   });
 
@@ -49,6 +50,7 @@ const BookDj = () => {
       time: "",
       location: "",
       occasion: "",
+      description: "",
       dj: selectedDj?.username || "",
     });
   };
@@ -278,6 +280,14 @@ const BookDj = () => {
                   value={newBooking.event_details}
                   onChangeText={(text) =>
                     setNewBooking({ ...newBooking, event_details: text })
+                  }
+                />
+                 <TextInput
+                  style={styles.input}
+                  placeholder="Description"
+                  value={newBooking.description}
+                  onChangeText={(text) =>
+                    setNewBooking({ ...newBooking, description: text })
                   }
                 />
                 <TextInput

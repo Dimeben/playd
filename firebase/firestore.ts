@@ -377,6 +377,7 @@ export const getBookingsByUser = async (username: string): Promise<Booking[]> =>
         time: data.time || "",
         location: data.location || "",
         occasion: data.occasion || "",
+        description: data.description || "",
         status: data.status || "pending",
       });
     });
@@ -407,6 +408,7 @@ export const getBookingsByDj = async (djUsername: string): Promise<Booking[]> =>
         time: data.time || "",
         location: data.location || "",
         occasion: data.occasion || "",
+        description: data.description || "",
         status: data.status || "pending",
       });
     });

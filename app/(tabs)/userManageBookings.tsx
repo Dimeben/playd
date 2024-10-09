@@ -116,33 +116,32 @@ const UserManageBookings = () => {
   };
 
   const renderBooking = ({ item }: { item: Booking }) => {
- 
     const bookingDate =
       item.date instanceof Timestamp
         ? item.date.toDate()
         : typeof item.date === "string"
         ? new Date(item.date)
         : item.date;
-
+  
     const bookingDateFormatted = bookingDate.toLocaleDateString();
-
+    const bookingTimeFormatted = bookingDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
-
     bookingDate.setHours(0, 0, 0, 0);
-
+  
     const canLeaveFeedback = currentDate > bookingDate;
-
+  
     return (
       <View style={styles.bookingCard}>
         <Text style={styles.bookingText}>DJ: {item.dj}</Text>
-        <Text style={styles.bookingText}>
-          Event Details: {item.event_details}
-        </Text>
+        <Text style={styles.bookingText}>Event Details: {item.event_details}</Text>
         <Text style={styles.bookingText}>Date: {bookingDateFormatted}</Text>
+        <Text style={styles.bookingText}>Time: {bookingTimeFormatted}</Text>
         <Text style={styles.bookingText}>Location: {item.location}</Text>
+        <Text style={styles.bookingText}>Description: {item.description}</Text>
         <Text style={styles.bookingText}>Status: {item.status}</Text>
-
+  
         {canLeaveFeedback ? (
           <>
             <Button
@@ -157,12 +156,9 @@ const UserManageBookings = () => {
                 )
               }
             />
-
             {feedbackFormVisible === item.id && (
               <View style={styles.feedbackForm}>
-                <Text style={styles.feedbackHeader}>
-                  Leave Feedback for DJ {item.dj}
-                </Text>
+                <Text style={styles.feedbackHeader}>Leave Feedback for DJ {item.dj}</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Feedback Title"
@@ -197,23 +193,19 @@ const UserManageBookings = () => {
                     }));
                   }}
                 />
-                <Button
-                  title="Submit Feedback"
-                  onPress={() => handlePostFeedback(item.id)}
-                />
-
+                <Button title="Submit Feedback" onPress={() => handlePostFeedback(item.id)} />
                 <Button
                   title="Cancel"
                   color="red"
                   onPress={() => {
-                    setFeedbackFormVisible(null),
-                      setFeedback({
-                        title: "",
-                        body: "",
-                        stars: 0,
-                        dj: "",
-                        date: new Date(),
-                      });
+                    setFeedbackFormVisible(null);
+                    setFeedback({
+                      title: "",
+                      body: "",
+                      stars: 0,
+                      dj: "",
+                      date: new Date(),
+                    });
                   }}
                 />
               </View>
@@ -223,7 +215,7 @@ const UserManageBookings = () => {
       </View>
     );
   };
-
+ 
   return (
     <SafeAreaView style={styles.safeContainer}>
       <KeyboardAvoidingView

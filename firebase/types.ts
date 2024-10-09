@@ -47,5 +47,6 @@ export interface Booking {
   time: string;
   location: string;
   occasion: string;
+  description: string;
   status: 'pending' | 'accepted' | 'declined';
 }

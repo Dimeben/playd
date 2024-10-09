@@ -17,6 +17,7 @@ import {
 } from "../../firebase/firestore";
 import { Booking } from "../../firebase/types";
 import { SafeAreaView } from "react-native";
+import { Timestamp } from "firebase/firestore";
 
 const DjManageBookings = () => {
   const { username } = useContext(AuthContext);
@@ -67,59 +68,77 @@ const DjManageBookings = () => {
     }
   };
 
-    return (
-      <SafeAreaView style={styles.safeContainer}>
-        <KeyboardAvoidingView
-          style={styles.container}
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
-        >
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <Text style={styles.header}>Your Bookings</Text>
-            
-            {djBookings.length === 0 ? (
-              <Text style={styles.noBookingsMessage}>No bookings requested</Text>
-            ) : (
-              djBookings.map((booking) => (
-                <View key={booking.id} style={styles.bookingCard}>
-                  <Text style={styles.details}>Client: {booking.client}</Text>
-                  <Text style={styles.details}>Occasion: {booking.occasion}</Text>
-                  <Text style={styles.details}>Location: {booking.location}</Text>
-                  <Text style={styles.details}>
-                    Date: {booking.date?.toDateString()}
+  return (
+    <SafeAreaView style={styles.safeContainer}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <Text style={styles.header}>Your Bookings</Text>
+  
+          {djBookings.length === 0 ? (
+            <Text style={styles.noBookingsMessage}>No bookings requested</Text>
+          ) : (
+            djBookings.map((item) => {
+              const bookingDate =
+                item.date instanceof Timestamp
+                  ? item.date.toDate()
+                  : typeof item.date === "string"
+                  ? new Date(item.date)
+                  : item.date;
+              const bookingDateFormatted = bookingDate.toLocaleDateString();
+              const bookingTimeFormatted = bookingDate.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+  
+              return (
+                <View key={item.id} style={styles.bookingCard}>
+                  <Text style={styles.bookingText}>Client: {item.client}</Text>
+                  <Text style={styles.bookingText}>Occasion: {item.occasion}</Text>
+                  <Text style={styles.bookingText}>
+                    Date: {bookingDateFormatted}
                   </Text>
+                  <Text style={styles.bookingText}>
+                    Time: {bookingTimeFormatted}
+                  </Text>
+                  <Text style={styles.bookingText}>Location: {item.location}</Text>
+                  <Text style={styles.bookingText}>Description: {item.description}</Text>
                   <Text style={styles.statusMessage}>
-                    {booking.status === "accepted"
+                    {item.status === "accepted"
                       ? "Booking Accepted"
-                      : booking.status === "declined"
+                      : item.status === "declined"
                       ? "Booking Declined"
                       : "Pending Decision"}
                   </Text>
-    
-                  {booking.status === "pending" && (
+  
+                  {item.status === "pending" && (
                     <View style={styles.buttonContainer}>
                       <Pressable
                         style={styles.button}
-                        onPress={() => handleAcceptBooking(booking.id)}
+                        onPress={() => handleAcceptBooking(item.id)}
                       >
                         <Text style={styles.buttonText}>Accept</Text>
                       </Pressable>
                       <Pressable
                         style={styles.button}
-                        onPress={() => handleDenyBooking(booking.id)}
+                        onPress={() => handleDenyBooking(item.id)}
                       >
                         <Text style={styles.buttonText}>Decline</Text>
                       </Pressable>
                     </View>
                   )}
                 </View>
-              ))
-            )}
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    );
-  };
+              );
+            })
+          )}
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
+}; 
 
 const styles = StyleSheet.create({
   safeContainer: {
@@ -183,6 +202,10 @@ const styles = StyleSheet.create({
   marginLeft: 16, 
   textAlign: "left", 
   color: "#333",
+  },
+  bookingText: {
+    fontSize: 16,
+    marginBottom: 5,
   },
 });
 
