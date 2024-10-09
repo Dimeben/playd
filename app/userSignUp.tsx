@@ -14,13 +14,14 @@ import {
   Platform,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { createUser } from "../firebase/firestore";
+import { createUser, djRef, usersRef } from "../firebase/firestore";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { storage } from "../firebase/storage";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import { isUsernameTaken } from "@/firebase/utils";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 export default function UserSignUp() {
@@ -112,17 +113,39 @@ export default function UserSignUp() {
   };
 
   const handleUserRegister = async () => {
+    if (!firstName || !surname || !username || !city) {
+      alert("Please complete all fields");
+      return;
+    }
+
     if (password !== confirmPassword) {
       Alert.alert("Error", "Passwords do not match.");
       return;
     }
 
     try {
+      const usernameExists = await isUsernameTaken(
+        username[0].toUpperCase() + username.substring(1),
+        usersRef
+      );
+
+      if (usernameExists) {
+        throw new Error("Username is already taken.");
+      }
+
+      const djUsernameExists = await isUsernameTaken(
+        username[0].toUpperCase() + username.substring(1),
+        djRef
+      );
+
+      if (djUsernameExists) {
+        throw new Error("Username is already taken.");
+      }
       await createUser(email, password, {
-        username,
-        first_name: firstName,
-        surname,
-        city,
+        username: username[0].toUpperCase() + username.substring(1),
+        first_name: firstName[0].toUpperCase() + firstName.substring(1),
+        surname: surname[0].toUpperCase() + surname.substring(1),
+        city: city[0].toUpperCase() + city.substring(1),
         profile_picture: profilePicture,
       });
 
@@ -250,7 +273,6 @@ export default function UserSignUp() {
                 </TouchableOpacity>
               </View>
 
-              {/* <Button title="Register as User" onPress={handleUserRegister} /> */}
               <TouchableOpacity
                 style={[styles.signupButton, styles.marginTop]}
                 onPress={handleUserRegister}
