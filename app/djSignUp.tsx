@@ -161,24 +161,13 @@ export default function DjSignUp() {
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={100}
       >
         <ScrollView contentContainerStyle={styles.container}>
           <Text style={styles.header}>
             <FontAwesome5 name="compact-disc" size={30} color="black" /> DJ
             Signup
           </Text>
-          <TextInput
-            style={styles.input}
-            placeholder="First Name"
-            value={firstName}
-            onChangeText={setFirstName}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Surname"
-            value={surname}
-            onChangeText={setSurname}
-          />
           <TouchableOpacity onPress={pickImage} style={styles.signupButton}>
             <Text style={styles.linkText}>Select an Image</Text>
           </TouchableOpacity>
@@ -189,6 +178,18 @@ export default function DjSignUp() {
             <TouchableOpacity onPress={uploadMedia} style={styles.signupButton}>
               <Text style={styles.linkText}>Upload Image</Text>
             </TouchableOpacity>
+            <TextInput
+              style={styles.input}
+              placeholder="First Name"
+              value={firstName}
+              onChangeText={setFirstName}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Surname"
+              value={surname}
+              onChangeText={setSurname}
+            />
           </View>
           <TextInput
             style={styles.input}
@@ -314,12 +315,11 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   input: {
-    height: 40,
-    borderColor: "gray",
     borderWidth: 1,
-    marginBottom: 12,
+    borderColor: "#ddd",
+    padding: 10,
+    marginVertical: 5,
     borderRadius: 5,
-    paddingHorizontal: 8,
     backgroundColor: "white",
   },
   header: {
@@ -358,7 +358,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderRightWidth: 1,
     overflow: "hidden",
-    margin: 10,
+    marginTop: 10,
+    marginBottom: 15,
     alignSelf: "center",
     width: "85%",
   },
