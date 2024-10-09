@@ -18,21 +18,43 @@ import {
 import { Booking } from "../../firebase/types";
 import { SafeAreaView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { Timestamp } from "firebase/firestore";
 const DjManageBookings = () => {
   const { username } = useContext(AuthContext);
   const [djBookings, setDjBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchBookings = async () => {
+      setLoading(true);
       if (username) {
         try {
-          const bookings = await getBookingsByDj(username);
-          setDjBookings(bookings);
-          console.log(bookings);
+          const fetchedBookings = await getBookingsByDj(username);
+
+          const sortedBookings = fetchedBookings.sort((a, b) => {
+            const bookingDateA =
+              a.date instanceof Timestamp
+                ? a.date.toDate()
+                : typeof a.date === "string"
+                ? new Date(a.date)
+                : a.date;
+
+            const bookingDateB =
+              b.date instanceof Timestamp
+                ? b.date.toDate()
+                : typeof b.date === "string"
+                ? new Date(b.date)
+                : b.date;
+
+            return bookingDateB.getTime() - bookingDateA.getTime();
+          });
+
+          setDjBookings(sortedBookings);
         } catch (error) {
           console.error("Error fetching DJ bookings:", error);
         }
       }
+      setLoading(false);
     };
     fetchBookings();
   }, [username]);
