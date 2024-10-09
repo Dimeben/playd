@@ -14,7 +14,7 @@ import {
 import { getAllDjs } from "../../firebase/firestore";
 import { useRouter } from "expo-router";
 import { DJ } from "../../firebase/types";
-import moment from "moment";
+import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 
 const DjList = () => {
@@ -42,38 +42,42 @@ const DjList = () => {
     return filledStars + emptyStars;
   };
 
+  const fetchDjs = async () => {
+    try {
+      const djData = await getAllDjs();
+      const validDjs = djData.filter((dj): dj is DJ => {
+        return (
+          dj.first_name !== undefined &&
+          dj.surname !== undefined &&
+          dj.username !== undefined &&
+          dj.city !== undefined &&
+          Array.isArray(dj.genres) &&
+          Array.isArray(dj.occasions) &&
+          typeof dj.price === "number" &&
+          (typeof dj.profile_picture === "string" ||
+            dj.profile_picture === null)
+        );
+      });
+      setDjs(validDjs);
+      setCityOptions([...new Set(validDjs.map((dj) => dj.city))]);
+      setGenreOptions([...new Set(validDjs.flatMap((dj) => dj.genres))]);
+      setOccasionOptions([...new Set(validDjs.flatMap((dj) => dj.occasions))]);
+      setFilteredDjs(validDjs);
+    } catch (error) {
+      console.error("Error fetching DJs: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchDjs = async () => {
-      try {
-        const djData = await getAllDjs();
-        const validDjs = djData.filter((dj): dj is DJ => {
-          return (
-            dj.first_name !== undefined &&
-            dj.surname !== undefined &&
-            dj.username !== undefined &&
-            dj.city !== undefined &&
-            Array.isArray(dj.genres) &&
-            Array.isArray(dj.occasions) &&
-            typeof dj.price === "number" &&
-            (typeof dj.profile_picture === "string" ||
-              dj.profile_picture === null)
-          );
-        });
-        setDjs(validDjs);
-        setCityOptions([...new Set(validDjs.map((dj) => dj.city))]);
-        setGenreOptions([...new Set(validDjs.flatMap((dj) => dj.genres))]);
-        setOccasionOptions([
-          ...new Set(validDjs.flatMap((dj) => dj.occasions)),
-        ]);
-        setFilteredDjs(validDjs);
-      } catch (error) {
-        console.error("Error fetching DJs: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchDjs();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchDjs();
+    }, [])
+  );
 
   const handleCityChange = (city: string | undefined) => {
     setSelectedCity(city);
