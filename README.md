@@ -1,5 +1,7 @@
 # Welcome to Playd 👋
 
+## Watch The Run Through Of The App: https://www.youtube.com/watch?v=2VABk7nJpeA
+
 ## Tech Stack
 
 - **JavaScript**
