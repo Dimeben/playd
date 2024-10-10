@@ -5,9 +5,8 @@
 - **JavaScript**
 - **TypeScript**
 - **React Native**
+- **Expo**
 - **Firebase**
-- **HTML**
-- **Native Wind**
 
 ## Downloading The Repo
 
